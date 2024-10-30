@@ -1,20 +1,21 @@
 use master
 go
+
 create database SaludPlus 
 on Primary
 (
 name = 'SaludPlus_Data',
-Filename ='E:\SQLDB\SQLData\SaludPlus_Data.mdf',
- SIZE = 5000MB,  
- MAXSIZE = 10000MB, 
+Filename ='C:\SQL\Data\SaludPlus_Data.mdf',
+ SIZE = 500MB, -- 5000MB  
+ MAXSIZE = 1000MB, --100000MB
  FILEGROWTH = 500MB 
 )
 log on 
 (
 name = 'SaludPlus',
-Filename ='E:\SQLDB\SQLLog\SaludPlus_Log.ldf',
-SIZE = 2000MB,
-MAXSIZE = 5000MB,
+Filename ='C:\SQL\Log\SaludPlus_Log.ldf',
+SIZE = 200MB, --2000MB
+MAXSIZE = 500MB,-- 5000MB
 FILEGROWTH = 200MB
 )
 
@@ -69,9 +70,9 @@ alter database SaludPlus
 add file
 (
     NAME = 'Facturacion_Data',
-    FILENAME = 'E:\SQLDB\SQLData\Facturacion_Data.ndf',
-    SIZE = 2000MB,
-    MAXSIZE = 5000MB,
+    FILENAME = 'C:\SQL\Data\Facturacion_Data.ndf',
+    SIZE = 200MB, -- 2000MB
+    MAXSIZE = 500MB, -- 5000MB
     FILEGROWTH = 200MB
 ) to filegroup Facturacion
 -------------------------------
@@ -81,9 +82,9 @@ alter database SaludPlus
 add file
 (
     NAME = 'Recursos_Data',
-    FILENAME = 'E:\SQLDB\SQLData\Recursos_Data.ndf',
-    SIZE = 2000MB,
-    MAXSIZE = 5000MB,
+    FILENAME = 'C:\SQL\Data\Recursos_Data.ndf',
+    SIZE = 200MB, --2000MB
+    MAXSIZE = 500MB, --5000MB
     FILEGROWTH = 200MB
 )to FILEGROUP Recursos
 -------------------------
