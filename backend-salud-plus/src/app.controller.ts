@@ -31,11 +31,11 @@ export class DatabaseController {
     const pool = await this.databaseService.connect(user, password);
     if (!pool) {
       return {
-        status: "Failed login"
+        status: "Failure"
       }
     } else {
       return {
-        status: JSON.stringify(pool)
+        status: "Success"
       }
     }
   }

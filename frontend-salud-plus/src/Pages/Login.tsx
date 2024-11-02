@@ -1,16 +1,19 @@
 import { useForm } from "react-hook-form";
 import "./Login.css"
 
+import useLogIn from "../api/useLogIn";
+
 type FormData = {
     password: string,
-    username: string
+    user: string
 };
 
 const Login = () => {
     const { register, handleSubmit } = useForm<FormData>();
+    const { mutate: logIn } = useLogIn();
 
     const AttemptLogIn = (data: FormData) => {
-        alert(JSON.stringify(data));
+        logIn({...data});   
     }
     
     return (
@@ -20,7 +23,7 @@ const Login = () => {
                 <h3>Inicio de sesión:</h3>
                 <form onSubmit={handleSubmit(AttemptLogIn)}>
                     <label>Nombre de usuario:</label>
-                    <input type="text" {...register("username", {
+                    <input type="text" {...register("user", {
                         required: true
                     })}></input>
                     <label>Contraseña:</label>
