@@ -13,7 +13,7 @@ const Login = () => {
     const { mutate: logIn } = useLogIn();
 
     const AttemptLogIn = (data: FormData) => {
-        logIn({...data});   
+        logIn({user: data.user, password: data.password});   
     }
     
     return (

@@ -13,10 +13,9 @@ export class DatabaseService {
       this.pool = await sql.connect({
         user,
         password,
-        server: "DESKTOP-MO9R4GF",
+        server: "localhost",
         database: "SaludPlus",
         options: {
-          encrypt: true,
           trustServerCertificate: true,
         },
       });
