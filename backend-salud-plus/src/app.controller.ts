@@ -9,26 +9,34 @@ export class DatabaseController {
   @Post('query')
   async executeQuery(@Body() body: { sqlQuery: string; user: string; password: string }) {
     const { sqlQuery, user, password } = body;
-    try {
-      const pool = await this.databaseService.connect(user, password);
+    const pool = await this.databaseService.connect(user, password);
+    if (!pool) {
+      return {
+        status: "Failure",
+        msg: "Invalid connection"
+      }
+    }
+    else {
       const result = await pool.request().query(sqlQuery);
-      return result.recordset;
-    } catch (error) {
-      throw new Error(`Query failed: ${error.message}`);
-    } finally {
       await this.databaseService.disconnect();
+      return {
+        status: "Success",
+        recordset: result.recordset
+      }
     }
   }
 
   @Post('login')
   async logIn(@Body() {user, password} : { user: string, password: string }) {
-    try {
-      const pool = this.databaseService.connect(user, password);
+    const pool = await this.databaseService.connect(user, password);
+    if (!pool) {
       return {
-        status: "Success"
-      };
-    } catch {
-      throw new Error("Failed to log in")
+        status: "Failed login"
+      }
+    } else {
+      return {
+        status: JSON.stringify(pool)
+      }
     }
   }
 }

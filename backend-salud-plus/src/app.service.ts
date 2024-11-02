@@ -13,8 +13,8 @@ export class DatabaseService {
       this.pool = await sql.connect({
         user,
         password,
-        server: process.env.DB_SERVER,
-        database: process.env.DB_DATABASE,
+        server: "DESKTOP-MO9R4GF",
+        database: "SaludPlus",
         options: {
           encrypt: true,
           trustServerCertificate: true,
@@ -24,7 +24,7 @@ export class DatabaseService {
       return this.pool;
     } catch (error) {
       console.error('Database connection failed:', error);
-      throw error;
+      return null;
     }
   }
 
