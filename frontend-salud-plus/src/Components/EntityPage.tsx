@@ -53,6 +53,7 @@ const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, en
                                     idFieldName={idFieldName}
                                     tableName={entityTableName}
                                     refetchFn={refetch}
+                                    entityFields={addEntityFields}
                                 />
                             ))
                         }

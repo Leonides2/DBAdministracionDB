@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useQueryPost from "../api/useQueryPost";
 
-const EntityPageRow = ({entity, idFieldName, tableName, refetchFn}: {entity: any, idFieldName: string, tableName: string, refetchFn: () => void}) => {
+const EntityPageRow = ({entity, idFieldName, tableName, refetchFn, entityFields}: {entity: any, idFieldName: string, tableName: string, refetchFn: () => void, entityFields: [string, string][]}) => {
     const [edit, setEdit] = useState(false);
     const { register, reset, handleSubmit } = useForm();
     const { mutate: postUpdateQuery } = useQueryPost(() => {
@@ -58,7 +58,7 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn}: {entity: any
             {
                 Object.entries(entity).map(([key, value]) => key !== idFieldName ? (
                     <td key={key}>
-                        <input className="form-control" defaultValue={value} {...register(key, {
+                        <input type={entityFields.find(([fieldName, _]) => fieldName === key)[1]} className="form-control" defaultValue={value} {...register(key, {
                             required: true
                         })} />
                     </td>
