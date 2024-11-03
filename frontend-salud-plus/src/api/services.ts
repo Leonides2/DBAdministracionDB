@@ -1,9 +1,16 @@
 import api from "./config";
 import { LoginResponse, QueryResponse } from "./ResponseSchema";
+import { useNavigate } from "react-router-dom";
 
-export const LogOut = () => {
-    localStorage.removeItem("user");
-    localStorage.removeItem("password");
+export const useLogOut = () => {
+    const navigate = useNavigate();
+    
+    return () => {
+        localStorage.removeItem("user");
+        localStorage.removeItem("password");
+    
+        navigate('/')
+    }
 }
 
 export const LogIn = ({user, password}: {user: string, password: string}) => {
@@ -21,6 +28,8 @@ export const LogIn = ({user, password}: {user: string, password: string}) => {
 
         localStorage.removeItem("user");
         localStorage.removeItem("password");
+
+        
 
         throw new Error("Login failed");
     })

@@ -58,7 +58,7 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn, entityFields}
             {
                 Object.entries(entity).map(([key, value]) => key !== idFieldName ? (
                     <td key={key}>
-                        <input type={entityFields.find(([fieldName, _]) => fieldName === key)[1]} className="form-control" defaultValue={value} {...register(key, {
+                        <input type={entityFields.find(([fieldName, _]) => fieldName === key)?.[1]} className="form-control" defaultValue={value} {...register(key, {
                             required: true
                         })} />
                     </td>

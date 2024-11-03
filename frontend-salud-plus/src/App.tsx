@@ -22,6 +22,8 @@ import PlanificacionesRecursos from "./Pages/PlanificacionesRecursos"
 import MedicoPlanificacionRecursos from "./Pages/MedicoPlanificacionRecursos"
 import SatisfaccionPacientes from "./Pages/SatisfaccionPacientes"
 
+import { Navigate } from "react-router-dom"
+
 function App() {
   return (
     <Routes>
@@ -47,6 +49,7 @@ function App() {
       <Route path="/planificaciones-recursos" element={<PlanificacionesRecursos />} />
       <Route path="/medico-planificaciones-recursos" element={<MedicoPlanificacionRecursos />} />
       <Route path="/satisfaccion-pacientes" element={<SatisfaccionPacientes />} />  
+      <Route path="*" element={<Navigate to="/" />} />
     </Routes>
   )
 }

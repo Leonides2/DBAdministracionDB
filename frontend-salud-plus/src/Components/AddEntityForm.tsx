@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import useQueryPost from "../api/useQueryPost";
+import { Fragment } from "react/jsx-runtime";
 
 const AddEntityForm = ({tableName, addEntityFields, refetchFn}: {tableName: string, addEntityFields: [string, string][], refetchFn: () => void}) => {
     const { register, handleSubmit } = useForm();
@@ -22,10 +23,10 @@ const AddEntityForm = ({tableName, addEntityFields, refetchFn}: {tableName: stri
         <form className="card p-3" style={{minWidth: 500, maxHeight: 600, overflowY: "auto"}} onSubmit={handleSubmit(addEntity)}>
             {
                 addEntityFields.map(([fieldName, fieldType]) => (
-                    <>
+                    <Fragment key={fieldName}>
                         <label>{fieldName}</label>
                         <input className="form-control mb-2" type={fieldType} {...register(fieldName, {required: true})} />
-                    </>
+                    </Fragment>
                 )) 
             }
             <button type="submit" className="btn btn-primary">Añadir</button>
