@@ -1,24 +1,24 @@
 import useQueryGet from "../api/useQueryGet";
 import AddEntityForm from "./AddEntityForm";
 import EntityPageRow from "./EntityPageRow";
+import Navbar from "./Navbar";
 import useModal from "./useModal";
 
 type PageProperties = {
     title: string,
     noEntitiesMessage: string,
-    getEntitiesQuery: string,
     addEntityMessage: string
     idFieldName: string,
     entityTableName: string
     addEntityFields: [string, string][]
 }
 
-const EntityPage = ({title, getEntitiesQuery, noEntitiesMessage, addEntityMessage, idFieldName, entityTableName, addEntityFields}: PageProperties) => {
-    const { data: entities, isLoading, error, refetch } = useQueryGet(getEntitiesQuery);
+const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, entityTableName, addEntityFields}: PageProperties) => {
+    const { data: entities, isLoading, error, refetch } = useQueryGet(`SELECT * FROM ${entityTableName}`);
     const { setShow, Modal } = useModal();
 
     if (isLoading) {
-        return <></>
+        return <Navbar />
     }
     
     if (error) {
@@ -27,8 +27,9 @@ const EntityPage = ({title, getEntitiesQuery, noEntitiesMessage, addEntityMessag
     
     return (
         <>
-            <h1>{title}</h1>
-            <button type="button" className="btn btn-primary" onClick={() => setShow(true)}>{addEntityMessage}</button>
+            <Navbar />
+            <h1 className="ms-2">{title}</h1>
+            <button type="button" className="btn btn-primary mb-3 ms-2" onClick={() => setShow(true)}>{addEntityMessage}</button>
             {
                 entities.length === 0 ? <div>{noEntitiesMessage}</div>
                 : 

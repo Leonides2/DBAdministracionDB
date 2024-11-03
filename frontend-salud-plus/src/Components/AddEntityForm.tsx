@@ -19,7 +19,7 @@ const AddEntityForm = ({tableName, addEntityFields, refetchFn}: {tableName: stri
     }
 
     return (
-        <form className="card p-3" style={{minWidth: 500}} onSubmit={handleSubmit(addEntity)}>
+        <form className="card p-3" style={{minWidth: 500, maxHeight: 600, overflowY: "auto"}} onSubmit={handleSubmit(addEntity)}>
             {
                 addEntityFields.map(([fieldName, fieldType]) => (
                     <>

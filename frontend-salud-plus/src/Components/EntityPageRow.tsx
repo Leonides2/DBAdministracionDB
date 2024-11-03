@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import useQueryPost from "../api/useQueryPost";
 
@@ -27,6 +27,11 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn}: {entity: any
         postDeleteQuery(`DELETE FROM ${tableName} WHERE ${idFieldName} = ${entity[idFieldName]}`);
     }
 
+    const cancelEdit = () => {
+        reset();
+        setEdit(false);
+    }
+
     if (!edit) {
         return (
             <tr>
@@ -41,10 +46,8 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn}: {entity: any
                     <button className="btn btn-danger" type="button" onClick={DeleteEntity}>Eliminar</button>
                 </td>
                 <td>
-                    {
-                        <button type="button" className="btn btn-primary" onClick={() => setEdit(true)}>Modificar</button>
-                    }
-                    </td>
+                    <button type="button" className="btn btn-primary" onClick={() => setEdit(true)}>Modificar</button>
+                </td>
             </tr>
         )
     }
@@ -68,10 +71,9 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn}: {entity: any
             <td>
                 <button className="btn btn-danger" type="button" onClick={DeleteEntity}>Eliminar</button>
             </td>
-            <td>
-                {
-                    <button type="button" className="btn btn-primary" onClick={handleSubmit(UpdateValues)}>Guardar</button>
-                }
+            <td style={{display: "flex", flexDirection: "column"}}>
+                <button type="button" className="btn btn-primary mb-1" onClick={handleSubmit(UpdateValues)}>Guardar</button>
+                <button type="button" className="btn btn-secondary" onClick={cancelEdit}>Cancelar</button>
             </td>
         </tr>
     )
