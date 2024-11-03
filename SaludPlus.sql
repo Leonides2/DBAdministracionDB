@@ -2780,7 +2780,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso)
     BEGIN
-        PRINT 'No existe la relaci�n Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
+        PRINT 'No existe la relación Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
         RETURN
     END
 
@@ -2856,7 +2856,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion)
     BEGIN
-        PRINT 'No existe la Satisfacci�n del Paciente con ID_Satisfaccion = ' + CAST(@ID_Satisfaccion AS VARCHAR)
+        PRINT 'No existe la Satisfacción del Paciente con ID_Satisfaccion = ' + CAST(@ID_Satisfaccion AS VARCHAR)
         RETURN
     END
     DELETE FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion
@@ -2870,7 +2870,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico_Planificacion_Recurso = @ID_Medico_Planificacion_Recurso)
     BEGIN
-        PRINT 'No existe la planificaci�n de recurso m�dico con ID_Medico_Planificacion_Recurso = ' + CAST(@ID_Medico_Planificacion_Recurso AS VARCHAR)
+        PRINT 'No existe la planificación de recurso médico con ID_Medico_Planificacion_Recurso = ' + CAST(@ID_Medico_Planificacion_Recurso AS VARCHAR)
         RETURN
     END
 
@@ -2893,7 +2893,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Paciente = @ID_Paciente)
     BEGIN
-        PRINT 'No se puede eliminar el Paciente, tiene historial m�dico asociado.'
+        PRINT 'No se puede eliminar el Paciente, tiene historial médico asociado.'
         RETURN
     END
 
@@ -2933,7 +2933,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Cita = @ID_Cita)
     BEGIN
-        PRINT 'No se puede eliminar la Cita, tiene satisfacci�n asociada.'
+        PRINT 'No se puede eliminar la Cita, tiene satisfacción asociada.'
         RETURN
     END
 
@@ -3039,13 +3039,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
     BEGIN
-        PRINT 'No existe el Historial M�dico con ID_Historial_Medico = ' + CAST(@ID_Historial_Medico AS VARCHAR)
+        PRINT 'No existe el Historial Médico con ID_Historial_Medico = ' + CAST(@ID_Historial_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Historial_Medico = @ID_Historial_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Historial M�dico, tiene procedimientos asociados.'
+        PRINT 'No se puede eliminar el Historial Médico, tiene procedimientos asociados.'
         RETURN
     END
 
@@ -3061,13 +3061,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
     BEGIN
-        PRINT 'No existe el Recurso M�dico con ID_Recurso_Medico = ' + CAST(@ID_Recurso_Medico AS VARCHAR)
+        PRINT 'No existe el Recurso Médico con ID_Recurso_Medico = ' + CAST(@ID_Recurso_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Recurso M�dico, tiene asignaciones a salas.'
+        PRINT 'No se puede eliminar el Recurso Médico, tiene asignaciones a salas.'
         RETURN
     END
 
@@ -3089,13 +3089,13 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Sala = @ID_Sala)
     BEGIN
-        PRINT 'No se puede eliminar la Sala, tiene recursos m�dicos asociados.'
+        PRINT 'No se puede eliminar la Sala, tiene recursos médicos asociados.'
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Sala = @ID_Sala)
     BEGIN
-        PRINT 'No se puede eliminar la Sala, tiene planificaci�n de recursos asociada.'
+        PRINT 'No se puede eliminar la Sala, tiene planificación de recursos asociada.'
         RETURN
     END
 
@@ -3111,13 +3111,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
     BEGIN
-        PRINT 'No existe el Estado de Recurso M�dico con ID_Estado_Recurso_Medico = ' + CAST(@ID_Estado_Recurso_Medico AS VARCHAR)
+        PRINT 'No existe el Estado de Recurso Médico con ID_Estado_Recurso_Medico = ' + CAST(@ID_Estado_Recurso_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Estado de Recurso M�dico, tiene recursos m�dicos asociados.'
+        PRINT 'No se puede eliminar el Estado de Recurso Médico, tiene recursos médicos asociados.'
         RETURN
     END
 
@@ -3139,7 +3139,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
     BEGIN
-        PRINT 'No se puede eliminar el Tipo de Recurso, tiene recursos m�dicos asociados.'
+        PRINT 'No se puede eliminar el Tipo de Recurso, tiene recursos médicos asociados.'
         RETURN
     END
 
@@ -3200,7 +3200,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico_Sala = @ID_Recurso_Medico_Sala)
     BEGIN
-        PRINT 'No existe el Recurso M�dico en Sala con ID_Recurso_Medico_Sala = ' + CAST(@ID_Recurso_Medico_Sala AS VARCHAR)
+        PRINT 'No existe el Recurso Médico en Sala con ID_Recurso_Medico_Sala = ' + CAST(@ID_Recurso_Medico_Sala AS VARCHAR)
         RETURN
     END
 
@@ -3217,13 +3217,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
     BEGIN
-        PRINT 'No existe el M�dico con ID_Medico = ' + CAST(@ID_Medico AS VARCHAR)
+        PRINT 'No existe el Médico con ID_Medico = ' + CAST(@ID_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico = @ID_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el M�dico, tiene planificaci�n de recursos asociada.'
+        PRINT 'No se puede eliminar el Médico, tiene planificación de recursos asociada.'
         RETURN
     END
 
@@ -3246,7 +3246,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Medico WHERE ID_Especialidad = @ID_Especialidad)
     BEGIN
-        PRINT 'No se puede eliminar la Especialidad, tiene m�dicos asociados.'
+        PRINT 'No se puede eliminar la Especialidad, tiene médicos asociados.'
         RETURN
     END
 
@@ -3268,7 +3268,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
     BEGIN
-        PRINT 'No se puede eliminar el Horario de Trabajo, tiene m�dicos asociados.'
+        PRINT 'No se puede eliminar el Horario de Trabajo, tiene médicos asociados.'
         RETURN
     END
 
@@ -3284,7 +3284,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
     BEGIN
-        PRINT 'No existe la Planificaci�n de Recurso con ID_Planificacion = ' + CAST(@ID_Planificacion AS VARCHAR)
+        PRINT 'No existe la Planificación de Recurso con ID_Planificacion = ' + CAST(@ID_Planificacion AS VARCHAR)
         RETURN
     END
 
@@ -3306,7 +3306,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico IN (SELECT ID_Historial_Medico FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento))
     BEGIN
-        PRINT 'No se puede eliminar el Procedimiento, tiene historial m�dico asociado.'
+        PRINT 'No se puede eliminar el Procedimiento, tiene historial médico asociado.'
         RETURN
     END
 
