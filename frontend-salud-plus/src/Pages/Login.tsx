@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import "./Login.css"
 
 import useLogIn from "../api/useLogIn";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 type FormData = {
     password: string,
@@ -11,7 +13,14 @@ type FormData = {
 const Login = () => {
     const { register, handleSubmit } = useForm<FormData>();
     const { mutate: logIn } = useLogIn();
+    const navigate = useNavigate();
 
+    useEffect(() => {
+        if (localStorage.getItem("user")) {
+            navigate("/citas");
+        }
+    }, [])
+    
     const AttemptLogIn = (data: FormData) => {
         logIn({user: data.user, password: data.password});   
     }

@@ -3,6 +3,9 @@ import AddEntityForm from "./AddEntityForm";
 import EntityPageRow from "./EntityPageRow";
 import Navbar from "./Navbar";
 import useModal from "./useModal";
+import { useLogOut } from "../api/services";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 type PageProperties = {
     title: string,
@@ -16,6 +19,15 @@ type PageProperties = {
 const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, entityTableName, addEntityFields}: PageProperties) => {
     const { data: entities, isLoading, error, refetch } = useQueryGet(`SELECT * FROM ${entityTableName}`);
     const { setShow, Modal } = useModal();
+    const logOut = useLogOut();
+    
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+        if (!localStorage.getItem("user")) {
+            navigate('/');
+        }
+    }, [])
 
     if (isLoading) {
         return <Navbar />
@@ -63,6 +75,8 @@ const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, en
             <Modal>
                 <AddEntityForm tableName={entityTableName} addEntityFields={addEntityFields} refetchFn={refetch} />
             </Modal>
+
+            <button className="btn btn-danger ms-2" onClick={logOut}>Cerrar sesión</button>
         </>
     )
 }
