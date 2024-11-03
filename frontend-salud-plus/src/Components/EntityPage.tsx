@@ -1,5 +1,7 @@
 import useQueryGet from "../api/useQueryGet";
+import AddEntityForm from "./AddEntityForm";
 import EntityPageRow from "./EntityPageRow";
+import useModal from "./useModal";
 
 type PageProperties = {
     title: string,
@@ -8,10 +10,12 @@ type PageProperties = {
     addEntityMessage: string
     idFieldName: string,
     entityTableName: string
+    addEntityFields: [string, string][]
 }
 
-const EntityPage = ({title, getEntitiesQuery, noEntitiesMessage, addEntityMessage, idFieldName, entityTableName}: PageProperties) => {
+const EntityPage = ({title, getEntitiesQuery, noEntitiesMessage, addEntityMessage, idFieldName, entityTableName, addEntityFields}: PageProperties) => {
     const { data: entities, isLoading, error, refetch } = useQueryGet(getEntitiesQuery);
+    const { setShow, Modal } = useModal();
 
     if (isLoading) {
         return <></>
@@ -24,7 +28,7 @@ const EntityPage = ({title, getEntitiesQuery, noEntitiesMessage, addEntityMessag
     return (
         <>
             <h1>{title}</h1>
-            <button type="button" className="btn btn-primary">{addEntityMessage}</button>
+            <button type="button" className="btn btn-primary" onClick={() => setShow(true)}>{addEntityMessage}</button>
             {
                 entities.length === 0 ? <div>{noEntitiesMessage}</div>
                 : 
@@ -54,6 +58,9 @@ const EntityPage = ({title, getEntitiesQuery, noEntitiesMessage, addEntityMessag
                     </tbody>
                 </table>
             }
+            <Modal>
+                <AddEntityForm tableName={entityTableName} addEntityFields={addEntityFields} refetchFn={refetch} />
+            </Modal>
         </>
     )
 }

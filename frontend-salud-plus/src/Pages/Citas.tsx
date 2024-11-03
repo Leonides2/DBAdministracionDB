@@ -9,6 +9,13 @@ const Citas = () => {
             addEntityMessage="Añadir cita"
             idFieldName="ID_Cita"
             entityTableName="Cita"
+            addEntityFields={[
+                ["Fecha_Cita", "date"], 
+                ["Hora_Cita", "time"], 
+                ["ID_Estado_Cita", "number"],
+                ["ID_Paciente", "number"],
+                ["ID_Medico", "number"],
+            ]}
         />
     )
 }
