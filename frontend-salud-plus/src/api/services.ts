@@ -39,7 +39,7 @@ export const Query = (query: string) => {
         if (response.data.status === "Success") {
             return response.data.recordset;
         }
-
+        
         throw new Error(response.data.msg);
     })
 };

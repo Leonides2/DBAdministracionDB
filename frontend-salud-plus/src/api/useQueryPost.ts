@@ -5,8 +5,8 @@ const useQueryPost = (onSuccess: () => void) => {
     return useMutation({
         mutationFn: Query,
         onSuccess: onSuccess,
-        onError: () => {
-            alert("Algo salió mal....")
+        onError: (e) => {
+            alert(e)
         }
     })
 }

@@ -10,7 +10,7 @@ const useLogIn = () => {
         mutationFn: LogIn,
         onSuccess: () => {
             alert("Inicio de sesión exitoso");
-            navigate("/");
+            navigate("/citas");
         },
         onError: () => {
             alert("El nombre de usuario o contraseña proveídos fueron incorrectos");

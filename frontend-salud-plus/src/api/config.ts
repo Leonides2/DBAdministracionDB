@@ -5,6 +5,7 @@ const config: AxiosRequestConfig = {
     headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
+        
     }
 };
 

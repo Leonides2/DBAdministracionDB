@@ -33,11 +33,19 @@ export class DatabaseController {
       }
     }
     else {
-      const result = await pool.request().query(sqlQuery);
-      await this.databaseService.disconnect();
-      return {
-        status: "Success",
-        recordset: result.recordset
+      try {
+        const result = await pool.request().query(sqlQuery);
+        return {
+          status: "Success",
+          recordset: result.recordset
+        }
+      } catch(error) {
+        return {
+          status: "Failure",
+          msg: error.originalError.info.message
+        }
+      } finally {
+        await this.databaseService.disconnect();
       }
     }
   }
@@ -53,6 +61,7 @@ export class DatabaseController {
         status: "Failure"
       }
     } else {
+      await this.databaseService.disconnect();
       return {
         status: "Success"
       }

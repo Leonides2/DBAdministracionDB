@@ -23,14 +23,14 @@ const Login = () => {
                 <h3>Inicio de sesión:</h3>
                 <form onSubmit={handleSubmit(AttemptLogIn)}>
                     <label>Nombre de usuario:</label>
-                    <input type="text" {...register("user", {
+                    <input className="form-control" type="text" {...register("user", {
                         required: true
                     })}></input>
                     <label>Contraseña:</label>
-                    <input type="password" {...register("password", {
+                    <input className="form-control" type="password" {...register("password", {
                         required: true
                     })}></input>
-                    <button type="submit">Iniciar sesión</button>
+                    <button className="btn btn-primary" type="submit">Iniciar sesión</button>
                 </form>
             </div>
         </div>
