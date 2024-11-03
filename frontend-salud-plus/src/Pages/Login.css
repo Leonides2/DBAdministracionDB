@@ -22,3 +22,11 @@
     align-self: left;
 }
 
+.login-page form input {
+    width: 100%;
+}
+
+.login-page form button {
+    margin-top: 5px;
+    align-self: start;
+}

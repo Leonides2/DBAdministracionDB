@@ -16,7 +16,7 @@ const Login = () => {
     return (
         <div className="login-page">
             <div>
-                <h1>Salud Plus</h1>
+                <h1>Sistema Salud Plus</h1>
                 <h3>Inicio de sesión:</h3>
                 <form onSubmit={handleSubmit(AttemptLogIn)}>
                     <label>Nombre de usuario:</label>
