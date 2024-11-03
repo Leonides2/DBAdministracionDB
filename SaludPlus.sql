@@ -94,14 +94,14 @@ use SaludPlus
 go
 create table Cita
 ( 
-ID_Cita int not null,
+ID_Cita int not null IDENTITY(1,1),
 Fecha_Cita date not null,
 Hora_Cita time not null,
 ID_Estado_Cita int not null,
 ID_Paciente int not null,
 ID_Medico int not null,
 CONSTRAINT PK_Cita 
-PRIMARY KEY CLUSTERED (ID_Cita )
+PRIMARY KEY CLUSTERED (ID_Cita)
 ) on 'Facturacion'
 go
 ---------------------------
@@ -109,10 +109,10 @@ use SaludPlus
 go
 create table Estado_Cita
 ( 
-ID_Estado_Cita int not null,
+ID_Estado_Cita int not null IDENTITY(1,1),
 Estado varchar(50) not null,
 CONSTRAINT PK_Estado_Cita 
-PRIMARY KEY CLUSTERED (ID_Estado_Cita )
+PRIMARY KEY CLUSTERED (ID_Estado_Cita)
 ) on 'Facturacion'
 go
 --------------------------
@@ -120,14 +120,14 @@ use SaludPlus
 go
 create table Factura
 ( 
-ID_Factura int not null,
+ID_Factura int not null IDENTITY(1,1),
 Fecha_Factura date not null,
 Monto_Total money not null,
 ID_Paciente int not null,
 ID_Cita int not null,
 ID_Tipo_Pago int not null,
 CONSTRAINT PK_Factura 
-PRIMARY KEY CLUSTERED (ID_Factura )
+PRIMARY KEY CLUSTERED (ID_Factura)
 ) on 'Facturacion'
 go
 -------------------------
@@ -135,10 +135,10 @@ use SaludPlus
 go
 create table Tipo_Pago
 ( 
-ID_Tipo_Pago int not null,
+ID_Tipo_Pago int not null IDENTITY(1,1),
 Descripcion_Tipo_Pago varchar(50) not null,
 CONSTRAINT PK_Tipo_Pago
-PRIMARY KEY CLUSTERED (ID_Tipo_Pago )
+PRIMARY KEY CLUSTERED (ID_Tipo_Pago)
 ) on 'Facturacion'
 go
 --------------------------
@@ -146,7 +146,7 @@ use SaludPlus
 go
 create table Paciente
 ( 
-ID_Paciente int not null,
+ID_Paciente int not null IDENTITY(1,1),
 Nombre_Paciente varchar(50) not null,
 Apellido1_Paciente varchar(50) not null,
 Apellido2_Paciente varchar(50) not null,
@@ -155,7 +155,7 @@ Fecha_Nacimiento date null,
 Direccion_Paciente varchar(150) not null,
 Cedula varchar(12) not null,
 CONSTRAINT PK_Paciente 
-PRIMARY KEY CLUSTERED (ID_Paciente )
+PRIMARY KEY CLUSTERED (ID_Paciente)
 ) on 'Facturacion'
 go
 ---------------------------
@@ -163,7 +163,7 @@ use SaludPlus
 go
 create table Procedimiento
 ( 
-ID_Procedimiento int not null,
+ID_Procedimiento int not null IDENTITY(1,1),
 Descripcion_Procedimiento varchar(150) not null,
 Fecha_Procedimiento date not null,
 Hora_Procedimiento time not null,
@@ -174,7 +174,7 @@ ID_Historial_Medico int not null,
 ID_Cita int not null,
 ID_Tipo_Procedimiento int not null,
 CONSTRAINT PK_Procedimiento
-PRIMARY KEY CLUSTERED (ID_Procedimiento )
+PRIMARY KEY CLUSTERED (ID_Procedimiento)
 ) on 'Facturacion'
 go
 ----------------------
@@ -182,10 +182,10 @@ use SaludPlus
 go
 create table Tipo_Procedimiento
 ( 
-ID_Tipo_Procedimiento int not null,
+ID_Tipo_Procedimiento int not null IDENTITY(1,1),
 Nombre_Procedimiento varchar(50) not null,
 CONSTRAINT PK_Tipo_Procedimiento
-PRIMARY KEY CLUSTERED (ID_Tipo_Procedimiento )
+PRIMARY KEY CLUSTERED (ID_Tipo_Procedimiento)
 ) on 'Facturacion'
 go
 ----------------------
@@ -193,11 +193,11 @@ use SaludPlus
 go
 create table Historial_Medico
 ( 
-ID_Historial_Medico int not null,
+ID_Historial_Medico int not null IDENTITY(1,1),
 Fecha_Registro date not null,
 ID_Paciente int not null,
 CONSTRAINT PK_Historial_Medico
-PRIMARY KEY CLUSTERED (ID_Historial_Medico )
+PRIMARY KEY CLUSTERED (ID_Historial_Medico)
 ) 
 go
 -------------------
@@ -205,15 +205,15 @@ use SaludPlus
 go
 create table Recurso_Medico
 ( 
-ID_Recurso_Medico int not null,
+ID_Recurso_Medico int not null IDENTITY(1,1),
 Nombre_Recurso varchar(50) not null,
 Lote varchar(50) not null,
-Cantidad_Stock_Total int  null,
+Cantidad_Stock_Total int null,
 Ubicacion_Recurso varchar(150) not null,
 ID_Tipo_Recurso int not null,
 ID_Estado_Recurso_Medico INT NOT NULL,
 CONSTRAINT PK_Recurso_Medico
-PRIMARY KEY CLUSTERED (ID_Recurso_Medico )
+PRIMARY KEY CLUSTERED (ID_Recurso_Medico)
 ) on 'Recursos'
 go
 ------------------
@@ -222,7 +222,7 @@ use SaludPlus
 go
 create table Estado_Recurso_Medico
 ( 
-ID_Estado_Recurso_Medico int not null,
+ID_Estado_Recurso_Medico int not null IDENTITY(1,1),
 Estado_Recurso varchar(50) not null,
 CONSTRAINT PK_Estado_Recurso_Medico
 PRIMARY KEY CLUSTERED (ID_Estado_Recurso_Medico)
@@ -233,7 +233,7 @@ use SaludPlus
 go
 create table Tipo_Recurso
 ( 
-ID_Tipo_Recurso int not null,
+ID_Tipo_Recurso int not null IDENTITY(1,1),
 Titulo_Recurso varchar(50) not null,
 CONSTRAINT PK_Tipo_Recurso
 PRIMARY KEY CLUSTERED (ID_Tipo_Recurso)
@@ -244,9 +244,9 @@ use SaludPlus
 go
 create table Sala
 ( 
-ID_Sala int not null,
+ID_Sala int not null IDENTITY(1,1),
 Nombre_Sala varchar(50) not null,
-Capacidad_Sala int  not null,
+Capacidad_Sala int not null,
 ID_Tipo_Sala int not null,
 ID_Estado_Sala int not null,
 CONSTRAINT PK_Sala
@@ -258,7 +258,7 @@ use SaludPlus
 go
 create table Estado_Sala
 ( 
-ID_Estado_Sala int not null,
+ID_Estado_Sala int not null IDENTITY(1,1),
 Nombre varchar(50) not null,
 CONSTRAINT PK_Estado_Sala
 PRIMARY KEY CLUSTERED (ID_Estado_Sala)
@@ -269,7 +269,7 @@ use SaludPlus
 go
 create table Tipo_Sala
 ( 
-ID_Tipo_Sala int not null,
+ID_Tipo_Sala int not null IDENTITY(1,1),
 Descripcion_Tipo_Sala varchar(50) not null,
 CONSTRAINT PK_Tipo_Sala
 PRIMARY KEY CLUSTERED (ID_Tipo_Sala)
@@ -280,9 +280,9 @@ use SaludPlus
 go
 create table Recurso_Medico_Sala
 ( 
-ID_Recurso_Medico_Sala int not null,
-Fecha date  not null,
-Descripcion varchar (150) not null,
+ID_Recurso_Medico_Sala int not null IDENTITY(1,1),
+Fecha date not null,
+Descripcion varchar(150) not null,
 ID_Recurso_Medico int not null,
 ID_Sala int not null,
 CONSTRAINT PK_Recurso_Medico_Sala
@@ -294,7 +294,7 @@ use SaludPlus
 go
 create table Planificacion_Recurso
 ( 
-ID_Planificacion int not null,
+ID_Planificacion int not null IDENTITY(1,1),
 Descripcion_Planificacion varchar(150) not null,
 Fecha_Planificacion date not null,
 ID_Sala int not null,
@@ -308,12 +308,12 @@ use SaludPlus
 go
 create table Medico
 ( 
-ID_Medico int not null,
+ID_Medico int not null IDENTITY(1,1),
 Nombre1_Medico varchar(50) not null,
 Nombre2_Medico varchar(50) null,
 Apellido1_Medico varchar(50) not null,
 Apellido2_Medico varchar(50) not null,
-Telefono_Medico varchar(50)  not null, 
+Telefono_Medico varchar(50) not null, 
 ID_Especialidad int not null,
 CONSTRAINT PK_Medico
 PRIMARY KEY CLUSTERED (ID_Medico)
@@ -324,7 +324,7 @@ use SaludPlus
 go
 create table Especialidad
 ( 
-ID_Especialidad int not null,
+ID_Especialidad int not null IDENTITY(1,1),
 Nombre_Especialidad varchar(50) not null,
 CONSTRAINT PK_Especialidad
 PRIMARY KEY CLUSTERED (ID_Especialidad)
@@ -336,10 +336,10 @@ use SaludPlus
 go
 create table Horario_Trabajo
 ( 
-ID_Horario_Trabajo int not null,
+ID_Horario_Trabajo int not null IDENTITY(1,1),
 Nombre_Horario varchar(50) not null,
 Hora_Inicio time not null,
-Hora_Fin time  not null,
+Hora_Fin time not null,
 CONSTRAINT PK_Horario_Trabajo
 PRIMARY KEY CLUSTERED (ID_Horario_Trabajo)
 ) 
@@ -349,7 +349,7 @@ use SaludPlus
 go
 create table Medico_Planificacion_Recurso
 ( 
-ID_Medico_Planificacion_Recurso int not null,
+ID_Medico_Planificacion_Recurso int not null IDENTITY(1,1),
 Fecha_Planificacion_Personal date not null,
 ID_Planificacion int not null,
 ID_Medico int not null,
@@ -364,7 +364,7 @@ use SaludPlus
 go
 create table Satisfaccion_Paciente
 ( 
-ID_Satisfaccion int not null,
+ID_Satisfaccion int not null IDENTITY(1,1),
 Fecha_Evaluacion date not null,
 Calificacion_Satisfaccion int not null, --del 1 al 5
 ID_Cita int not null,
@@ -377,10 +377,10 @@ use SaludPlus
 go
 create table Usuario
 ( 
-ID_Usuario int not null,
+ID_Usuario int not null IDENTITY(1,1),
 Nombre_Usuario varchar(50) not null,
 Correo_Usuario varchar(50) not null, 
-Contraseña_Usuario varchar(50) not null,
+ContraseÃ±a_Usuario varchar(50) not null,
 ID_Rol int not null, 
 CONSTRAINT PK_Usuario
 PRIMARY KEY CLUSTERED (ID_Usuario)
@@ -391,7 +391,7 @@ use SaludPlus
 go
 create table Rol
 ( 
-ID_Rol int not null,
+ID_Rol int not null IDENTITY(1,1),
 Nombre_Rol varchar(50) not null,
 CONSTRAINT PK_Rol
 PRIMARY KEY CLUSTERED (ID_Rol)
@@ -400,9 +400,9 @@ go
 ----------------------------
 use SaludPlus
 go
-create table  Permiso
+create table Permiso
 ( 
-ID_Permiso int not null,
+ID_Permiso int not null IDENTITY(1,1),
 Nombre_Permiso varchar(50) not null,
 CONSTRAINT PK_Permiso
 PRIMARY KEY CLUSTERED (ID_Permiso)
@@ -413,13 +413,14 @@ use SaludPlus
 go
 create table Rol_Permiso
 ( 
-ID_Rol_Permiso int not null,
+ID_Rol_Permiso int not null IDENTITY(1,1),
 ID_Rol int not null,
 ID_Permiso int not null,
 CONSTRAINT PK_Rol_Permiso
 PRIMARY KEY CLUSTERED (ID_Rol_Permiso)
 ) 
 go
+
 -----------------------------agregar las FK----------
 use SaludPlus
 go
@@ -546,21 +547,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Cita', ID_Cita, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Cita', ID_Cita, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Cita', ID_Cita, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Cita', ID_Cita, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Cita = d.ID_Cita)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Cita', i.ID_Cita, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Cita', i.ID_Cita, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Cita = d.ID_Cita;
     END
 END;
@@ -579,21 +580,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Cita', ID_Estado_Cita, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Estado_Cita', ID_Estado_Cita, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Cita', ID_Estado_Cita, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Estado_Cita', ID_Estado_Cita, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Estado_Cita = d.ID_Estado_Cita)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Cita', i.ID_Estado_Cita, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Estado_Cita', i.ID_Estado_Cita, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Estado_Cita = d.ID_Estado_Cita;
     END
 END;
@@ -612,21 +613,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Factura', ID_Factura, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Factura', ID_Factura, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Factura', ID_Factura, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Factura', ID_Factura, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Factura = d.ID_Factura)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Factura', i.ID_Factura, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Factura', i.ID_Factura, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Factura = d.ID_Factura;
     END
 END;
@@ -645,21 +646,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Pago', ID_Tipo_Pago, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Tipo_Pago', ID_Tipo_Pago, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Pago', ID_Tipo_Pago, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Tipo_Pago', ID_Tipo_Pago, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Tipo_Pago = d.ID_Tipo_Pago)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Pago', i.ID_Tipo_Pago, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Tipo_Pago', i.ID_Tipo_Pago, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Tipo_Pago = d.ID_Tipo_Pago;
     END
 END;
@@ -678,21 +679,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Paciente', ID_Paciente, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Paciente', ID_Paciente, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Paciente', ID_Paciente, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Paciente', ID_Paciente, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Paciente = d.ID_Paciente)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Paciente', i.ID_Paciente, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Paciente', i.ID_Paciente, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Paciente = d.ID_Paciente;
     END
 END;
@@ -711,21 +712,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Procedimiento', ID_Procedimiento, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Procedimiento', ID_Procedimiento, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Procedimiento', ID_Procedimiento, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Procedimiento', ID_Procedimiento, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Procedimiento = d.ID_Procedimiento)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Procedimiento', i.ID_Procedimiento, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Procedimiento', i.ID_Procedimiento, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Procedimiento = d.ID_Procedimiento;
     END
 END;
@@ -744,21 +745,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Procedimiento', ID_Tipo_Procedimiento, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Tipo_Procedimiento', ID_Tipo_Procedimiento, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Procedimiento', ID_Tipo_Procedimiento, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Tipo_Procedimiento', ID_Tipo_Procedimiento, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Tipo_Procedimiento = d.ID_Tipo_Procedimiento)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Procedimiento', i.ID_Tipo_Procedimiento, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Tipo_Procedimiento', i.ID_Tipo_Procedimiento, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Tipo_Procedimiento = d.ID_Tipo_Procedimiento;
     END
 END;
@@ -777,21 +778,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Historial_Medico', ID_Historial_Medico, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Historial_Medico', ID_Historial_Medico, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Historial_Medico', ID_Historial_Medico, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Historial_Medico', ID_Historial_Medico, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Historial_Medico = d.ID_Historial_Medico)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Historial_Medico', i.ID_Historial_Medico, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Historial_Medico', i.ID_Historial_Medico, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Historial_Medico = d.ID_Historial_Medico;
     END
 END;
@@ -810,21 +811,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Recurso_Medico', ID_Recurso_Medico, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Recurso_Medico', ID_Recurso_Medico, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Recurso_Medico', ID_Recurso_Medico, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Recurso_Medico', ID_Recurso_Medico, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Recurso_Medico = d.ID_Recurso_Medico)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Recurso_Medico', i.ID_Recurso_Medico, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Recurso_Medico', i.ID_Recurso_Medico, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Recurso_Medico = d.ID_Recurso_Medico;
     END
 END;
@@ -843,21 +844,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Recurso_Medico', ID_Estado_Recurso_Medico, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Estado_Recurso_Medico', ID_Estado_Recurso_Medico, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Recurso_Medico', ID_Estado_Recurso_Medico, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Estado_Recurso_Medico', ID_Estado_Recurso_Medico, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Estado_Recurso_Medico = d.ID_Estado_Recurso_Medico)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Recurso_Medico', i.ID_Estado_Recurso_Medico, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Estado_Recurso_Medico', i.ID_Estado_Recurso_Medico, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Estado_Recurso_Medico = d.ID_Estado_Recurso_Medico;
     END
 END;
@@ -876,21 +877,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Recurso', ID_Tipo_Recurso, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Tipo_Recurso', ID_Tipo_Recurso, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Recurso', ID_Tipo_Recurso, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Tipo_Recurso', ID_Tipo_Recurso, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Tipo_Recurso = d.ID_Tipo_Recurso)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Recurso', i.ID_Tipo_Recurso, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Tipo_Recurso', i.ID_Tipo_Recurso, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Tipo_Recurso = d.ID_Tipo_Recurso;
     END
 END;
@@ -909,21 +910,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Sala', ID_Sala, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Sala', ID_Sala, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Sala', ID_Sala, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Sala', ID_Sala, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Sala = d.ID_Sala)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Sala', i.ID_Sala, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Sala', i.ID_Sala, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Sala = d.ID_Sala;
     END
 END;
@@ -943,21 +944,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Sala', ID_Estado_Sala, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Estado_Sala', ID_Estado_Sala, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Sala', ID_Estado_Sala, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Estado_Sala', ID_Estado_Sala, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Estado_Sala = d.ID_Estado_Sala)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Estado_Sala', i.ID_Estado_Sala, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Estado_Sala', i.ID_Estado_Sala, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Estado_Sala = d.ID_Estado_Sala;
     END
 END;
@@ -976,21 +977,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Sala', ID_Tipo_Sala, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Tipo_Sala', ID_Tipo_Sala, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Sala', ID_Tipo_Sala, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Tipo_Sala', ID_Tipo_Sala, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Tipo_Sala = d.ID_Tipo_Sala)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Tipo_Sala', i.ID_Tipo_Sala, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Tipo_Sala', i.ID_Tipo_Sala, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Tipo_Sala = d.ID_Tipo_Sala;
     END
 END;
@@ -1008,21 +1009,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Medico', ID_Medico, 'Inserción', GETDATE(), SYSTEM_USER
+        SELECT 'Medico', ID_Medico, 'Inserciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Medico', ID_Medico, 'Eliminación', GETDATE(), SYSTEM_USER
+        SELECT 'Medico', ID_Medico, 'Eliminaciï¿½n', GETDATE(), SYSTEM_USER
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Medico = d.ID_Medico)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Medico', i.ID_Medico, 'Actualización', GETDATE(), SYSTEM_USER
+        SELECT 'Medico', i.ID_Medico, 'Actualizaciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted i JOIN deleted d ON i.ID_Medico = d.ID_Medico;
     END
 END;
@@ -1040,21 +1041,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Especialidad', ID_Especialidad, 'Inserción', GETDATE(), SYSTEM_USER
+        SELECT 'Especialidad', ID_Especialidad, 'Inserciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Especialidad', ID_Especialidad, 'Eliminación', GETDATE(), SYSTEM_USER
+        SELECT 'Especialidad', ID_Especialidad, 'Eliminaciï¿½n', GETDATE(), SYSTEM_USER
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Especialidad = d.ID_Especialidad)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Especialidad', i.ID_Especialidad, 'Actualización', GETDATE(), SYSTEM_USER
+        SELECT 'Especialidad', i.ID_Especialidad, 'Actualizaciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted i JOIN deleted d ON i.ID_Especialidad = d.ID_Especialidad;
     END
 END;
@@ -1072,21 +1073,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Recurso_Medico_Sala', ID_Recurso_Medico_Sala, 'Inserción', GETDATE(), SYSTEM_USER
+        SELECT 'Recurso_Medico_Sala', ID_Recurso_Medico_Sala, 'Inserciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Recurso_Medico_Sala', ID_Recurso_Medico_Sala, 'Eliminación', GETDATE(), SYSTEM_USER
+        SELECT 'Recurso_Medico_Sala', ID_Recurso_Medico_Sala, 'Eliminaciï¿½n', GETDATE(), SYSTEM_USER
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Recurso_Medico_Sala = d.ID_Recurso_Medico_Sala)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Recurso_Medico_Sala', i.ID_Recurso_Medico_Sala, 'Actualización', GETDATE(), SYSTEM_USER
+        SELECT 'Recurso_Medico_Sala', i.ID_Recurso_Medico_Sala, 'Actualizaciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted i JOIN deleted d ON i.ID_Recurso_Medico_Sala = d.ID_Recurso_Medico_Sala;
     END
 END;
@@ -1104,21 +1105,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Horario_Trabajo', ID_Horario_Trabajo, 'Inserción', GETDATE(), SYSTEM_USER
+        SELECT 'Horario_Trabajo', ID_Horario_Trabajo, 'Inserciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Horario_Trabajo', ID_Horario_Trabajo, 'Eliminación', GETDATE(), SYSTEM_USER
+        SELECT 'Horario_Trabajo', ID_Horario_Trabajo, 'Eliminaciï¿½n', GETDATE(), SYSTEM_USER
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Horario_Trabajo = d.ID_Horario_Trabajo)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Horario_Trabajo', i.ID_Horario_Trabajo, 'Actualización', GETDATE(), SYSTEM_USER
+        SELECT 'Horario_Trabajo', i.ID_Horario_Trabajo, 'Actualizaciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted i JOIN deleted d ON i.ID_Horario_Trabajo = d.ID_Horario_Trabajo;
     END
 END;
@@ -1136,21 +1137,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Planificacion_Recurso', ID_Planificacion, 'Inserción', GETDATE(), SYSTEM_USER
+        SELECT 'Planificacion_Recurso', ID_Planificacion, 'Inserciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Planificacion_Recurso', ID_Planificacion, 'Eliminación', GETDATE(), SYSTEM_USER
+        SELECT 'Planificacion_Recurso', ID_Planificacion, 'Eliminaciï¿½n', GETDATE(), SYSTEM_USER
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Planificacion = d.ID_Planificacion)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Planificacion_Recurso', i.ID_Planificacion, 'Actualización', GETDATE(), SYSTEM_USER
+        SELECT 'Planificacion_Recurso', i.ID_Planificacion, 'Actualizaciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted i JOIN deleted d ON i.ID_Planificacion = d.ID_Planificacion;
     END
 END;
@@ -1168,21 +1169,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Medico_Planificacion_Recurso', ID_Medico_Planificacion_Recurso, 'Inserción', GETDATE(), SYSTEM_USER
+        SELECT 'Medico_Planificacion_Recurso', ID_Medico_Planificacion_Recurso, 'Inserciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Medico_Planificacion_Recurso', ID_Medico_Planificacion_Recurso, 'Eliminación', GETDATE(), SYSTEM_USER
+        SELECT 'Medico_Planificacion_Recurso', ID_Medico_Planificacion_Recurso, 'Eliminaciï¿½n', GETDATE(), SYSTEM_USER
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Medico_Planificacion_Recurso = d.ID_Medico_Planificacion_Recurso)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Medico_Planificacion_Recurso', i.ID_Medico_Planificacion_Recurso, 'Actualización', GETDATE(), SYSTEM_USER
+        SELECT 'Medico_Planificacion_Recurso', i.ID_Medico_Planificacion_Recurso, 'Actualizaciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted i JOIN deleted d ON i.ID_Medico_Planificacion_Recurso = d.ID_Medico_Planificacion_Recurso;
     END
 END;
@@ -1200,20 +1201,20 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Satisfaccion_Paciente', ID_Satisfaccion, 'Inserción', GETDATE(), SYSTEM_USER
+        SELECT 'Satisfaccion_Paciente', ID_Satisfaccion, 'Inserciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Satisfaccion_Paciente', ID_Satisfaccion, 'Eliminación', GETDATE(), SYSTEM_USER
+        SELECT 'Satisfaccion_Paciente', ID_Satisfaccion, 'Eliminaciï¿½n', GETDATE(), SYSTEM_USER
         FROM deleted;
     END
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Satisfaccion = d.ID_Satisfaccion)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Satisfaccion_Paciente', i.ID_Satisfaccion, 'Actualización', GETDATE(), SYSTEM_USER
+        SELECT 'Satisfaccion_Paciente', i.ID_Satisfaccion, 'Actualizaciï¿½n', GETDATE(), SYSTEM_USER
         FROM inserted i JOIN deleted d ON i.ID_Satisfaccion = d.ID_Satisfaccion;
     END
 END;
@@ -1234,21 +1235,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Rol', ID_Rol, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Rol', ID_Rol, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Rol', ID_Rol, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Rol', ID_Rol, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Rol = d.ID_Rol)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Rol', i.ID_Rol, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Rol', i.ID_Rol, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Rol = d.ID_Rol;
     END
 END;
@@ -1267,21 +1268,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Usuario', ID_Usuario, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Usuario', ID_Usuario, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Usuario', ID_Usuario, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Usuario', ID_Usuario, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Usuario = d.ID_Usuario)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Usuario', i.ID_Usuario, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Usuario', i.ID_Usuario, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Usuario = d.ID_Usuario;
     END
 END;
@@ -1300,21 +1301,21 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Permiso', ID_Permiso, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Permiso', ID_Permiso, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Permiso', ID_Permiso, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Permiso', ID_Permiso, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Permiso = d.ID_Permiso)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Permiso', i.ID_Permiso, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Permiso', i.ID_Permiso, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Permiso = d.ID_Permiso;
     END
 END;
@@ -1333,275 +1334,266 @@ BEGIN
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Rol_Permiso', ID_Rol_Permiso, 'Inserción', GETDATE(), @Usuario
+        SELECT 'Rol_Permiso', ID_Rol_Permiso, 'Inserciï¿½n', GETDATE(), @Usuario
         FROM inserted;
     END
 
     IF EXISTS (SELECT * FROM deleted)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Rol_Permiso', ID_Rol_Permiso, 'Eliminación', GETDATE(), @Usuario
+        SELECT 'Rol_Permiso', ID_Rol_Permiso, 'Eliminaciï¿½n', GETDATE(), @Usuario
         FROM deleted;
     END
 
     IF EXISTS (SELECT * FROM inserted i JOIN deleted d ON i.ID_Rol_Permiso = d.ID_Rol_Permiso)
     BEGIN
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
-        SELECT 'Rol_Permiso', i.ID_Rol_Permiso, 'Actualización', GETDATE(), @Usuario
+        SELECT 'Rol_Permiso', i.ID_Rol_Permiso, 'Actualizaciï¿½n', GETDATE(), @Usuario
         FROM inserted i JOIN deleted d ON i.ID_Rol_Permiso = d.ID_Rol_Permiso;
     END
 END;
 GO
---------------------------------------Inserciones--------------------------------------
-use SaludPlus;
-go
+USE SaludPlus;
+GO
+
 -- Inserciones para la tabla Paciente
-INSERT INTO Paciente (ID_Paciente, Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente,Cedula)
+INSERT INTO Paciente (Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula)
 VALUES 
-(1, 'Juan', 'Perez', 'Gomez', '1234567890', '1980-01-01', 'Calle 1, Ciudad A','12345698'),
-(2, 'Maria', 'Lopez', 'Martinez', '2345678901', '1990-02-02', 'Calle 2, Ciudad B',' 123454322'),
-(3, 'Carlos', 'Garcia', 'Rodriguez', '3456789012', '1985-03-03', 'Calle 3, Ciudad C','867905532'),
-(4, 'Ana', 'Hernandez', 'Sanchez', '4567890123', '1995-04-04', 'Calle 4, Ciudad D','508975568'),
-(5, 'Luis', 'Martinez', 'Diaz', '5678901234', '2000-05-05', 'Calle 5, Ciudad E', '186790004');
+('Juan', 'Perez', 'Gomez', '1234567890', '1980-01-01', 'Calle 1, Ciudad A', '12345698'),
+('Maria', 'Lopez', 'Martinez', '2345678901', '1990-02-02', 'Calle 2, Ciudad B', '123454322'),
+('Carlos', 'Garcia', 'Rodriguez', '3456789012', '1985-03-03', 'Calle 3, Ciudad C', '867905532'),
+('Ana', 'Hernandez', 'Sanchez', '4567890123', '1995-04-04', 'Calle 4, Ciudad D', '508975568'),
+('Luis', 'Martinez', 'Diaz', '5678901234', '2000-05-05', 'Calle 5, Ciudad E', '186790004');
 
-
-
--- Inserciones para la tabla  Tipo Sala
-
-INSERT INTO Tipo_Sala (ID_Tipo_Sala, Descripcion_Tipo_Sala)
+-- Inserciones para la tabla Tipo Sala
+INSERT INTO Tipo_Sala (Descripcion_Tipo_Sala)
 VALUES 
-(1, 'Emergencias'),
-(2,'Cirugia'),
-(3, 'Consulta General'),
-(4, 'Observacion'),
-(5,'Laboratorio');
-go
+('Emergencias'),
+('Cirugia'),
+('Consulta General'),
+('Observacion'),
+('Laboratorio');
+GO
 
--- Inserciones para la tabla  Estado Sala
-
-INSERT INTO Estado_Sala(ID_Estado_Sala, Nombre)
+-- Inserciones para la tabla Estado Sala
+INSERT INTO Estado_Sala (Nombre)
 VALUES 
-(1, 'activa')
-go
+('activa');
+GO
 
 -- Inserciones para la tabla Sala
-
-INSERT INTO Sala (ID_Sala, Nombre_Sala,	ID_Tipo_Sala, Capacidad_Sala,ID_Estado_Sala)
+INSERT INTO Sala (Nombre_Sala, ID_Tipo_Sala, Capacidad_Sala, ID_Estado_Sala)
 VALUES 
-(1, 'Sala de Emergencias',1 ,5,1),
-(2, 'Sala de Cirugía',2,10,1),
-(3, 'Consulta General 1',2, 3,1),
-(4, 'Sala de Observación', 4,3,1),
-(5, 'Laboratorio 1',5,2,1);
-go
+('Sala de Emergencias', 1, 5, 1),
+('Sala de Cirugia', 2, 10, 1),
+('Consulta General 1', 2, 3, 1),
+('Sala de Observacion', 4, 3, 1),
+('Laboratorio 1', 5, 2, 1);
+GO
+
 -- Inserciones para la tabla Especialidad
-INSERT INTO Especialidad (ID_Especialidad, Nombre_Especialidad)
+INSERT INTO Especialidad (Nombre_Especialidad)
 VALUES 
-(1, 'Cardiología'),
-(2, 'Dermatología'),
-(3, 'Radioloía'),
-(4, 'Pediatría'),
-(5, 'Cirugía');
-go
-
-
+('CardiologÃ­a'),
+('DermatologÃ­a'),
+('RadiologÃ­a'),
+('PediatrÃ­a'),
+('CirugÃ­a');
+GO
 
 -- Inserciones para la tabla Medico
-INSERT INTO Medico (ID_Medico, Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico,ID_Especialidad)
+INSERT INTO Medico (Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
 VALUES 
-(1, 'Pedro', 'Jose', 'Ramirez', 'Fernandez', '6789012345',1),
-(2, 'Laura', 'Maria', 'Gonzalez', 'Lopez', '7890123456',2),
-(3, 'Miguel', 'Angel', 'Torres', 'Perez', '8901234567',3),
-(4, 'Sofia', 'Elena', 'Vargas', 'Garcia', '9012345678',4),
-(5, 'Diego', 'Luis', 'Castro', 'Martinez', '1234567890',5);
-go
+('Pedro', 'Jose', 'Ramirez', 'Fernandez', '6789012345', 1),
+('Laura', 'Maria', 'Gonzalez', 'Lopez', '7890123456', 2),
+('Miguel', 'Angel', 'Torres', 'Perez', '8901234567', 3),
+('Sofia', 'Elena', 'Vargas', 'Garcia', '9012345678', 4),
+('Diego', 'Luis', 'Castro', 'Martinez', '1234567890', 5);
+GO
 
 -- Inserciones para la tabla Estado Cita
-INSERT INTO Estado_Cita (ID_Estado_Cita, Estado)
+INSERT INTO Estado_Cita (Estado)
 VALUES 
-(1,  'Programada'),   
-(2, 'Realizada'),
-(3, 'Cancelada')
-go
+('Programada'),   
+('Realizada'),
+('Cancelada');
+GO
 
 -- Inserciones para la tabla Cita
-INSERT INTO Cita (ID_Cita, Fecha_Cita, Hora_Cita, ID_Estado_Cita, ID_Paciente, ID_Medico)
+INSERT INTO Cita (Fecha_Cita, Hora_Cita, ID_Estado_Cita, ID_Paciente, ID_Medico)
 VALUES 
-(1, '2024-01-01', '08:00', 1, 1, 1),   
-(2, '2024-02-01', '09:00', 2, 2, 2),
-(3, '2024-03-01', '10:00', 3, 3, 3),
-(4, '2024-04-01', '11:00', 1, 4, 4),
-(5, '2024-05-01', '12:00', 2, 5, 5);
-go
+('2024-01-01', '08:00', 1, 1, 1),   
+('2024-02-01', '09:00', 2, 2, 2),
+('2024-03-01', '10:00', 3, 3, 3),
+('2024-04-01', '11:00', 1, 4, 4),
+('2024-05-01', '12:00', 2, 5, 5);
+GO
 
--- Inserciones para la tabla Tipo pago
-INSERT INTO Tipo_Pago(ID_Tipo_Pago, Descripcion_Tipo_Pago)
+-- Inserciones para la tabla Tipo Pago
+INSERT INTO Tipo_Pago (Descripcion_Tipo_Pago)
 VALUES 
-(1, 'Efectivo'),
-(2, 'Tarjeta de credito'),
-(3, 'Tarjeta de debito'),
-(4, 'Transferencia Bancaria'),
-(5, 'Sinpe Movil');
-go
+('Efectivo'),
+('Tarjeta de credito'),
+('Tarjeta de debito'),
+('Transferencia Bancaria'),
+('Sinpe Movil');
+GO
 
--- Inserciones para la tabla facturas
-INSERT INTO Factura (ID_Factura, Fecha_Factura, Monto_Total, ID_Paciente,ID_Cita,ID_Tipo_Pago)
+-- Inserciones para la tabla Factura
+INSERT INTO Factura (Fecha_Factura, Monto_Total, ID_Paciente, ID_Cita, ID_Tipo_Pago)
 VALUES 
-(1, '2024-01-01', 1000.00, 1,1,1),
-(2, '2024-02-01', 2000.00, 2,2,2),
-(3, '2024-03-01', 3000.00, 3,3,3),
-(4, '2024-04-01', 4000.00, 4,4,4),
-(5, '2024-05-01', 5000.00, 5,5,5);
-go
-
-
+('2024-01-01', 1000.00, 1, 1, 1),
+('2024-02-01', 2000.00, 2, 2, 2),
+('2024-03-01', 3000.00, 3, 3, 3),
+('2024-04-01', 4000.00, 4, 4, 4),
+('2024-05-01', 5000.00, 5, 5, 5);
+GO
 
 -- Inserciones para la tabla Historial_Medico
-INSERT INTO Historial_Medico (ID_Historial_Medico, Fecha_Registro, ID_Paciente)
+INSERT INTO Historial_Medico (Fecha_Registro, ID_Paciente)
 VALUES 
-(1, '2024-01-01', 1),   
-(2, '2024-02-01', 2),
-(3, '2024-03-01', 3),
-(4, '2024-04-01', 4),
-(5, '2024-05-01', 5);
-go
+('2024-01-01', 1),   
+('2024-02-01', 2),
+('2024-03-01', 3),
+('2024-04-01', 4),
+('2024-05-01', 5);
+GO
 
 -- Inserciones para la tabla Tipo Procedimiento
-INSERT INTO Tipo_Procedimiento(ID_Tipo_Procedimiento, Nombre_Procedimiento)
+INSERT INTO Tipo_Procedimiento (Nombre_Procedimiento)
 VALUES 
-(1, 'Cita de Cirugía'),   
-(2, 'Cita de Laboratorio'),
-(3, 'Cita de Consulta General'),
-(4, 'Emergencias'),
-(5, 'Cita de Diagnostico');
-go
+('Cita de CirugÃ­a'),   
+('Cita de Laboratorio'),
+('Cita de Consulta General'),
+('Emergencias'),
+('Cita de Diagnostico');
+GO
 
 -- Inserciones para la tabla Procedimiento
-INSERT INTO Procedimiento (ID_Procedimiento, Descripcion_Procedimiento, Fecha_Procedimiento,Hora_Procedimiento,Monto_Procedimiento,Receta, ID_Sala, ID_Historial_Medico, ID_Cita,ID_Tipo_Procedimiento)
+INSERT INTO Procedimiento (Descripcion_Procedimiento, Fecha_Procedimiento, Hora_Procedimiento, Monto_Procedimiento, Receta, ID_Sala, ID_Historial_Medico, ID_Cita, ID_Tipo_Procedimiento)
 VALUES 
-(1, 'Cirugía de corazon', '2024-01-01','14:00', 10000, 'Ibuprofeno cada seis horas por tres días', 1,1,1,1), 
-(2, 'Entrada de emergencia por pierna lesionada', '2024-02-01','12:30', 200000, 'Ibuprofeno cada seis horas por 5 días', 2,2,2,4),
-(3, 'Enfermedad de piel', '2024-03-01',' 9:00', 30000, 'Paracetamol cada ocho horas por cinco días', 3,3,3,3),
-(4, 'Por dolores fuertes de cabeza', '2024-04-01','10:00', 400000, 'Paracetamol cada ocho horas por siete días', 4,4,4,3),
-(5, 'Laboratorio de cardiología', '2024-05-01','15:00', 5000000, 'Ibuprofeno cada seis horas por seis días', 5,5,5,2);
-go
-
+('CirugÃ­a de corazon', '2024-01-01', '14:00', 10000, 'Ibuprofeno cada seis horas por tres dÃ­as', 1, 1, 1, 1), 
+('Entrada de emergencia por pierna lesionada', '2024-02-01', '12:30', 200000, 'Ibuprofeno cada seis horas por 5 dÃ­as', 2, 2, 2, 4),
+('Enfermedad de piel', '2024-03-01', '09:00', 30000, 'Paracetamol cada ocho horas por cinco dÃ­as', 3, 3, 3, 3),
+('Por dolores fuertes de cabeza', '2024-04-01', '10:00', 400000, 'Paracetamol cada ocho horas por siete dÃ­as', 4, 4, 4, 3),
+('Laboratorio de cardiologÃ­a', '2024-05-01', '15:00', 5000000, 'Ibuprofeno cada seis horas por seis dÃ­as', 5, 5, 5, 2);
+GO
 
 -- Inserciones para la tabla Satisfaccion_Paciente
-INSERT INTO Satisfaccion_Paciente (ID_Satisfaccion, Fecha_Evaluacion, Calificacion_Satisfaccion, ID_Cita)
+INSERT INTO Satisfaccion_Paciente (Fecha_Evaluacion, Calificacion_Satisfaccion, ID_Cita)
 VALUES 
-(1, '2024-01-02', 5, 1),
-(2, '2024-02-02', 4, 2),
-(3, '2024-03-02', 3, 3),
-(4, '2024-04-02', 2, 4),
-(5, '2024-05-02', 1, 5);
-go
+('2024-01-02', 5, 1),
+('2024-02-02', 4, 2),
+('2024-03-02', 3, 3),
+('2024-04-02', 2, 4),
+('2024-05-02', 1, 5);
+GO
 
 -- Inserciones para la tabla Tipo_Recurso
-insert into Tipo_Recurso (ID_Tipo_Recurso, Titulo_Recurso)
-values 
-(1, 'Medicamento'),
-(2, 'Equipo Médico'),
-(3, 'Material de Oficina'),
-(4, 'Instrumento Quirúrgico'),
-(5, 'Suministro Médico');
-go
+INSERT INTO Tipo_Recurso (Titulo_Recurso)
+VALUES 
+('Medicamento'),
+('Equipo MÃ©dico'),
+('Material de Oficina'),
+('Instrumento QuirÃºrgico'),
+('Suministro MÃ©dico');
+GO
 
 -- Inserciones para la tabla Estado_Recurso_Medico
-insert into Estado_Recurso_Medico (ID_Estado_Recurso_Medico, Estado_Recurso)
-values 
-(1,'Disponible'),
-(2, 'Agotado')
-go
+INSERT INTO Estado_Recurso_Medico (Estado_Recurso)
+VALUES 
+('Disponible'),
+('Agotado');
+GO
 
 -- Inserciones para la tabla Recurso_Medico
-insert into Recurso_Medico (ID_Recurso_Medico, Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso,ID_Estado_Recurso_Medico)
-values 
-(1, 'Recurso 1', 'Lote 1', 100, 'Almacén 1', 1, 1),
-(2, 'Recurso 2', 'Lote 2', 200, 'Almacén 2', 2, 2),
-(3, 'Recurso 3', 'Lote 3', 300, 'Almacén 3', 3, 1),
-(4, 'Recurso 4', 'Lote 4', 400,  'Almacén 4', 4, 2),
-(5, 'Recurso 5', 'Lote 5', 500,'Almacén 5', 5, 1);
-go
+INSERT INTO Recurso_Medico (Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso, ID_Estado_Recurso_Medico)
+VALUES 
+('Recurso 1', 'Lote 1', 100, 'AlmacÃ©n 1', 1, 1),
+('Recurso 2', 'Lote 2', 200, 'AlmacÃ©n 2', 2, 2),
+('Recurso 3', 'Lote 3', 300, 'AlmacÃ©n 3', 3, 1),
+('Recurso 4', 'Lote 4', 400, 'AlmacÃ©n 4', 4, 2),
+('Recurso 5', 'Lote 5', 500, 'AlmacÃ©n 5', 5, 1);
+GO
 
 -- Inserciones para la tabla Horario_Trabajo
-insert into Horario_Trabajo (ID_Horario_Trabajo, Nombre_Horario, Hora_Inicio, Hora_Fin)
-values 
-(1, 'Mañana', '08:00', '12:00'),
-(2, 'Tarde', '13:00', '17:00'),
-(3, 'Noche', '18:00', '22:00'),
-(4, 'Madrugada', '23:00', '03:00'),
-(5, 'Completo', '08:00', '17:00');
-go 
+INSERT INTO Horario_Trabajo (Nombre_Horario, Hora_Inicio, Hora_Fin)
+VALUES 
+('MaÃ±ana', '08:00', '12:00'),
+('Tarde', '13:00', '17:00'),
+('Noche', '18:00', '22:00'),
+('Madrugada', '23:00', '03:00'),
+('Completo', '08:00', '17:00');
+GO 
 
 -- Inserciones para la tabla Planificacion_Recurso
-insert into Planificacion_Recurso (ID_Planificacion, Descripcion_Planificacion, Fecha_Planificacion, ID_Sala, ID_Horario_Trabajo)
-values 
-(1, 'Planificación 1', '2024-01-01',  1, 1),
-(2, 'Planificación 2', '2024-02-01', 2, 2),
-(3, 'Planificación 3', '2024-03-01',  3, 3),
-(4, 'Planificación 4', '2024-04-01',  4, 4),
-(5, 'Planificación 5', '2024-05-01', 5, 5);
-go
+INSERT INTO Planificacion_Recurso (Descripcion_Planificacion, Fecha_Planificacion, ID_Sala, ID_Horario_Trabajo)
+VALUES 
+('PlanificaciÃ³n 1', '2024-01-01', 1, 1),
+('PlanificaciÃ³n 2', '2024-02-01', 2, 2),
+('PlanificaciÃ³n 3', '2024-03-01', 3, 3),
+('PlanificaciÃ³n 4', '2024-04-01', 4, 4),
+('PlanificaciÃ³n 5', '2024-05-01', 5, 5);
+GO
 
-
---- Inserciones de la tabla Medico_Planificacion_Recurso
-insert into Medico_Planificacion_Recurso (ID_Medico_Planificacion_Recurso,Fecha_Planificacion_Personal,ID_Medico,ID_Planificacion)
+-- Inserciones de la tabla Medico_Planificacion_Recurso
+INSERT INTO Medico_Planificacion_Recurso (Fecha_Planificacion_Personal, ID_Medico, ID_Planificacion)
 VALUES
-(1,'2024-01-01',1,1),
-(2,'2024-01-01',2,2),
-(3,'2024-01-01',3,3),
-(4,'2024-01-01',4,4),
-(5,'2024-01-01',5,5);
+('2024-01-01', 1, 1),
+('2024-01-01', 2, 2),
+('2024-01-01', 3, 3),
+('2024-01-01', 4, 4),
+('2024-01-01', 5, 5);
 GO
 
 -- Inserciones para la tabla Recurso_Medico_Sala
-insert into Recurso_Medico_Sala (ID_Recurso_Medico_Sala, Fecha, Descripcion, ID_Recurso_Medico, ID_Sala)
-values 
-(1,'2024-01-01', 'Sala tiene 20 recursos',1, 1),
-(2,'2024-01-01', 'Sala tiene 30 recursos',2, 2),
-(3, '2024-01-01','Sala tiene 40 recursos', 3, 3),
-(4, '2024-01-01','Sala tiene 50 recursos', 4, 4),
-(5, '2024-01-01','Sala tiene 60 recursos', 5, 5);
-go
-
-----Inserciones de Rol
-INSERT INTO Rol (ID_Rol, Nombre_Rol) 
-VALUES
-(1, 'Administrador'),
-(2, 'Médico'),
-(3, 'Recepcionista');
-go
-
-------------Insercion para el Usuario
-INSERT INTO Usuario (ID_Usuario, Nombre_Usuario, Correo_Usuario, Contraseña_Usuario, ID_Rol) 
-VALUES
-(1, 'Juan Pérez', 'juan.perez@saludplus.com', 'contraseña123', 1),  
-(2, 'María Gómez', 'maria.gomez@saludplus.com', 'contraseña456', 2),  
-(3, 'Carlos López', 'carlos.lopez@saludplus.com', 'contraseña789', 3);
-go
-
---------Inserciones de permisos
-INSERT INTO Permiso (ID_Permiso, Nombre_Permiso) 
+INSERT INTO Recurso_Medico_Sala (Fecha, Descripcion, ID_Recurso_Medico, ID_Sala)
 VALUES 
-(1, 'Crear Citas'),
-(2, 'Ver Citas'),
-(3, 'Modificar Citas'),
-(4, 'Eliminar Citas'),
-(5, 'Acceso a Historial Médico'),
-(6, 'Gestionar Pacientes');
-go
+('2024-01-01', 'Sala tiene 20 recursos', 1, 1),
+('2024-01-01', 'Sala tiene 30 recursos', 2, 2),
+('2024-01-01', 'Sala tiene 40 recursos', 3, 3),
+('2024-01-01', 'Sala tiene 50 recursos', 4, 4),
+('2024-01-01', 'Sala tiene 60 recursos', 5, 5);
+GO
 
-------------- Rol_Permisos
-INSERT INTO Rol_Permiso (ID_Rol_Permiso, ID_Rol, ID_Permiso) 
+-- Inserciones de Rol
+INSERT INTO Rol (Nombre_Rol) 
+VALUES
+('Administrador'),
+('MÃ©dico'),
+('Recepcionista');
+GO
+
+-- Inserciones para el Usuario
+INSERT INTO Usuario (Nombre_Usuario, Correo_Usuario, ContraseÃ±a_Usuario, ID_Rol) 
+VALUES
+('Juan PÃ©rez', 'juan.perez@saludplus.com', 'contraseÃ±a123', 1),  
+('MarÃ­a GÃ³mez', 'maria.gomez@saludplus.com', 'contraseÃ±a456', 2),  
+('Carlos LÃ³pez', 'carlos.lopez@saludplus.com', 'contraseÃ±a789', 3);
+GO
+
+-- Inserciones de permisos
+INSERT INTO Permiso (Nombre_Permiso) 
 VALUES 
-(1, 1, 1),  -- Administrador puede crear citas
-(2, 1, 2),  -- Administrador puede ver citas
-(3, 1, 3),  -- Administrador puede modificar citas
-(4, 1, 4),  -- Administrador puede eliminar citas
-(5, 1, 5),  -- Administrador puede acceder a historial médico
-(6, 1, 6);  -- Administrador puede gestionar pacientes
-go
+('Crear Citas'),
+('Ver Citas'),
+('Modificar Citas'),
+('Eliminar Citas'),
+('Acceso a Historial MÃ©dico'),
+('Gestionar Pacientes');
+GO
+
+-- Inserciones de Rol_Permisos
+INSERT INTO Rol_Permiso (ID_Rol, ID_Permiso) 
+VALUES 
+(1, 1),  -- Administrador puede crear citas
+(1, 2),  -- Administrador puede ver citas
+(1, 3),  -- Administrador puede modificar citas
+(1, 4),  -- Administrador puede eliminar citas
+(1, 5),  -- Administrador puede acceder a historial mÃ©dico
+(1, 6);  -- Administrador puede gestionar pacientes
+GO
+
 
 
 --------------------------------------------------Procedimientos almacenados INSERT------------------------------
@@ -1688,11 +1680,11 @@ END;
 GO
 
 -- Insertar especialidad 1
-EXEC Sp_RegistrarEspecialidad @ID_Especialidad = 6,@Nombre_Especialidad = 'Ginecología';
+EXEC Sp_RegistrarEspecialidad @ID_Especialidad = 6,@Nombre_Especialidad = 'Ginecologï¿½a';
 go
 
 -- Insertar especialidad 2
-EXEC Sp_RegistrarEspecialidad @ID_Especialidad = 7,@Nombre_Especialidad = 'Psiquiatría';
+EXEC Sp_RegistrarEspecialidad @ID_Especialidad = 7,@Nombre_Especialidad = 'Psiquiatrï¿½a';
 go
 
 ------------------------Registrar Medico
@@ -1718,48 +1710,48 @@ BEGIN
         RAISERROR('El ID de especialidad no existe.', 16, 1);
         RETURN;
     END
-	-- Verificar si el médico ya tiene una especialidad asignada
+	-- Verificar si el mï¿½dico ya tiene una especialidad asignada
     IF EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico AND ID_Especialidad IS NOT NULL)
     BEGIN
-        RAISERROR('El médico ya tiene una especialidad asignada.', 16, 1);
+        RAISERROR('El mï¿½dico ya tiene una especialidad asignada.', 16, 1);
         RETURN;
     END
     BEGIN TRY
         INSERT INTO Medico (ID_Medico, Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
         VALUES (@ID_Medico, @Nombre1_Medico, @Nombre2_Medico, @Apellido1_Medico, @Apellido2_Medico, @Telefono_Medico, @ID_Especialidad);
 
-        PRINT 'El médico se ha registrado correctamente.';
+        PRINT 'El mï¿½dico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el médico: ' + ERROR_MESSAGE();
+        PRINT 'Error al registrar el mï¿½dico: ' + ERROR_MESSAGE();
     END CATCH
 END;
 GO
 
 
 
--- Insertar médico 1
+-- Insertar mï¿½dico 1
 EXEC Sp_RegistrarMedico @ID_Medico = 6,@Nombre1_Medico = 'Antonio',@Nombre2_Medico = 'Luis',@Apellido1_Medico = 'Salazar',@Apellido2_Medico = 'Jimenez', 
-    @Telefono_Medico = '2345678901',@ID_Especialidad = 1; -- Cardiología
+    @Telefono_Medico = '2345678901',@ID_Especialidad = 1; -- Cardiologï¿½a
 	go
 
--- Insertar médico 2
+-- Insertar mï¿½dico 2
 EXEC Sp_RegistrarMedico @ID_Medico = 7,@Nombre1_Medico = 'Carmen',@Nombre2_Medico = 'Teresa',@Apellido1_Medico = 'Ruiz',@Apellido2_Medico = 'Mena', 
-    @Telefono_Medico = '3456789012',@ID_Especialidad = 2; -- Dermatología
+    @Telefono_Medico = '3456789012',@ID_Especialidad = 2; -- Dermatologï¿½a
 	go
--- Insertar médico 3
+-- Insertar mï¿½dico 3
 EXEC Sp_RegistrarMedico @ID_Medico = 8,@Nombre1_Medico = 'Francisco',@Nombre2_Medico = 'Javier',@Apellido1_Medico = 'Hernandez',@Apellido2_Medico = 'Bermudez', 
-    @Telefono_Medico = '4567890123',@ID_Especialidad = 3; -- Radiología
+    @Telefono_Medico = '4567890123',@ID_Especialidad = 3; -- Radiologï¿½a
 	go
 
--- Insertar médico 4
+-- Insertar mï¿½dico 4
 EXEC Sp_RegistrarMedico @ID_Medico = 9,@Nombre1_Medico = 'Elena',@Nombre2_Medico = 'Cristina',@Apellido1_Medico = 'Alvarez',@Apellido2_Medico = 'Luna', 
-    @Telefono_Medico = '5678901234',@ID_Especialidad = 4; -- Pediatría
+    @Telefono_Medico = '5678901234',@ID_Especialidad = 4; -- Pediatrï¿½a
 	go
 
--- Insertar médico 5
-EXEC Sp_RegistrarMedico @ID_Medico = 10,@Nombre1_Medico = 'Ricardo',@Nombre2_Medico = 'Andrés',@Apellido1_Medico = 'Morales',@Apellido2_Medico = 'Santos', 
-    @Telefono_Medico = '6789012345',@ID_Especialidad = 5; -- Cirugía
+-- Insertar mï¿½dico 5
+EXEC Sp_RegistrarMedico @ID_Medico = 10,@Nombre1_Medico = 'Ricardo',@Nombre2_Medico = 'Andrï¿½s',@Apellido1_Medico = 'Morales',@Apellido2_Medico = 'Santos', 
+    @Telefono_Medico = '6789012345',@ID_Especialidad = 5; -- Cirugï¿½a
 	go
 
 -------Registrar Estado de la cita
@@ -1796,7 +1788,7 @@ EXEC Sp_RegistrarEstadoCita @ID_Estado_Cita = 4, @Estado = 'En Espera';
 go
 
 -- Insertar estado de cita 2
-EXEC Sp_RegistrarEstadoCita @ID_Estado_Cita = 5,@Estado = 'No Asistió';
+EXEC Sp_RegistrarEstadoCita @ID_Estado_Cita = 5,@Estado = 'No Asistiï¿½';
 go
 -- Insertar estado de cita 3
 EXEC Sp_RegistrarEstadoCita @ID_Estado_Cita = 6, @Estado = 'Finalizada';
@@ -1824,7 +1816,7 @@ BEGIN
 
     IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
         BEGIN
-            RAISERROR('El ID de la especialidad médico no existe.', 16, 2);
+            RAISERROR('El ID de la especialidad mï¿½dico no existe.', 16, 2);
             RETURN;
         END
 		IF NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
@@ -1982,7 +1974,7 @@ BEGIN
     END
 	IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Paciente = @ID_Paciente)
     BEGIN
-        RAISERROR('El paciente ya tiene un historial médico registrado.', 16, 2);
+        RAISERROR('El paciente ya tiene un historial mï¿½dico registrado.', 16, 2);
         RETURN;
     END
 
@@ -1990,25 +1982,25 @@ BEGIN
         INSERT INTO Historial_Medico (ID_Historial_Medico, Fecha_Registro, ID_Paciente)
         VALUES (@ID_Historial_Medico, @Fecha_Registro, @ID_Paciente);
 
-        PRINT 'El historial médico se ha registrado correctamente.';
+        PRINT 'El historial mï¿½dico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el historial médico: ' + ERROR_MESSAGE();
+        PRINT 'Error al registrar el historial mï¿½dico: ' + ERROR_MESSAGE();
     END CATCH
 END;
 GO
 
 
--- Insertar historial médico 1
+-- Insertar historial mï¿½dico 1
 EXEC Sp_RegistrarHistorialMedico @ID_Historial_Medico = 6,@Fecha_Registro = '2024-06-01',@ID_Paciente = 6;
 go
--- Insertar historial médico 2
+-- Insertar historial mï¿½dico 2
 EXEC Sp_RegistrarHistorialMedico @ID_Historial_Medico = 7,@Fecha_Registro = '2024-07-01',@ID_Paciente = 7;
 go
--- Insertar historial médico 3
+-- Insertar historial mï¿½dico 3
 EXEC Sp_RegistrarHistorialMedico @ID_Historial_Medico = 8,@Fecha_Registro = '2024-08-01',@ID_Paciente = 8;
 go
--- Insertar historial médico 4
+-- Insertar historial mï¿½dico 4
 EXEC Sp_RegistrarHistorialMedico @ID_Historial_Medico = 9,@Fecha_Registro = '2024-09-01',@ID_Paciente = 9;
 go
 
@@ -2063,10 +2055,10 @@ CREATE PROCEDURE Sp_RegistrarTipoSala
 AS
 BEGIN
     SET NOCOUNT ON;
-	-- Verificar si la descripción del tipo de sala ya existe
+	-- Verificar si la descripciï¿½n del tipo de sala ya existe
     IF EXISTS (SELECT 1 FROM Tipo_Sala WHERE Descripcion_Tipo_Sala = @Descripcion_Tipo_Sala)
     BEGIN
-        RAISERROR('La descripción del tipo de sala ya existe.', 16, 1);
+        RAISERROR('La descripciï¿½n del tipo de sala ya existe.', 16, 1);
         RETURN;
     END
     BEGIN TRY
@@ -2082,16 +2074,16 @@ END;
 GO
 
 -- Insertar tipo de sala 1
-EXEC Sp_RegistrarTipoSala @ID_Tipo_Sala = 6,@Descripcion_Tipo_Sala = 'Ginecología';
+EXEC Sp_RegistrarTipoSala @ID_Tipo_Sala = 6,@Descripcion_Tipo_Sala = 'Ginecologï¿½a';
 go
 -- Insertar tipo de sala 2
-EXEC Sp_RegistrarTipoSala @ID_Tipo_Sala = 7,@Descripcion_Tipo_Sala = 'Traumatología';
+EXEC Sp_RegistrarTipoSala @ID_Tipo_Sala = 7,@Descripcion_Tipo_Sala = 'Traumatologï¿½a';
 go
 -- Insertar tipo de sala 3
-EXEC Sp_RegistrarTipoSala @ID_Tipo_Sala = 8,@Descripcion_Tipo_Sala = 'Cardiología';
+EXEC Sp_RegistrarTipoSala @ID_Tipo_Sala = 8,@Descripcion_Tipo_Sala = 'Cardiologï¿½a';
 go
 -- Insertar tipo de sala 5
-EXEC Sp_RegistrarTipoSala @ID_Tipo_Sala = 9,@Descripcion_Tipo_Sala = 'Oncología';
+EXEC Sp_RegistrarTipoSala @ID_Tipo_Sala = 9,@Descripcion_Tipo_Sala = 'Oncologï¿½a';
 go
 
 -------------------Insertar Sala  
@@ -2140,13 +2132,13 @@ END;
 GO
 
 -- Insertar sala 1
-EXEC Sp_RegistrarSala @ID_Sala = 6,@Nombre_Sala = 'Sala de Ginecología',@Capacidad_Sala = 4,@ID_Tipo_Sala = 2,@ID_Estado_Sala = 3;
+EXEC Sp_RegistrarSala @ID_Sala = 6,@Nombre_Sala = 'Sala de Ginecologï¿½a',@Capacidad_Sala = 4,@ID_Tipo_Sala = 2,@ID_Estado_Sala = 3;
 go
 -- Insertar sala 2
-EXEC Sp_RegistrarSala @ID_Sala = 7,@Nombre_Sala = 'Sala de Traumatología',@Capacidad_Sala = 5,@ID_Tipo_Sala = 3,@ID_Estado_Sala = 2;
+EXEC Sp_RegistrarSala @ID_Sala = 7,@Nombre_Sala = 'Sala de Traumatologï¿½a',@Capacidad_Sala = 5,@ID_Tipo_Sala = 3,@ID_Estado_Sala = 2;
 go
 -- Insertar sala 3
-EXEC Sp_RegistrarSala @ID_Sala = 8,@Nombre_Sala = 'Sala de Cardiología',@Capacidad_Sala = 3,@ID_Tipo_Sala = 4,@ID_Estado_Sala = 1;
+EXEC Sp_RegistrarSala @ID_Sala = 8,@Nombre_Sala = 'Sala de Cardiologï¿½a',@Capacidad_Sala = 3,@ID_Tipo_Sala = 4,@ID_Estado_Sala = 1;
 go
 
 
@@ -2179,13 +2171,13 @@ BEGIN
 END;
 GO
 -- Insertar tipo de procedimiento 1
-EXEC Sp_RegistrarTipoProcedimiento @ID_Tipo_Procedimiento = 6,@Nombre_Procedimiento = 'Cita de Ginecología';
+EXEC Sp_RegistrarTipoProcedimiento @ID_Tipo_Procedimiento = 6,@Nombre_Procedimiento = 'Cita de Ginecologï¿½a';
 go
 -- Insertar tipo de procedimiento 2
-EXEC Sp_RegistrarTipoProcedimiento  @ID_Tipo_Procedimiento = 7,@Nombre_Procedimiento = 'Cita de Traumatología';
+EXEC Sp_RegistrarTipoProcedimiento  @ID_Tipo_Procedimiento = 7,@Nombre_Procedimiento = 'Cita de Traumatologï¿½a';
 go
 -- Insertar tipo de procedimiento 3
-EXEC Sp_RegistrarTipoProcedimiento @ID_Tipo_Procedimiento = 8,@Nombre_Procedimiento = 'Cita de Cardiología';
+EXEC Sp_RegistrarTipoProcedimiento @ID_Tipo_Procedimiento = 8,@Nombre_Procedimiento = 'Cita de Cardiologï¿½a';
 go
 
 ---------------------Registrar Procedimiento
@@ -2217,7 +2209,7 @@ BEGIN
 
     IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
     BEGIN
-        RAISERROR('El ID de historial médico no existe.', 16, 1);
+        RAISERROR('El ID de historial mï¿½dico no existe.', 16, 1);
         RETURN;
     END
 
@@ -2251,10 +2243,10 @@ EXEC Sp_RegistrarProcedimiento @ID_Procedimiento = 6,@Descripcion_Procedimiento 
 EXEC Sp_RegistrarProcedimiento @ID_Procedimiento = 7,@Descripcion_Procedimiento = 'Examen de laboratorio',@Fecha_Procedimiento = '2024-08-15',
     @Hora_Procedimiento = '09:30',@Monto_Procedimiento = 1500,@Receta = 'Ninguna',@ID_Sala = 2,@ID_Historial_Medico = 7,@ID_Cita = 7,@ID_Tipo_Procedimiento = 2;
 	go
-EXEC Sp_RegistrarProcedimiento @ID_Procedimiento = 8,@Descripcion_Procedimiento = 'Radiografía de abdomen',@Fecha_Procedimiento = '2024-08-20',
+EXEC Sp_RegistrarProcedimiento @ID_Procedimiento = 8,@Descripcion_Procedimiento = 'Radiografï¿½a de abdomen',@Fecha_Procedimiento = '2024-08-20',
     @Hora_Procedimiento = '13:00',@Monto_Procedimiento = 2000,@Receta = 'Ninguna',@ID_Sala = 3,@ID_Historial_Medico = 8,@ID_Cita = 8,@ID_Tipo_Procedimiento = 2;
 	go
-EXEC Sp_RegistrarProcedimiento @ID_Procedimiento = 9,@Descripcion_Procedimiento = 'Consulta pediátrica',@Fecha_Procedimiento = '2024-09-01',@Hora_Procedimiento = '10:00',
+EXEC Sp_RegistrarProcedimiento @ID_Procedimiento = 9,@Descripcion_Procedimiento = 'Consulta pediï¿½trica',@Fecha_Procedimiento = '2024-09-01',@Hora_Procedimiento = '10:00',
      @Monto_Procedimiento = 6000,@Receta = 'Paracetamol si es necesario',@ID_Sala = 4,@ID_Historial_Medico = 5,@ID_Cita = 2,@ID_Tipo_Procedimiento = 3;
 	 go
 EXEC Sp_RegistrarProcedimiento @ID_Procedimiento = 10,@Descripcion_Procedimiento = 'Consulta de ortopedia',@Fecha_Procedimiento = '2024-09-10', 
@@ -2272,27 +2264,27 @@ CREATE PROCEDURE Sp_RegistrarEstadoRecursoMedico
 AS
 BEGIN
     SET NOCOUNT ON;
-    -- Verificar si el estado del recurso médico ya existe
+    -- Verificar si el estado del recurso mï¿½dico ya existe
     IF EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE Estado_Recurso = @Estado_Recurso)
     BEGIN
-        RAISERROR('El estado del recurso médico ya existe.', 16, 1);
+        RAISERROR('El estado del recurso mï¿½dico ya existe.', 16, 1);
         RETURN;
     END
     BEGIN TRY
         INSERT INTO Estado_Recurso_Medico (ID_Estado_Recurso_Medico, Estado_Recurso)
         VALUES (@ID_Estado_Recurso_Medico, @Estado_Recurso);
 
-        PRINT 'El estado de recurso médico se ha registrado correctamente.';
+        PRINT 'El estado de recurso mï¿½dico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el estado de recurso médico: ' + ERROR_MESSAGE();
+        PRINT 'Error al registrar el estado de recurso mï¿½dico: ' + ERROR_MESSAGE();
     END CATCH
 END;
 GO
 
 EXEC Sp_RegistrarEstadoRecursoMedico @ID_Estado_Recurso_Medico = 3,@Estado_Recurso = 'En mantenimiento';
 go
-EXEC Sp_RegistrarEstadoRecursoMedico @ID_Estado_Recurso_Medico = 4,@Estado_Recurso = 'Reparación necesaria';
+EXEC Sp_RegistrarEstadoRecursoMedico @ID_Estado_Recurso_Medico = 4,@Estado_Recurso = 'Reparaciï¿½n necesaria';
 go
 EXEC Sp_RegistrarEstadoRecursoMedico @ID_Estado_Recurso_Medico = 5,@Estado_Recurso = 'Fuera de servicio';
 go
@@ -2327,13 +2319,13 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarTipoRecurso @ID_Tipo_Recurso = 6,@Titulo_Recurso = 'Recurso de Diagnóstico';
+EXEC Sp_RegistrarTipoRecurso @ID_Tipo_Recurso = 6,@Titulo_Recurso = 'Recurso de Diagnï¿½stico';
 go
-EXEC Sp_RegistrarTipoRecurso @ID_Tipo_Recurso = 7,@Titulo_Recurso = 'Equipos de Protección Personal';
+EXEC Sp_RegistrarTipoRecurso @ID_Tipo_Recurso = 7,@Titulo_Recurso = 'Equipos de Protecciï¿½n Personal';
 go
 EXEC Sp_RegistrarTipoRecurso @ID_Tipo_Recurso = 8,@Titulo_Recurso = 'Suministros de Emergencia';
 go
-EXEC Sp_RegistrarTipoRecurso @ID_Tipo_Recurso = 9,@Titulo_Recurso = 'Material de Curación';
+EXEC Sp_RegistrarTipoRecurso @ID_Tipo_Recurso = 9,@Titulo_Recurso = 'Material de Curaciï¿½n';
 go
 
 ---------------Insertar Recurso Medico
@@ -2362,7 +2354,7 @@ BEGIN
 
     IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
     BEGIN
-        RAISERROR('El ID de estado de recurso médico no existe.', 16, 1);
+        RAISERROR('El ID de estado de recurso mï¿½dico no existe.', 16, 1);
         RETURN;
     END
 
@@ -2370,24 +2362,24 @@ BEGIN
         INSERT INTO Recurso_Medico (ID_Recurso_Medico, Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso, ID_Estado_Recurso_Medico)
         VALUES (@ID_Recurso_Medico, @Nombre_Recurso, @Lote, @Cantidad_Stock_Total, @Ubicacion_Recurso, @ID_Tipo_Recurso, @ID_Estado_Recurso_Medico);
 
-        PRINT 'El recurso médico se ha registrado correctamente.';
+        PRINT 'El recurso mï¿½dico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el recurso médico: ' + ERROR_MESSAGE();
+        PRINT 'Error al registrar el recurso mï¿½dico: ' + ERROR_MESSAGE();
     END CATCH
 END;
 GO
 
-EXEC Sp_RegistrarRecursoMedico @ID_Recurso_Medico = 6, @Nombre_Recurso = 'Recurso 6',@Lote = 'Lote 6',@Cantidad_Stock_Total = 150,@Ubicacion_Recurso = 'Almacén 6', 
+EXEC Sp_RegistrarRecursoMedico @ID_Recurso_Medico = 6, @Nombre_Recurso = 'Recurso 6',@Lote = 'Lote 6',@Cantidad_Stock_Total = 150,@Ubicacion_Recurso = 'Almacï¿½n 6', 
     @ID_Tipo_Recurso = 1,@ID_Estado_Recurso_Medico = 4;
 	go
-EXEC Sp_RegistrarRecursoMedico @ID_Recurso_Medico = 7,@Nombre_Recurso = 'Recurso 7',@Lote = 'Lote 7',@Cantidad_Stock_Total = 250,@Ubicacion_Recurso = 'Almacén 7', 
+EXEC Sp_RegistrarRecursoMedico @ID_Recurso_Medico = 7,@Nombre_Recurso = 'Recurso 7',@Lote = 'Lote 7',@Cantidad_Stock_Total = 250,@Ubicacion_Recurso = 'Almacï¿½n 7', 
     @ID_Tipo_Recurso = 2,@ID_Estado_Recurso_Medico = 6;
 	go
-EXEC Sp_RegistrarRecursoMedico @ID_Recurso_Medico = 8,@Nombre_Recurso = 'Recurso 8',@Lote = 'Lote 8',@Cantidad_Stock_Total = 350,@Ubicacion_Recurso = 'Almacén 8', 
+EXEC Sp_RegistrarRecursoMedico @ID_Recurso_Medico = 8,@Nombre_Recurso = 'Recurso 8',@Lote = 'Lote 8',@Cantidad_Stock_Total = 350,@Ubicacion_Recurso = 'Almacï¿½n 8', 
     @ID_Tipo_Recurso = 3,@ID_Estado_Recurso_Medico = 5;
 	go
-EXEC Sp_RegistrarRecursoMedico @ID_Recurso_Medico = 9,@Nombre_Recurso = 'Recurso 9',@Lote = 'Lote 9',@Cantidad_Stock_Total = 450,@Ubicacion_Recurso = 'Almacén 9', 
+EXEC Sp_RegistrarRecursoMedico @ID_Recurso_Medico = 9,@Nombre_Recurso = 'Recurso 9',@Lote = 'Lote 9',@Cantidad_Stock_Total = 450,@Ubicacion_Recurso = 'Almacï¿½n 9', 
     @ID_Tipo_Recurso = 6,@ID_Estado_Recurso_Medico = 2;
 
 
@@ -2407,10 +2399,10 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Verificar si el recurso médico existe
+    -- Verificar si el recurso mï¿½dico existe
     IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
     BEGIN
-        RAISERROR('El ID de recurso médico no existe.', 16, 1);
+        RAISERROR('El ID de recurso mï¿½dico no existe.', 16, 1);
         RETURN;
     END
 
@@ -2425,10 +2417,10 @@ BEGIN
         INSERT INTO Recurso_Medico_Sala (ID_Recurso_Medico_Sala, Fecha, Descripcion, ID_Recurso_Medico, ID_Sala)
         VALUES (@ID_Recurso_Medico_Sala, @Fecha, @Descripcion, @ID_Recurso_Medico, @ID_Sala);
 
-        PRINT 'El recurso médico en sala se ha registrado correctamente.';
+        PRINT 'El recurso mï¿½dico en sala se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el recurso médico en sala: ' + ERROR_MESSAGE();
+        PRINT 'Error al registrar el recurso mï¿½dico en sala: ' + ERROR_MESSAGE();
     END CATCH
 END;
 GO
@@ -2510,24 +2502,24 @@ BEGIN
         INSERT INTO Planificacion_Recurso (ID_Planificacion, Descripcion_Planificacion, Fecha_Planificacion, ID_Sala, ID_Horario_Trabajo)
         VALUES (@ID_Planificacion, @Descripcion_Planificacion, @Fecha_Planificacion, @ID_Sala, @ID_Horario_Trabajo);
 
-        PRINT 'La planificación de recurso se ha registrado correctamente.';
+        PRINT 'La planificaciï¿½n de recurso se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la planificación de recurso: ' + ERROR_MESSAGE();
+        PRINT 'Error al registrar la planificaciï¿½n de recurso: ' + ERROR_MESSAGE();
     END CATCH
 END;
 GO
 
-EXEC Sp_RegistrarPlanificacionRecurso @ID_Planificacion = 6,@Descripcion_Planificacion = 'Planificación 6',@Fecha_Planificacion = '2024-06-01',@ID_Sala = 1, 
+EXEC Sp_RegistrarPlanificacionRecurso @ID_Planificacion = 6,@Descripcion_Planificacion = 'Planificaciï¿½n 6',@Fecha_Planificacion = '2024-06-01',@ID_Sala = 1, 
     @ID_Horario_Trabajo = 1;
 	go
-EXEC Sp_RegistrarPlanificacionRecurso @ID_Planificacion = 7,@Descripcion_Planificacion = 'Planificación 7',@Fecha_Planificacion = '2024-07-01',@ID_Sala = 2, 
+EXEC Sp_RegistrarPlanificacionRecurso @ID_Planificacion = 7,@Descripcion_Planificacion = 'Planificaciï¿½n 7',@Fecha_Planificacion = '2024-07-01',@ID_Sala = 2, 
     @ID_Horario_Trabajo = 2;
 	go
-EXEC Sp_RegistrarPlanificacionRecurso @ID_Planificacion = 8,@Descripcion_Planificacion = 'Planificación 8',@Fecha_Planificacion = '2024-08-01',@ID_Sala = 8, 
+EXEC Sp_RegistrarPlanificacionRecurso @ID_Planificacion = 8,@Descripcion_Planificacion = 'Planificaciï¿½n 8',@Fecha_Planificacion = '2024-08-01',@ID_Sala = 8, 
     @ID_Horario_Trabajo = 5;
 	go
-EXEC Sp_RegistrarPlanificacionRecurso @ID_Planificacion = 9,@Descripcion_Planificacion = 'Planificación 9',@Fecha_Planificacion = '2024-09-01',@ID_Sala = 3, 
+EXEC Sp_RegistrarPlanificacionRecurso @ID_Planificacion = 9,@Descripcion_Planificacion = 'Planificaciï¿½n 9',@Fecha_Planificacion = '2024-09-01',@ID_Sala = 3, 
     @ID_Horario_Trabajo = 9;
 	go
 
@@ -2545,16 +2537,16 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Verificar si el médico y la planificación existen
+    -- Verificar si el mï¿½dico y la planificaciï¿½n existen
     IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
     BEGIN
-        RAISERROR('El ID de médico no existe.', 16, 1);
+        RAISERROR('El ID de mï¿½dico no existe.', 16, 1);
         RETURN;
     END
 
     IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
     BEGIN
-        RAISERROR('El ID de planificación no existe.', 16, 1);
+        RAISERROR('El ID de planificaciï¿½n no existe.', 16, 1);
         RETURN;
     END
 
@@ -2562,10 +2554,10 @@ BEGIN
         INSERT INTO Medico_Planificacion_Recurso (ID_Medico_Planificacion_Recurso, Fecha_Planificacion_Personal, ID_Planificacion, ID_Medico)
         VALUES (@ID_Medico_Planificacion_Recurso, @Fecha_Planificacion_Personal, @ID_Planificacion, @ID_Medico);
 
-        PRINT 'La planificación del médico se ha registrado correctamente.';
+        PRINT 'La planificaciï¿½n del mï¿½dico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la planificación del médico: ' + ERROR_MESSAGE();
+        PRINT 'Error al registrar la planificaciï¿½n del mï¿½dico: ' + ERROR_MESSAGE();
     END CATCH
 END;
 GO
@@ -2598,20 +2590,20 @@ BEGIN
         RAISERROR('El ID de cita no existe.', 16, 1);
         RETURN;
     END
-	-- Verificar que la calificación esté entre 1 y 5
+	-- Verificar que la calificaciï¿½n estï¿½ entre 1 y 5
     IF @Calificacion_Satisfaccion < 1 OR @Calificacion_Satisfaccion > 5
     BEGIN
-        RAISERROR('La calificación de satisfacción debe estar entre 1 y 5.', 16, 1);
+        RAISERROR('La calificaciï¿½n de satisfacciï¿½n debe estar entre 1 y 5.', 16, 1);
         RETURN;
     END
     BEGIN TRY
         INSERT INTO Satisfaccion_Paciente (ID_Satisfaccion, Fecha_Evaluacion, Calificacion_Satisfaccion, ID_Cita)
         VALUES (@ID_Satisfaccion, @Fecha_Evaluacion, @Calificacion_Satisfaccion, @ID_Cita);
 
-        PRINT 'La satisfacción del paciente se ha registrado correctamente.';
+        PRINT 'La satisfacciï¿½n del paciente se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la satisfacción del paciente: ' + ERROR_MESSAGE();
+        PRINT 'Error al registrar la satisfacciï¿½n del paciente: ' + ERROR_MESSAGE();
     END CATCH
 END;
 GO
@@ -2661,7 +2653,7 @@ CREATE PROCEDURE Sp_RegistrarUsuario
     @ID_Usuario INT,
     @Nombre_Usuario VARCHAR(50),
     @Correo_Usuario VARCHAR(50),
-    @Contraseña_Usuario VARCHAR(50),
+    @Contraseï¿½a_Usuario VARCHAR(50),
     @ID_Rol INT
 )
 AS
@@ -2688,8 +2680,8 @@ BEGIN
     END
 
     BEGIN TRY
-        INSERT INTO Usuario (ID_Usuario, Nombre_Usuario, Correo_Usuario, Contraseña_Usuario, ID_Rol)
-        VALUES (@ID_Usuario, @Nombre_Usuario, @Correo_Usuario, @Contraseña_Usuario, @ID_Rol);
+        INSERT INTO Usuario (ID_Usuario, Nombre_Usuario, Correo_Usuario, Contraseï¿½a_Usuario, ID_Rol)
+        VALUES (@ID_Usuario, @Nombre_Usuario, @Correo_Usuario, @Contraseï¿½a_Usuario, @ID_Rol);
 
                 PRINT 'El usuario se ha registrado correctamente.';
     END TRY
@@ -2699,15 +2691,15 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarUsuario @ID_Usuario = 4,@Nombre_Usuario = 'Ana Torres',@Correo_Usuario = 'ana.torres@saludplus.com',@Contraseña_Usuario = 'contraseña101',@ID_Rol = 1;
+EXEC Sp_RegistrarUsuario @ID_Usuario = 4,@Nombre_Usuario = 'Ana Torres',@Correo_Usuario = 'ana.torres@saludplus.com',@Contraseï¿½a_Usuario = 'contraseï¿½a101',@ID_Rol = 1;
 go
-EXEC Sp_RegistrarUsuario @ID_Usuario = 5,@Nombre_Usuario = 'Luis Fernández',@Correo_Usuario = 'luis.fernandez@saludplus.com',@Contraseña_Usuario = 'contraseña202', 
+EXEC Sp_RegistrarUsuario @ID_Usuario = 5,@Nombre_Usuario = 'Luis Fernï¿½ndez',@Correo_Usuario = 'luis.fernandez@saludplus.com',@Contraseï¿½a_Usuario = 'contraseï¿½a202', 
     @ID_Rol = 2;
 	go
-EXEC Sp_RegistrarUsuario @ID_Usuario = 6,@Nombre_Usuario = 'Elena Ruiz',@Correo_Usuario = 'elena.ruiz@saludplus.com',@Contraseña_Usuario = 'contraseña303', 
+EXEC Sp_RegistrarUsuario @ID_Usuario = 6,@Nombre_Usuario = 'Elena Ruiz',@Correo_Usuario = 'elena.ruiz@saludplus.com',@Contraseï¿½a_Usuario = 'contraseï¿½a303', 
     @ID_Rol = 3;
 	go
-EXEC Sp_RegistrarUsuario @ID_Usuario = 7,@Nombre_Usuario = 'Fernando Martínez',@Correo_Usuario = 'fernando.martinez@saludplus.com',@Contraseña_Usuario = 'contraseña404', 
+EXEC Sp_RegistrarUsuario @ID_Usuario = 7,@Nombre_Usuario = 'Fernando Martï¿½nez',@Correo_Usuario = 'fernando.martinez@saludplus.com',@Contraseï¿½a_Usuario = 'contraseï¿½a404', 
     @ID_Rol = 1;
 	go
 ---------Registrar Permiso
@@ -2745,7 +2737,7 @@ EXEC Sp_RegistrarPermiso @ID_Permiso = 8,@Nombre_Permiso = 'Modificar Informes';
 go
 EXEC Sp_RegistrarPermiso @ID_Permiso = 9,@Nombre_Permiso = 'Eliminar Informes';
 go
-EXEC Sp_RegistrarPermiso @ID_Permiso = 10,@Nombre_Permiso = 'Gestionar Recursos Médicos';
+EXEC Sp_RegistrarPermiso @ID_Permiso = 10,@Nombre_Permiso = 'Gestionar Recursos Mï¿½dicos';
 go
 
 -----------Registrar Rol Permiso
@@ -2787,9 +2779,9 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarRolPermiso @ID_Rol_Permiso = 7,@ID_Rol = 2,@ID_Permiso = 2;  -- Médico puede ver citas
+EXEC Sp_RegistrarRolPermiso @ID_Rol_Permiso = 7,@ID_Rol = 2,@ID_Permiso = 2;  -- Mï¿½dico puede ver citas
 go
-EXEC Sp_RegistrarRolPermiso @ID_Rol_Permiso = 8,@ID_Rol = 2,@ID_Permiso = 5;  -- Médico puede acceder a historial médico
+EXEC Sp_RegistrarRolPermiso @ID_Rol_Permiso = 8,@ID_Rol = 2,@ID_Permiso = 5;  -- Mï¿½dico puede acceder a historial mï¿½dico
 go
 EXEC Sp_RegistrarRolPermiso @ID_Rol_Permiso = 9,@ID_Rol = 3,@ID_Permiso = 6;  -- Recepcionista puede gestionar pacientes
 go
@@ -2806,7 +2798,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso)
     BEGIN
-        PRINT 'No existe la relación Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
+        PRINT 'No existe la relaciï¿½n Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
         RETURN
     END
 
@@ -2882,7 +2874,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion)
     BEGIN
-        PRINT 'No existe la Satisfacción del Paciente con ID_Satisfaccion = ' + CAST(@ID_Satisfaccion AS VARCHAR)
+        PRINT 'No existe la Satisfacciï¿½n del Paciente con ID_Satisfaccion = ' + CAST(@ID_Satisfaccion AS VARCHAR)
         RETURN
     END
     DELETE FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion
@@ -2896,7 +2888,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico_Planificacion_Recurso = @ID_Medico_Planificacion_Recurso)
     BEGIN
-        PRINT 'No existe la planificación de recurso médico con ID_Medico_Planificacion_Recurso = ' + CAST(@ID_Medico_Planificacion_Recurso AS VARCHAR)
+        PRINT 'No existe la planificaciï¿½n de recurso mï¿½dico con ID_Medico_Planificacion_Recurso = ' + CAST(@ID_Medico_Planificacion_Recurso AS VARCHAR)
         RETURN
     END
 
@@ -2919,7 +2911,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Paciente = @ID_Paciente)
     BEGIN
-        PRINT 'No se puede eliminar el Paciente, tiene historial médico asociado.'
+        PRINT 'No se puede eliminar el Paciente, tiene historial mï¿½dico asociado.'
         RETURN
     END
 
@@ -2959,7 +2951,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Cita = @ID_Cita)
     BEGIN
-        PRINT 'No se puede eliminar la Cita, tiene satisfacción asociada.'
+        PRINT 'No se puede eliminar la Cita, tiene satisfacciï¿½n asociada.'
         RETURN
     END
 
@@ -3065,13 +3057,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
     BEGIN
-        PRINT 'No existe el Historial Médico con ID_Historial_Medico = ' + CAST(@ID_Historial_Medico AS VARCHAR)
+        PRINT 'No existe el Historial Mï¿½dico con ID_Historial_Medico = ' + CAST(@ID_Historial_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Historial_Medico = @ID_Historial_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Historial Médico, tiene procedimientos asociados.'
+        PRINT 'No se puede eliminar el Historial Mï¿½dico, tiene procedimientos asociados.'
         RETURN
     END
 
@@ -3087,13 +3079,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
     BEGIN
-        PRINT 'No existe el Recurso Médico con ID_Recurso_Medico = ' + CAST(@ID_Recurso_Medico AS VARCHAR)
+        PRINT 'No existe el Recurso Mï¿½dico con ID_Recurso_Medico = ' + CAST(@ID_Recurso_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Recurso Médico, tiene asignaciones a salas.'
+        PRINT 'No se puede eliminar el Recurso Mï¿½dico, tiene asignaciones a salas.'
         RETURN
     END
 
@@ -3115,13 +3107,13 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Sala = @ID_Sala)
     BEGIN
-        PRINT 'No se puede eliminar la Sala, tiene recursos médicos asociados.'
+        PRINT 'No se puede eliminar la Sala, tiene recursos mï¿½dicos asociados.'
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Sala = @ID_Sala)
     BEGIN
-        PRINT 'No se puede eliminar la Sala, tiene planificación de recursos asociada.'
+        PRINT 'No se puede eliminar la Sala, tiene planificaciï¿½n de recursos asociada.'
         RETURN
     END
 
@@ -3137,13 +3129,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
     BEGIN
-        PRINT 'No existe el Estado de Recurso Médico con ID_Estado_Recurso_Medico = ' + CAST(@ID_Estado_Recurso_Medico AS VARCHAR)
+        PRINT 'No existe el Estado de Recurso Mï¿½dico con ID_Estado_Recurso_Medico = ' + CAST(@ID_Estado_Recurso_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Estado de Recurso Médico, tiene recursos médicos asociados.'
+        PRINT 'No se puede eliminar el Estado de Recurso Mï¿½dico, tiene recursos mï¿½dicos asociados.'
         RETURN
     END
 
@@ -3165,7 +3157,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
     BEGIN
-        PRINT 'No se puede eliminar el Tipo de Recurso, tiene recursos médicos asociados.'
+        PRINT 'No se puede eliminar el Tipo de Recurso, tiene recursos mï¿½dicos asociados.'
         RETURN
     END
 
@@ -3226,7 +3218,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico_Sala = @ID_Recurso_Medico_Sala)
     BEGIN
-        PRINT 'No existe el Recurso Médico en Sala con ID_Recurso_Medico_Sala = ' + CAST(@ID_Recurso_Medico_Sala AS VARCHAR)
+        PRINT 'No existe el Recurso Mï¿½dico en Sala con ID_Recurso_Medico_Sala = ' + CAST(@ID_Recurso_Medico_Sala AS VARCHAR)
         RETURN
     END
 
@@ -3243,13 +3235,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
     BEGIN
-        PRINT 'No existe el Médico con ID_Medico = ' + CAST(@ID_Medico AS VARCHAR)
+        PRINT 'No existe el Mï¿½dico con ID_Medico = ' + CAST(@ID_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico = @ID_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Médico, tiene planificación de recursos asociada.'
+        PRINT 'No se puede eliminar el Mï¿½dico, tiene planificaciï¿½n de recursos asociada.'
         RETURN
     END
 
@@ -3272,7 +3264,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Medico WHERE ID_Especialidad = @ID_Especialidad)
     BEGIN
-        PRINT 'No se puede eliminar la Especialidad, tiene médicos asociados.'
+        PRINT 'No se puede eliminar la Especialidad, tiene mï¿½dicos asociados.'
         RETURN
     END
 
@@ -3294,7 +3286,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
     BEGIN
-        PRINT 'No se puede eliminar el Horario de Trabajo, tiene médicos asociados.'
+        PRINT 'No se puede eliminar el Horario de Trabajo, tiene mï¿½dicos asociados.'
         RETURN
     END
 
@@ -3310,7 +3302,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
     BEGIN
-        PRINT 'No existe la Planificación de Recurso con ID_Planificacion = ' + CAST(@ID_Planificacion AS VARCHAR)
+        PRINT 'No existe la Planificaciï¿½n de Recurso con ID_Planificacion = ' + CAST(@ID_Planificacion AS VARCHAR)
         RETURN
     END
 
@@ -3332,7 +3324,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico IN (SELECT ID_Historial_Medico FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento))
     BEGIN
-        PRINT 'No se puede eliminar el Procedimiento, tiene historial médico asociado.'
+        PRINT 'No se puede eliminar el Procedimiento, tiene historial mï¿½dico asociado.'
         RETURN
     END
 
