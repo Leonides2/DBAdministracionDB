@@ -22,35 +22,39 @@ import PlanificacionesRecursos from "./Pages/PlanificacionesRecursos"
 import MedicoPlanificacionRecursos from "./Pages/MedicoPlanificacionRecursos"
 import SatisfaccionPacientes from "./Pages/SatisfaccionPacientes"
 
+import Navbar from "./Components/Navbar"
+
 import { Navigate } from "react-router-dom"
 
 function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Login />} />
-      <Route path="/citas" element={<Citas />} />
-      <Route path="/pacientes" element={<Pacientes />} />
-      <Route path="/especialidades" element={<Especialidades />} />
-      <Route path="/estado-citas" element={<EstadoCitas />} />
-      <Route path="/estado-recurso-medicos" element={<EstadoRecursoMedicos />} />
-      <Route path="/estado-salas" element={<EstadoSalas />} />
-      <Route path="/facturas" element={<Facturas />} />
-      <Route path="/historiales-medicos" element={<HistorialesMedicos />} />
-      <Route path="/horarios-trabajo" element={<HorariosDeTrabajo />} />
-      <Route path="/medicos" element={<Medicos />} />
-      <Route path="/tipos-pago" element={<TiposPago />} />
-      <Route path="/procedimientos" element={<Procedimientos />} />
-      <Route path="/tipos-procedimiento" element={<TiposProcedimiento />} />
-      <Route path="/recursos-medicos" element={<RecursosMedicos />} />
-      <Route path="/tipos-recurso" element={<TiposRecursos />} />
-      <Route path="/salas" element={<Salas />} />
-      <Route path="/tipos-salas" element={<TiposSalas />} />
-      <Route path="/recursos-medicos-salas" element={<RecursosMedicosSalas />} />
-      <Route path="/planificaciones-recursos" element={<PlanificacionesRecursos />} />
-      <Route path="/medico-planificaciones-recursos" element={<MedicoPlanificacionRecursos />} />
-      <Route path="/satisfaccion-pacientes" element={<SatisfaccionPacientes />} />  
-      <Route path="*" element={<Navigate to="/" />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/citas" element={<Citas />} />
+        <Route path="/pacientes" element={<Pacientes />} />
+        <Route path="/especialidades" element={<Especialidades />} />
+        <Route path="/estado-citas" element={<EstadoCitas />} />
+        <Route path="/estado-recurso-medicos" element={<EstadoRecursoMedicos />} />
+        <Route path="/estado-salas" element={<EstadoSalas />} />
+        <Route path="/facturas" element={<Facturas />} />
+        <Route path="/historiales-medicos" element={<HistorialesMedicos />} />
+        <Route path="/horarios-trabajo" element={<HorariosDeTrabajo />} />
+        <Route path="/medicos" element={<Medicos />} />
+        <Route path="/tipos-pago" element={<TiposPago />} />
+        <Route path="/procedimientos" element={<Procedimientos />} />
+        <Route path="/tipos-procedimiento" element={<TiposProcedimiento />} />
+        <Route path="/recursos-medicos" element={<RecursosMedicos />} />
+        <Route path="/tipos-recurso" element={<TiposRecursos />} />
+        <Route path="/salas" element={<Salas />} />
+        <Route path="/tipos-salas" element={<TiposSalas />} />
+        <Route path="/recursos-medicos-salas" element={<RecursosMedicosSalas />} />
+        <Route path="/planificaciones-recursos" element={<PlanificacionesRecursos />} />
+        <Route path="/medico-planificaciones-recursos" element={<MedicoPlanificacionRecursos />} />
+        <Route path="/satisfaccion-pacientes" element={<SatisfaccionPacientes />} />  
+        <Route path="*" element={<Navigate to="/login" />} />
+      </Routes>
+    </>
   )
 }
 
