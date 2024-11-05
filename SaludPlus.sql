@@ -87,9 +87,10 @@ add file
     MAXSIZE = 500MB, --5000MB
     FILEGROWTH = 200MB
 )to FILEGROUP Recursos
--------------------------
 go
-------------------------------creacion de tablas--------------
+-------------------------
+ 
+ ------------------------------creacion de tablas--------------
 use SaludPlus
 go
 create table Cita
@@ -282,13 +283,14 @@ create table Recurso_Medico_Sala
 ( 
 ID_Recurso_Medico_Sala int not null IDENTITY(1,1),
 Fecha date not null,
-Descripcion varchar(150) not null,
+Cantidad_Recurso int not null,
 ID_Recurso_Medico int not null,
 ID_Sala int not null,
 CONSTRAINT PK_Recurso_Medico_Sala
 PRIMARY KEY CLUSTERED (ID_Recurso_Medico_Sala)
 ) on 'Recursos'
 go
+ 
 -------------------
 use SaludPlus
 go
@@ -546,6 +548,7 @@ BEGIN
 
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
+		
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
         SELECT 'Cita', ID_Cita, 'Inserción', GETDATE(), @Usuario
         FROM inserted;
@@ -1354,247 +1357,53 @@ BEGIN
 END;
 GO
 
-------------------------------------------------Inserciones 
-USE SaludPlus;
-GO
--- Inserciones para la tabla Paciente
-INSERT INTO Paciente (Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula)
-VALUES 
-('Juan', 'Perez', 'Gomez', '1234567890', '1980-01-01', 'Calle 1, Ciudad A', '12345698'),
-('Maria', 'Lopez', 'Martinez', '2345678901', '1990-02-02', 'Calle 2, Ciudad B', '123454322'),
-('Carlos', 'Garcia', 'Rodriguez', '3456789012', '1985-03-03', 'Calle 3, Ciudad C', '867905532'),
-('Ana', 'Hernandez', 'Sanchez', '4567890123', '1995-04-04', 'Calle 4, Ciudad D', '508975568'),
-('Luis', 'Martinez', 'Diaz', '5678901234', '2000-05-05', 'Calle 5, Ciudad E', '186790004');
 
--- Inserciones para la tabla Tipo Sala
-INSERT INTO Tipo_Sala (Descripcion_Tipo_Sala)
-VALUES 
-('Emergencias'),
-('Cirugia'),
-('Consulta General'),
-('Observacion'),
-('Laboratorio');
+--- INSERCIONES EN EL SCRIPT DE INSERCIONES
+
+--------------------------------------------------Vistas---------------------------------------------------------
+
+
+CREATE VIEW vw_Paciente AS
+SELECT Nombre_Paciente ,Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula
+FROM Paciente;
 GO
 
--- Inserciones para la tabla Estado Sala
-INSERT INTO Estado_Sala (Nombre)
-VALUES 
-('activa');
+/*
+Select * from vw_Paciente
+go
+*/
+
+CREATE VIEW vw_Medico AS
+SELECT 
+Medico.Nombre1_Medico, 
+Medico.Nombre2_Medico, 
+Medico.Apellido1_Medico, 
+Medico.Apellido2_Medico, 
+Medico.Telefono_Medico,
+Especialidad.Nombre_Especialidad
+FROM Medico inner join Especialidad on Especialidad.ID_Especialidad = Medico.ID_Especialidad;
 GO
 
--- Inserciones para la tabla Sala
-INSERT INTO Sala (Nombre_Sala, ID_Tipo_Sala, Capacidad_Sala, ID_Estado_Sala)
-VALUES 
-('Sala de Emergencias', 1, 5, 1),
-('Sala de Cirugia', 2, 10, 1),
-('Consulta General 1', 2, 3, 1),
-('Sala de Observacion', 4, 3, 1),
-('Laboratorio 1', 5, 2, 1);
+/*
+Select * from vw_Medico
+go
+*/
+
+CREATE VIEW vw_Cita AS
+SELECT 
+Cita.Fecha_Cita,
+Cita.Hora_Cita,
+Cita.ID_Medico, 
+Estado_Cita.Estado, 
+Paciente.Cedula
+FROM Cita inner join Paciente on Cita.ID_Paciente = Paciente.ID_Paciente
+left join Estado_Cita on Cita.ID_Estado_Cita = Estado_Cita.ID_Estado_Cita;
 GO
 
--- Inserciones para la tabla Especialidad
-INSERT INTO Especialidad (Nombre_Especialidad)
-VALUES 
-('Cardiología'),
-('Dermatología'),
-('Radiología'),
-('Pediatría'),
-('Cirugía');
-GO
-
--- Inserciones para la tabla Medico
-INSERT INTO Medico (Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
-VALUES 
-('Pedro', 'Jose', 'Ramirez', 'Fernandez', '6789012345', 1),
-('Laura', 'Maria', 'Gonzalez', 'Lopez', '7890123456', 2),
-('Miguel', 'Angel', 'Torres', 'Perez', '8901234567', 3),
-('Sofia', 'Elena', 'Vargas', 'Garcia', '9012345678', 4),
-('Diego', 'Luis', 'Castro', 'Martinez', '1234567890', 5);
-GO
-
--- Inserciones para la tabla Estado Cita
-INSERT INTO Estado_Cita (Estado)
-VALUES 
-('Programada'),   
-('Realizada'),
-('Cancelada');
-GO
-
--- Inserciones para la tabla Cita
-INSERT INTO Cita (Fecha_Cita, Hora_Cita, ID_Estado_Cita, ID_Paciente, ID_Medico)
-VALUES 
-('2024-01-01', '08:00', 1, 1, 1),   
-('2024-02-01', '09:00', 2, 2, 2),
-('2024-03-01', '10:00', 3, 3, 3),
-('2024-04-01', '11:00', 1, 4, 4),
-('2024-05-01', '12:00', 2, 5, 5);
-GO
-
--- Inserciones para la tabla Tipo Pago
-INSERT INTO Tipo_Pago (Descripcion_Tipo_Pago)
-VALUES 
-('Efectivo'),
-('Tarjeta de credito'),
-('Tarjeta de debito'),
-('Transferencia Bancaria'),
-('Sinpe Movil');
-GO
-
--- Inserciones para la tabla Factura
-INSERT INTO Factura (Fecha_Factura, Monto_Total, ID_Paciente, ID_Cita, ID_Tipo_Pago)
-VALUES 
-('2024-01-01', 1000.00, 1, 1, 1),
-('2024-02-01', 2000.00, 2, 2, 2),
-('2024-03-01', 3000.00, 3, 3, 3),
-('2024-04-01', 4000.00, 4, 4, 4),
-('2024-05-01', 5000.00, 5, 5, 5);
-GO
-
--- Inserciones para la tabla Historial_Medico
-INSERT INTO Historial_Medico (Fecha_Registro, ID_Paciente)
-VALUES 
-('2024-01-01', 1),   
-('2024-02-01', 2),
-('2024-03-01', 3),
-('2024-04-01', 4),
-('2024-05-01', 5);
-GO
-
--- Inserciones para la tabla Tipo Procedimiento
-INSERT INTO Tipo_Procedimiento (Nombre_Procedimiento)
-VALUES 
-('Cita de Cirugía'),   
-('Cita de Laboratorio'),
-('Cita de Consulta General'),
-('Emergencias'),
-('Cita de Diagnostico');
-GO
-
--- Inserciones para la tabla Procedimiento
-INSERT INTO Procedimiento (Descripcion_Procedimiento, Fecha_Procedimiento, Hora_Procedimiento, Monto_Procedimiento, Receta, ID_Sala, ID_Historial_Medico, ID_Cita, ID_Tipo_Procedimiento)
-VALUES 
-('Cirugía de corazon', '2024-01-01', '14:00', 10000, 'Ibuprofeno cada seis horas por tres días', 1, 1, 1, 1), 
-('Entrada de emergencia por pierna lesionada', '2024-02-01', '12:30', 200000, 'Ibuprofeno cada seis horas por 5 días', 2, 2, 2, 4),
-('Enfermedad de piel', '2024-03-01', '09:00', 30000, 'Paracetamol cada ocho horas por cinco días', 3, 3, 3, 3),
-('Por dolores fuertes de cabeza', '2024-04-01', '10:00', 400000, 'Paracetamol cada ocho horas por siete días', 4, 4, 4, 3),
-('Laboratorio de cardiología', '2024-05-01', '15:00', 5000000, 'Ibuprofeno cada seis horas por seis días', 5, 5, 5, 2);
-GO
-
--- Inserciones para la tabla Satisfaccion_Paciente
-INSERT INTO Satisfaccion_Paciente (Fecha_Evaluacion, Calificacion_Satisfaccion, ID_Cita)
-VALUES 
-('2024-01-02', 5, 1),
-('2024-02-02', 4, 2),
-('2024-03-02', 3, 3),
-('2024-04-02', 2, 4),
-('2024-05-02', 1, 5);
-GO
-
--- Inserciones para la tabla Tipo_Recurso
-INSERT INTO Tipo_Recurso (Titulo_Recurso)
-VALUES 
-('Medicamento'),
-('Equipo Médico'),
-('Material de Oficina'),
-('Instrumento Quirúrgico'),
-('Suministro Médico');
-GO
-
--- Inserciones para la tabla Estado_Recurso_Medico
-INSERT INTO Estado_Recurso_Medico (Estado_Recurso)
-VALUES 
-('Disponible'),
-('Agotado');
-GO
-
--- Inserciones para la tabla Recurso_Medico
-INSERT INTO Recurso_Medico (Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso, ID_Estado_Recurso_Medico)
-VALUES 
-('Recurso 1', 'Lote 1', 100, 'Almacén 1', 1, 1),
-('Recurso 2', 'Lote 2', 200, 'Almacén 2', 2, 2),
-('Recurso 3', 'Lote 3', 300, 'Almacén 3', 3, 1),
-('Recurso 4', 'Lote 4', 400, 'Almacén 4', 4, 2),
-('Recurso 5', 'Lote 5', 500, 'Almacén 5', 5, 1);
-GO
-
--- Inserciones para la tabla Horario_Trabajo
-INSERT INTO Horario_Trabajo (Nombre_Horario, Hora_Inicio, Hora_Fin)
-VALUES 
-('Mañana', '08:00', '12:00'),
-('Tarde', '13:00', '17:00'),
-('Noche', '18:00', '22:00'),
-('Madrugada', '23:00', '03:00'),
-('Completo', '08:00', '17:00');
-GO 
-
--- Inserciones para la tabla Planificacion_Recurso
-INSERT INTO Planificacion_Recurso (Descripcion_Planificacion, Fecha_Planificacion, ID_Sala, ID_Horario_Trabajo)
-VALUES 
-('Planificación 1', '2024-01-01', 1, 1),
-('Planificación 2', '2024-02-01', 2, 2),
-('Planificación 3', '2024-03-01', 3, 3),
-('Planificación 4', '2024-04-01', 4, 4),
-('Planificación 5', '2024-05-01', 5, 5);
-GO
-
--- Inserciones de la tabla Medico_Planificacion_Recurso
-INSERT INTO Medico_Planificacion_Recurso (Fecha_Planificacion_Personal, ID_Medico, ID_Planificacion)
-VALUES
-('2024-01-01', 1, 1),
-('2024-01-01', 2, 2),
-('2024-01-01', 3, 3),
-('2024-01-01', 4, 4),
-('2024-01-01', 5, 5);
-GO
-
--- Inserciones para la tabla Recurso_Medico_Sala
-INSERT INTO Recurso_Medico_Sala (Fecha, Descripcion, ID_Recurso_Medico, ID_Sala)
-VALUES 
-('2024-01-01', 'Sala tiene 20 recursos', 1, 1),
-('2024-01-01', 'Sala tiene 30 recursos', 2, 2),
-('2024-01-01', 'Sala tiene 40 recursos', 3, 3),
-('2024-01-01', 'Sala tiene 50 recursos', 4, 4),
-('2024-01-01', 'Sala tiene 60 recursos', 5, 5);
-GO
-
--- Inserciones de Rol
-INSERT INTO Rol (Nombre_Rol) 
-VALUES
-('Administrador'),
-('Médico'),
-('Recepcionista');
-GO
-
--- Inserciones para el Usuario
-INSERT INTO Usuario (Nombre_Usuario, Correo_Usuario, Contraseña_Usuario, ID_Rol) 
-VALUES
-('Juan Pérez', 'juan.perez@saludplus.com', 'contraseña123', 1),  
-('María Gómez', 'maria.gomez@saludplus.com', 'contraseña456', 2),  
-('Carlos López', 'carlos.lopez@saludplus.com', 'contraseña789', 3);
-GO
-
--- Inserciones de permisos
-INSERT INTO Permiso (Nombre_Permiso) 
-VALUES 
-('Crear Citas'),
-('Ver Citas'),
-('Modificar Citas'),
-('Eliminar Citas'),
-('Acceso a Historial Médico'),
-('Gestionar Pacientes');
-GO
-
--- Inserciones de Rol_Permisos
-INSERT INTO Rol_Permiso (ID_Rol, ID_Permiso) 
-VALUES 
-(1, 1),  -- Administrador puede crear citas
-(1, 2),  -- Administrador puede ver citas
-(1, 3),  -- Administrador puede modificar citas
-(1, 4),  -- Administrador puede eliminar citas
-(1, 5),  -- Administrador puede acceder a historial médico
-(1, 6);  -- Administrador puede gestionar pacientes
-GO
-
+/*
+Select * from vw_Cita
+go
+*/
 
 
 --------------------------------------------------Procedimientos almacenados INSERT------------------------------
@@ -1614,41 +1423,85 @@ CREATE PROCEDURE Sp_RegistrarPaciente
 AS
 BEGIN
     SET NOCOUNT ON;
-
     BEGIN TRY
-        INSERT INTO Paciente (  Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula)
-        VALUES ( @Nombre_Paciente, @Apellido1_Paciente, @Apellido2_Paciente, @Telefono_Paciente, @Fecha_Nacimiento, @Direccion_Paciente, @Cedula);
+		
+		IF LEN(@Nombre_Paciente) < 1
+        BEGIN
+            RAISERROR (N'Debe tener nombre', 16, 1);
+            RETURN;
+        END
+
+		IF LEN(@Apellido1_Paciente) < 1
+        BEGIN
+            RAISERROR (N'Debe tener primer apellido', 16, 1);
+            RETURN;
+        END
+
+		IF LEN(@Apellido2_Paciente) < 1
+        BEGIN
+            RAISERROR (N'Debe tener segundo apellido', 16, 1);
+            RETURN;
+        END
+
+		IF LEN(@Direccion_Paciente) < 1
+        BEGIN
+            RAISERROR (N'Debe tener direccion', 16, 1);
+            RETURN;
+        END
+		
+		IF @Fecha_Nacimiento is null
+		BEGIN
+			RAISERROR (N'La fecha no puede ser nula', 16, 1);
+            RETURN;
+		END
+
+		IF LEN(@Cedula) <> 9
+        BEGIN
+            RAISERROR (N'La cédula debe tener exactamente 9 dígitos', 16, 1);
+            RETURN;
+        END
+        -- Verificar si ya existe un paciente con la misma cédula
+        IF EXISTS (SELECT 1 FROM Paciente WHERE Cedula = @Cedula)
+        BEGIN
+            RAISERROR (N'Ya existe un usuario con esa cédula registrado', 16, 1);
+            RETURN;
+        END
+
+        -- Insertar el nuevo paciente si no existe la cédula
+        INSERT INTO Paciente 
+        (Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula)
+        VALUES 
+        (
+		TRIM(@Nombre_Paciente), 
+		TRIM(@Apellido1_Paciente), 
+		TRIM(@Apellido2_Paciente), 
+		TRIM(@Telefono_Paciente), 
+		TRIM(@Fecha_Nacimiento), 
+		TRIM(@Direccion_Paciente), 
+		TRIM(@Cedula));
 
         PRINT 'El paciente se ha registrado correctamente.';
+
+		DECLARE @Current_Usuario int = (Select ID_Paciente from Paciente Where Cedula = Cedula)
+
+		 -- Insertar historial médico con la fecha de registro automática
+        INSERT INTO Historial_Medico (Fecha_Registro, ID_Paciente)
+        VALUES (CAST(GETDATE() AS DATE), @Current_Usuario);  -- Usa la fecha actual
+        PRINT 'El historial médico se ha registrado correctamente.';
+
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el paciente: ' + ERROR_MESSAGE();
-    END CATCH
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el paciente: %s', 16, 1, @ErrorMessage);
+	END CATCH;
 END;
 GO
 
-USE SaludPlus
-GO
-
--- Insertar paciente 1
-EXEC Sp_RegistrarPaciente   @Nombre_Paciente = 'Pedro', @Apellido1_Paciente = 'Fernandez', @Apellido2_Paciente = 'Torres',
-    @Telefono_Paciente = '5678901122',@Fecha_Nacimiento = '1988-06-06',@Direccion_Paciente = 'Calle 6, Ciudad F',@Cedula = '987654321';
-	go
-
--- Insertar paciente 2
-EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Lucia', @Apellido1_Paciente = 'Cruz',@Apellido2_Paciente = 'Mendez', 
-    @Telefono_Paciente = '6789012233',@Fecha_Nacimiento = '1992-07-07',@Direccion_Paciente = 'Calle 7, Ciudad G',@Cedula = '456789012';
-	go
-
--- Insertar paciente 3
-EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Fernando',@Apellido1_Paciente = 'Ramirez',@Apellido2_Paciente = 'Soto', 
-    @Telefono_Paciente = '7890123344',@Fecha_Nacimiento = '1982-08-08',@Direccion_Paciente = 'Calle 8, Ciudad H',@Cedula = '654321789';
-	go
-
--- Insertar paciente 4
-EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Isabella',@Apellido1_Paciente = 'Alvarez',@Apellido2_Paciente = 'Paredes', 
-    @Telefono_Paciente = '8901234455',@Fecha_Nacimiento = '1995-09-09',@Direccion_Paciente = 'Calle 9, Ciudad I',@Cedula = '321654987';
-	go
 
 ------------Registrar Especialidad
 USE SaludPlus
@@ -1660,31 +1513,39 @@ CREATE PROCEDURE Sp_RegistrarEspecialidad
 AS
 BEGIN
     SET NOCOUNT ON;
-	 -- Verificar si el nombre de la especialidad ya existe
-    IF EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Nombre_Especialidad)
-    BEGIN
-        RAISERROR('El nombre de la especialidad ya existe.', 16, 1);
-        RETURN;
-    END
-    BEGIN TRY
+	 
+	BEGIN TRY
+		
+		IF LEN(TRIM(@Nombre_Especialidad)) < 1
+        BEGIN
+            RAISERROR (N'Debe tener un nombre', 16, 1);
+            RETURN;
+        END
+		-- Verificar si el nombre de la especialidad ya existe
+		IF EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Nombre_Especialidad)
+		BEGIN
+			RAISERROR('El nombre de la especialidad ya existe.', 16, 1);
+			RETURN;
+		END
+    
         INSERT INTO Especialidad (  Nombre_Especialidad)
-        VALUES ( @Nombre_Especialidad);
+        VALUES ( TRIM(@Nombre_Especialidad));
 
         PRINT 'La especialidad se ha registrado correctamente.';
-    END TRY
+	END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la especialidad: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar la especialidad: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
--- Insertar especialidad 1
-EXEC Sp_RegistrarEspecialidad  @Nombre_Especialidad = 'Ginecología';
-go
 
--- Insertar especialidad 2
-EXEC Sp_RegistrarEspecialidad  @Nombre_Especialidad = 'Psiquiatría';
-go
 
 ------------------------Registrar Medico
 USE SaludPlus
@@ -1697,55 +1558,71 @@ CREATE PROCEDURE Sp_RegistrarMedico
     @Apellido1_Medico VARCHAR(50),
     @Apellido2_Medico VARCHAR(50),
     @Telefono_Medico VARCHAR(50),
-    @ID_Especialidad INT
+    @Especialidad VARCHAR(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
+	BEGIN TRY
     -- Verificar si la especialidad existe
-    IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE ID_Especialidad = @ID_Especialidad)
+    IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Especialidad)
     BEGIN
-        RAISERROR('El ID de especialidad no existe.', 16, 1);
+		--Sugerir opciones en el error
+
+		DECLARE @Sugerencias NVARCHAR(1000) = ''
+		DECLARE @SugeInSitu varchar(50)
+
+		DECLARE SugerenciasMedico Cursor 
+		For Select top 5 Nombre_Especialidad from Especialidad where Lower(Nombre_Especialidad) like '%'+Lower(@Especialidad)+'%'
+
+		OPEN SugerenciasMedico 
+		fetch SugerenciasMedico into @SugeInSitu
+		WHILE(@@FETCH_STATUS = 0)
+		BEGIN
+			SET @Sugerencias =  @Sugerencias + @SugeInSitu + ', '
+			fetch SugerenciasMedico into @SugeInSitu
+		END
+		CLOSE SugerenciasMedico
+		Deallocate SugerenciasMedico
+
+        RAISERROR('La especialidad no existe. ¿Quizo decir alguna de las siguientes? : %s', 16, 1, @Sugerencias);
         RETURN;
     END
-    BEGIN TRY
-        INSERT INTO Medico (  Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
-        VALUES (@Nombre1_Medico, @Nombre2_Medico, @Apellido1_Medico, @Apellido2_Medico, @Telefono_Medico, @ID_Especialidad);
+
+	IF EXISTS (SELECT 1 FROM Medico Where Lower(@Nombre1_Medico+@Nombre2_Medico+@Apellido1_Medico+@Apellido2_Medico) 
+	= LOWER(TRIM(@Nombre1_Medico)+ TRIM(@Nombre2_Medico)+ TRIM(@Apellido1_Medico)+ TRIM(@Apellido2_Medico)))
+		BEGIN	
+			
+			RAISERROR('El medico ya existe.', 16, 1, @Sugerencias);
+			RETURN;
+		END
+
+		Declare @ID_Especialidad int = (Select top 1 ID_Especialidad from Especialidad where Nombre_Especialidad like @Especialidad)
+        INSERT INTO Medico (Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
+        VALUES (
+		TRIM(@Nombre1_Medico), 
+		TRIM(@Nombre2_Medico), 
+		TRIM(@Apellido1_Medico), 
+		TRIM(@Apellido2_Medico), 
+		TRIM(@Telefono_Medico), 
+		@ID_Especialidad);
 
         PRINT 'El medico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el medico: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el medico: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
 
-
--- Insertar m�dico 1
-EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Antonio',@Nombre2_Medico = 'Luis',@Apellido1_Medico = 'Salazar',@Apellido2_Medico = 'Jimenez', 
-    @Telefono_Medico = '2345678901',@ID_Especialidad = 1; -- Cardiología
-	go
-
--- Insertar m�dico 2
-EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Carmen',@Nombre2_Medico = 'Teresa',@Apellido1_Medico = 'Ruiz',@Apellido2_Medico = 'Mena', 
-    @Telefono_Medico = '3456789012',@ID_Especialidad = 2; -- Dermatología
-	go
--- Insertar m�dico 3
-EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Francisco',@Nombre2_Medico = 'Javier',@Apellido1_Medico = 'Hernandez',@Apellido2_Medico = 'Bermudez', 
-    @Telefono_Medico = '4567890123',@ID_Especialidad = 3; -- Radiología
-	go
-
--- Insertar m�dico 4
-EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Elena',@Nombre2_Medico = 'Cristina',@Apellido1_Medico = 'Alvarez',@Apellido2_Medico = 'Luna', 
-    @Telefono_Medico = '5678901234',@ID_Especialidad = 4; -- Pediatría
-	go
-
--- Insertar m�dico 5
-EXEC Sp_RegistrarMedico @Nombre1_Medico = 'Ricardo',@Nombre2_Medico = 'Andr�s',@Apellido1_Medico = 'Morales',@Apellido2_Medico = 'Santos', 
-    @Telefono_Medico = '6789012345',@ID_Especialidad = 5; -- Cirugía
-	go
 
 -------Registrar Estado de la cita
 USE SaludPlus
@@ -1758,34 +1635,32 @@ CREATE PROCEDURE Sp_RegistrarEstadoCita
 AS
 BEGIN
     SET NOCOUNT ON;
-	-- Verificar si el estado ya existe
-    IF EXISTS (SELECT 1 FROM Estado_Cita WHERE Estado = @Estado)
-    BEGIN
-        RAISERROR('El estado de cita ya existe.', 16, 1);
-        RETURN;
-    END
-    BEGIN TRY
+	BEGIN TRY
+		-- Verificar si el estado ya existe
+		IF EXISTS (SELECT 1 FROM Estado_Cita WHERE Lower(Estado) = Lower(@Estado))
+		BEGIN
+			RAISERROR('El estado de cita ya existe.', 16, 1);
+			RETURN;
+		END
+    
         INSERT INTO Estado_Cita (  Estado)
-        VALUES (  @Estado);
+        VALUES (TRIM(@Estado));
 
         PRINT 'El estado de cita se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el estado de cita: ' + ERROR_MESSAGE();
+
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el estado de cita: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
--- Insertar estado de cita 1
-EXEC Sp_RegistrarEstadoCita   @Estado = 'En Espera';
-go
-
--- Insertar estado de cita 2
-EXEC Sp_RegistrarEstadoCita  @Estado = 'No Asistió';
-go
--- Insertar estado de cita 3
-EXEC Sp_RegistrarEstadoCita   @Estado = 'Finalizada';
-go
 
 ---------------Registrar Cita
 Use SaludPlus
@@ -1795,65 +1670,67 @@ CREATE PROCEDURE Sp_RegistrarCita
     
 	@Fecha_Cita DATE,
     @Hora_Cita TIME,
-    @ID_Paciente INT,
-    @ID_Medico INT,
-	@ID_Estado_Cita  INT
+	@ID_Medico INT,
+	@Estado VARCHAR(50),
+    @Cedula VARCHAR(12)
 )
 AS
 BEGIN
- IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
-        BEGIN
-            RAISERROR('El ID de paciente no existe.', 16, 1);
-            RETURN;
-        END
 
-    IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
-        BEGIN
-            RAISERROR('El ID de la especialidad médico no existe.', 16, 2);
-            RETURN;
-        END
-		IF NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
-        BEGIN
-            RAISERROR('El ID del estado de la cita no existe.', 16, 2);
-            RETURN;
-	END
-	 -- Verificar si el paciente ya tiene una cita a la misma hora y fecha
-    IF EXISTS (SELECT 1 FROM Cita WHERE ID_Paciente = @ID_Paciente AND Fecha_Cita = @Fecha_Cita AND Hora_Cita = @Hora_Cita)
-    BEGIN
-        RAISERROR('El paciente ya tiene una cita a la misma hora y fecha.', 16, 3);
-        RETURN;
-    END
 	BEGIN TRY
-    INSERT INTO Cita ( Fecha_Cita, Hora_Cita, ID_Paciente, ID_Medico, ID_Estado_Cita)
-    VALUES ( @Fecha_Cita, @Hora_Cita, @ID_Paciente, @ID_Medico,@ID_Estado_Cita);
 
-	PRINT 'La cita se ha registrado correctamente';
+		IF LEN(@Cedula) <> 9
+        BEGIN
+            RAISERROR (N'La cédula debe tener exactamente 9 dígitos', 16, 1);
+            RETURN;
+        END
+
+		IF NOT EXISTS (SELECT 1 FROM Paciente WHERE Cedula = Trim(@Cedula))
+			BEGIN
+				RAISERROR('La cedula del paciente no existe.', 16, 1);
+				RETURN;
+			END
+
+		IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
+			BEGIN
+				RAISERROR('El ID del médico no existe.', 16, 2);
+				RETURN;
+			END
+
+		IF NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE Lower(Estado) like TRIM(lower(@Estado)))
+        BEGIN
+            RAISERROR('El estado de la cita no existe.', 16, 2);
+            RETURN;
+		END
+
+		DECLARE @ID_Paciente int = (Select top 1 ID_Paciente from Paciente where Cedula like @Cedula)
+		DECLARE @ID_Estado_Cita int = (Select top 1 ID_Estado_Cita from Estado_Cita where Lower(Estado) like Trim(Lower(@Estado)))
+		
+
+	 -- Verificar si el paciente ya tiene una cita a la misma hora y fecha
+		IF EXISTS (SELECT 1 FROM Cita WHERE ID_Paciente = @ID_Paciente AND Fecha_Cita = @Fecha_Cita AND Hora_Cita = @Hora_Cita)
+		BEGIN
+			RAISERROR('El paciente ya tiene una cita a la misma hora y fecha.', 16, 3);
+			RETURN;
+		END
+	
+		INSERT INTO Cita ( Fecha_Cita, Hora_Cita, ID_Paciente, ID_Medico, ID_Estado_Cita)
+		VALUES ( @Fecha_Cita, @Hora_Cita, @ID_Paciente, @ID_Medico,@ID_Estado_Cita);
+
+		PRINT 'La cita se ha registrado correctamente';
 	END TRY
     BEGIN CATCH
-    PRINT 'Error al registrar la cita: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar la cita: %s', 16, 1, @ErrorMessage);
     END CATCH
 	END;
 GO
 
--- Insertar cita 2
-
-execute Sp_RegistrarCita   @Fecha_Cita= '2024-01-01',  @Hora_Cita= '08:00', @ID_Paciente=5 , @ID_Medico=1, @ID_Estado_Cita =1
-go
--- Insertar cita 2
-EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-06-01',@Hora_Cita = '08:30',@ID_Paciente = 2,@ID_Medico = 2,@ID_Estado_Cita = 1;
-go
--- Insertar cita 3
-EXEC Sp_RegistrarCita   @Fecha_Cita = '2024-07-01',@Hora_Cita = '09:30',@ID_Paciente = 2,@ID_Medico = 3,@ID_Estado_Cita = 2;
-go
--- Insertar cita 4
-EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-08-01',@Hora_Cita = '10:30',@ID_Paciente = 3,@ID_Medico = 4,@ID_Estado_Cita = 3;
-go
--- Insertar cita 5
-EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-09-01',@Hora_Cita = '11:30', @ID_Paciente = 6,@ID_Medico = 5,@ID_Estado_Cita = 1;
-go
--- Insertar cita 6
-EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-09-01',@Hora_Cita = '14:30',@ID_Paciente = 7,@ID_Medico = 7,@ID_Estado_Cita = 2;
-go
 
 -----------------Tipo de Pago
 USE SaludPlus
@@ -1866,23 +1743,32 @@ CREATE PROCEDURE Sp_RegistrarTipoPago
 AS
 BEGIN
     SET NOCOUNT ON;
+	BEGIN TRY
 	-- Verificar si el tipo de pago ya existe
     IF EXISTS (SELECT 1 FROM Tipo_Pago WHERE Descripcion_Tipo_Pago = @Descripcion_Tipo_Pago)
     BEGIN
         RAISERROR('El tipo de pago ya existe.', 16, 1);
         RETURN;
     END
-    BEGIN TRY
+    
         INSERT INTO Tipo_Pago (  Descripcion_Tipo_Pago)
         VALUES ( @Descripcion_Tipo_Pago);
 
         PRINT 'El tipo de pago se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el tipo de pago: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el tipo de pago: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
+
+
 --------------Registrar Factura
 USE SaludPlus
 GO
@@ -1890,34 +1776,36 @@ CREATE PROCEDURE Sp_RegistrarFactura
 (
 	@Fecha_Factura DATE,
     @Monto_Total MONEY,
-    @ID_Paciente INT,
+    @Cedula VARCHAR(12),
     @ID_Cita INT,
-	@ID_Tipo_Pago INT
+	@Tipo_Pago VARCHAR(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
-
+	BEGIN TRY
     -- Verificar si el paciente existe
-    IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
-        BEGIN
-            RAISERROR('El ID de paciente no existe.', 16, 1);
-            RETURN;
-        END
+	IF NOT EXISTS (SELECT 1 FROM Paciente WHERE Cedula = Trim(@Cedula))
+			BEGIN
+				RAISERROR('La cedula del paciente no existe.', 16, 1);
+				RETURN;
+			END
 		 -- Verificar si la cita existe
     IF NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
         BEGIN
             RAISERROR('El ID de cita no existe.', 16, 1);
             RETURN;
         END
-		 
-		 -- Verificar si el tipo de pago existe
-    IF NOT EXISTS (SELECT 1 FROM	Tipo_Pago WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
-        BEGIN
-            RAISERROR('El ID del tipo de pago no existe.', 16, 1);
-            RETURN;
-        END
-    BEGIN TRY
+
+	IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE Lower(Descripcion_Tipo_Pago) = Trim(Lower(@Tipo_Pago)))
+    BEGIN
+        RAISERROR('El tipo de pago no existe.', 16, 1);
+        RETURN;
+    END
+
+	DECLARE @ID_Paciente int = (Select top 1 ID_Paciente from Paciente where Cedula like @Cedula)
+	DECLARE @ID_Tipo_Pago int = (Select top 1 ID_Tipo_Pago from Tipo_Pago where Lower(Descripcion_Tipo_Pago) like Trim(Lower(@Tipo_Pago)))
+		
         INSERT INTO Factura ( Fecha_Factura, Monto_Total, ID_Paciente, ID_Cita,ID_Tipo_Pago)
         VALUES ( @Fecha_Factura, @Monto_Total, @ID_Paciente, @ID_Cita,@ID_Tipo_Pago);
 
@@ -1929,29 +1817,11 @@ BEGIN
 END;
 GO
 
--- Insertar factura 1
-EXEC Sp_RegistrarFactura   @Fecha_Factura = '2024-06-01', @Monto_Total = 1500.00,@ID_Paciente = 1,@ID_Cita = 1,@ID_Tipo_Pago = 1;
-go
--- Insertar factura 2
-EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-07-01',@Monto_Total = 2500.00,@ID_Paciente = 2,@ID_Cita = 2, @ID_Tipo_Pago = 2;
-go
--- Insertar factura 3
-EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-08-01',@Monto_Total = 3500.00,@ID_Paciente = 3,@ID_Cita = 3,@ID_Tipo_Pago = 3;
-go
--- Insertar factura 4
-EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-09-01',@Monto_Total = 4500.00,@ID_Paciente = 4,@ID_Cita = 4,@ID_Tipo_Pago = 4;
-go
--- Insertar factura 5
-EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-10-01',@Monto_Total = 5500.00,@ID_Paciente = 5,@ID_Cita = 5,@ID_Tipo_Pago = 5;
-go
-
 --------------------Insertar Historial Medico
 USE SaludPlus
 GO
 CREATE PROCEDURE Sp_RegistrarHistorialMedico
 (
-    
-    @Fecha_Registro DATE,
     @ID_Paciente INT
 )
 AS
@@ -1970,10 +1840,10 @@ BEGIN
         RETURN;
     END
 
-    BEGIN TRY
-        INSERT INTO Historial_Medico (  Fecha_Registro, ID_Paciente)
-        VALUES (  @Fecha_Registro, @ID_Paciente);
-
+     BEGIN TRY
+        -- Insertar historial médico con la fecha de registro automática
+        INSERT INTO Historial_Medico (Fecha_Registro, ID_Paciente)
+        VALUES (CAST(GETDATE() AS DATE), @ID_Paciente);  -- Usa la fecha actual
         PRINT 'El historial médico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
@@ -1983,18 +1853,25 @@ END;
 GO
 
 
--- Insertar historial m�dico 1
-EXEC Sp_RegistrarHistorialMedico  @Fecha_Registro = '2024-06-01',@ID_Paciente = 6;
+ -- Insertar historial médico para el paciente con ID 6
+EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 6;
 go
--- Insertar historial m�dico 2
-EXEC Sp_RegistrarHistorialMedico  @Fecha_Registro = '2024-07-01',@ID_Paciente = 7;
+-- Insertar historial médico para el paciente con ID 7
+EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 7;
 go
--- Insertar historial m�dico 3
-EXEC Sp_RegistrarHistorialMedico  @Fecha_Registro = '2024-08-01',@ID_Paciente = 8;
+-- Insertar historial médico para el paciente con ID 8
+EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 8;
 go
--- Insertar historial m�dico 4
-EXEC Sp_RegistrarHistorialMedico  @Fecha_Registro = '2024-09-01',@ID_Paciente = 9;
+-- Insertar historial médico para el paciente con ID 9
+EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 9;
 go
+
+--------
+/*
+Sigo mañana
+
+
+*/
 
 
 -----------Insertar Estado de la Sala
@@ -2376,7 +2253,7 @@ GO
 CREATE PROCEDURE Sp_RegistrarRecursoMedicoSala
 (
     @Fecha DATE,
-    @Descripcion VARCHAR(150),
+    @Cantidad_Recurso INT,
     @ID_Recurso_Medico INT,
     @ID_Sala INT
 )
@@ -2399,8 +2276,8 @@ BEGIN
     END
 
     BEGIN TRY
-        INSERT INTO Recurso_Medico_Sala (  Fecha, Descripcion, ID_Recurso_Medico, ID_Sala)
-        VALUES (  @Fecha, @Descripcion, @ID_Recurso_Medico, @ID_Sala);
+        INSERT INTO Recurso_Medico_Sala (  Fecha, Cantidad_Recurso, ID_Recurso_Medico, ID_Sala)
+        VALUES (  @Fecha, @Cantidad_Recurso, @ID_Recurso_Medico, @ID_Sala);
 
         PRINT 'El recurso médico en sala se ha registrado correctamente.';
     END TRY
@@ -2410,13 +2287,13 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-01',@Descripcion = 'Sala tiene 25 recursos',@ID_Recurso_Medico = 1,@ID_Sala = 1;
+EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-01',@Cantidad_Recurso = 25,@ID_Recurso_Medico = 1,@ID_Sala = 1;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-02',@Descripcion = 'Sala tiene 35 recursos',@ID_Recurso_Medico = 2,@ID_Sala = 2;
+EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-02',@Cantidad_Recurso = 35,@ID_Recurso_Medico = 2,@ID_Sala = 2;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-03',@Descripcion = 'Sala tiene 45 recursos',@ID_Recurso_Medico = 6,@ID_Sala = 3;
+EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-03',@Cantidad_Recurso = 45,@ID_Recurso_Medico = 6,@ID_Sala = 3;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-04',@Descripcion = 'Sala tiene 55 recursos',@ID_Recurso_Medico = 7,@ID_Sala = 8;
+EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-04',@Cantidad_Recurso =  55,@ID_Recurso_Medico = 7,@ID_Sala = 8;
 go
 
 
@@ -2780,7 +2657,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso)
     BEGIN
-        PRINT 'No existe la relaci�n Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
+        PRINT 'No existe la relación Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
         RETURN
     END
 
@@ -2856,7 +2733,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion)
     BEGIN
-        PRINT 'No existe la Satisfacci�n del Paciente con ID_Satisfaccion = ' + CAST(@ID_Satisfaccion AS VARCHAR)
+        PRINT 'No existe la Satisfacción del Paciente con ID_Satisfaccion = ' + CAST(@ID_Satisfaccion AS VARCHAR)
         RETURN
     END
     DELETE FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion
@@ -2870,7 +2747,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico_Planificacion_Recurso = @ID_Medico_Planificacion_Recurso)
     BEGIN
-        PRINT 'No existe la planificaci�n de recurso m�dico con ID_Medico_Planificacion_Recurso = ' + CAST(@ID_Medico_Planificacion_Recurso AS VARCHAR)
+        PRINT 'No existe la planificación de recurso médico con ID_Medico_Planificacion_Recurso = ' + CAST(@ID_Medico_Planificacion_Recurso AS VARCHAR)
         RETURN
     END
 
@@ -2893,7 +2770,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Paciente = @ID_Paciente)
     BEGIN
-        PRINT 'No se puede eliminar el Paciente, tiene historial m�dico asociado.'
+        PRINT 'No se puede eliminar el Paciente, tiene historial médico asociado.'
         RETURN
     END
 
@@ -2933,7 +2810,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Cita = @ID_Cita)
     BEGIN
-        PRINT 'No se puede eliminar la Cita, tiene satisfacci�n asociada.'
+        PRINT 'No se puede eliminar la Cita, tiene satisfacción asociada.'
         RETURN
     END
 
@@ -3039,13 +2916,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
     BEGIN
-        PRINT 'No existe el Historial M�dico con ID_Historial_Medico = ' + CAST(@ID_Historial_Medico AS VARCHAR)
+        PRINT 'No existe el Historial Médico con ID_Historial_Medico = ' + CAST(@ID_Historial_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Historial_Medico = @ID_Historial_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Historial M�dico, tiene procedimientos asociados.'
+        PRINT 'No se puede eliminar el Historial Médico, tiene procedimientos asociados.'
         RETURN
     END
 
@@ -3061,13 +2938,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
     BEGIN
-        PRINT 'No existe el Recurso M�dico con ID_Recurso_Medico = ' + CAST(@ID_Recurso_Medico AS VARCHAR)
+        PRINT 'No existe el Recurso Médico con ID_Recurso_Medico = ' + CAST(@ID_Recurso_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Recurso M�dico, tiene asignaciones a salas.'
+        PRINT 'No se puede eliminar el Recurso Médico, tiene asignaciones a salas.'
         RETURN
     END
 
@@ -3089,13 +2966,13 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Sala = @ID_Sala)
     BEGIN
-        PRINT 'No se puede eliminar la Sala, tiene recursos m�dicos asociados.'
+        PRINT 'No se puede eliminar la Sala, tiene recursos médicos asociados.'
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Sala = @ID_Sala)
     BEGIN
-        PRINT 'No se puede eliminar la Sala, tiene planificaci�n de recursos asociada.'
+        PRINT 'No se puede eliminar la Sala, tiene planificación de recursos asociada.'
         RETURN
     END
 
@@ -3111,13 +2988,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
     BEGIN
-        PRINT 'No existe el Estado de Recurso M�dico con ID_Estado_Recurso_Medico = ' + CAST(@ID_Estado_Recurso_Medico AS VARCHAR)
+        PRINT 'No existe el Estado de Recurso Médico con ID_Estado_Recurso_Medico = ' + CAST(@ID_Estado_Recurso_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el Estado de Recurso M�dico, tiene recursos m�dicos asociados.'
+        PRINT 'No se puede eliminar el Estado de Recurso Médico, tiene recursos médicos asociados.'
         RETURN
     END
 
@@ -3139,7 +3016,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
     BEGIN
-        PRINT 'No se puede eliminar el Tipo de Recurso, tiene recursos m�dicos asociados.'
+        PRINT 'No se puede eliminar el Tipo de Recurso, tiene recursos médicos asociados.'
         RETURN
     END
 
@@ -3200,7 +3077,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico_Sala = @ID_Recurso_Medico_Sala)
     BEGIN
-        PRINT 'No existe el Recurso M�dico en Sala con ID_Recurso_Medico_Sala = ' + CAST(@ID_Recurso_Medico_Sala AS VARCHAR)
+        PRINT 'No existe el Recurso Médico en Sala con ID_Recurso_Medico_Sala = ' + CAST(@ID_Recurso_Medico_Sala AS VARCHAR)
         RETURN
     END
 
@@ -3217,13 +3094,13 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
     BEGIN
-        PRINT 'No existe el M�dico con ID_Medico = ' + CAST(@ID_Medico AS VARCHAR)
+        PRINT 'No existe el Médico con ID_Medico = ' + CAST(@ID_Medico AS VARCHAR)
         RETURN
     END
 
     IF EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico = @ID_Medico)
     BEGIN
-        PRINT 'No se puede eliminar el M�dico, tiene planificaci�n de recursos asociada.'
+        PRINT 'No se puede eliminar el Médico, tiene planificación de recursos asociada.'
         RETURN
     END
 
@@ -3246,7 +3123,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Medico WHERE ID_Especialidad = @ID_Especialidad)
     BEGIN
-        PRINT 'No se puede eliminar la Especialidad, tiene m�dicos asociados.'
+        PRINT 'No se puede eliminar la Especialidad, tiene médicos asociados.'
         RETURN
     END
 
@@ -3268,7 +3145,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
     BEGIN
-        PRINT 'No se puede eliminar el Horario de Trabajo, tiene m�dicos asociados.'
+        PRINT 'No se puede eliminar el Horario de Trabajo, tiene médicos asociados.'
         RETURN
     END
 
@@ -3284,7 +3161,7 @@ AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
     BEGIN
-        PRINT 'No existe la Planificaci�n de Recurso con ID_Planificacion = ' + CAST(@ID_Planificacion AS VARCHAR)
+        PRINT 'No existe la Planificación de Recurso con ID_Planificacion = ' + CAST(@ID_Planificacion AS VARCHAR)
         RETURN
     END
 
@@ -3306,7 +3183,7 @@ BEGIN
 
     IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico IN (SELECT ID_Historial_Medico FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento))
     BEGIN
-        PRINT 'No se puede eliminar el Procedimiento, tiene historial m�dico asociado.'
+        PRINT 'No se puede eliminar el Procedimiento, tiene historial médico asociado.'
         RETURN
     END
 
@@ -3314,3 +3191,1097 @@ BEGIN
 END
 GO
 ----------------------------------------Procedimientos para Modificar---------------------------------------------------------
+
+------------------Modificar Paciente
+
+CREATE PROCEDURE Sp_ModificarPaciente
+(
+    @ID_Paciente INT,
+    @Nombre_Paciente VARCHAR(50) = NULL,
+    @Apellido1_Paciente VARCHAR(50) = NULL,
+    @Apellido2_Paciente VARCHAR(50) = NULL,
+    @Telefono_Paciente VARCHAR(50) = NULL,
+	@Fecha_Nacimiento DATE = NULL,
+    @Direccion_Paciente VARCHAR(150) = NULL,
+	@Cedula VARCHAR(20) = NULL
+)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    BEGIN
+        PRINT 'No existe el Paciente con ID_Paciente = ' + CAST(@ID_Paciente AS VARCHAR)
+        RETURN
+    END
+
+    UPDATE Paciente
+    SET 
+        Nombre_Paciente = COALESCE(@Nombre_Paciente, Nombre_Paciente),
+        Apellido1_Paciente = COALESCE(@Apellido1_Paciente, Apellido1_Paciente),
+        Apellido2_Paciente = COALESCE(@Apellido2_Paciente, Apellido2_Paciente),
+        Telefono_Paciente = COALESCE(@Telefono_Paciente, Telefono_Paciente),
+		Fecha_Nacimiento = COALESCE(@Fecha_Nacimiento, Fecha_Nacimiento),
+        Direccion_Paciente = COALESCE(@Direccion_Paciente, Direccion_Paciente),
+		Cedula = COALESCE(@Cedula, Cedula)
+    WHERE ID_Paciente = @ID_Paciente
+
+	PRINT 'Paciente con ID_Paciente = ' + CAST(@ID_Paciente AS VARCHAR) + ' modificado exitosamente.';
+END
+GO
+
+----------------Modificar Especialidad
+
+CREATE PROCEDURE Sp_ModificarEspecialidad
+(
+    @ID_Especialidad INT,
+    @Nombre_Especialidad VARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE ID_Especialidad = @ID_Especialidad)
+    BEGIN
+        PRINT 'No existe una especialidad con el ID especificado.';
+        RETURN;
+    END
+
+    IF @Nombre_Especialidad IS NOT NULL AND 
+       EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Nombre_Especialidad AND ID_Especialidad <> @ID_Especialidad)
+    BEGIN
+        RAISERROR('El nombre de la especialidad ya existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Especialidad
+        SET Nombre_Especialidad = COALESCE(@Nombre_Especialidad, Nombre_Especialidad)
+        WHERE ID_Especialidad = @ID_Especialidad;
+
+        PRINT 'La especialidad ha sido modificada correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la especialidad: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-------------Modificar Medico
+
+CREATE PROCEDURE Sp_ModificarMedico
+(
+    @ID_Medico INT,
+    @Nombre1_Medico VARCHAR(50) = NULL,
+    @Nombre2_Medico VARCHAR(50) = NULL,
+    @Apellido1_Medico VARCHAR(50) = NULL,
+    @Apellido2_Medico VARCHAR(50) = NULL,
+    @Telefono_Medico VARCHAR(50) = NULL,
+    @ID_Especialidad INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
+    BEGIN
+        RAISERROR('El ID del médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Especialidad IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Especialidad WHERE ID_Especialidad = @ID_Especialidad)
+    BEGIN
+        RAISERROR('El ID de especialidad no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Medico
+        SET 
+            Nombre1_Medico = COALESCE(@Nombre1_Medico, Nombre1_Medico),
+			Nombre2_Medico = COALESCE(@Nombre2_Medico, Nombre2_Medico),
+			Apellido1_Medico = COALESCE(@Apellido1_Medico, Apellido1_Medico),
+			Apellido2_Medico = COALESCE(@Apellido2_Medico, Apellido2_Medico),
+			Telefono_Medico = COALESCE(@Telefono_Medico, Telefono_Medico),
+			ID_Especialidad = COALESCE(@ID_Especialidad, ID_Especialidad)
+        WHERE ID_Medico = @ID_Medico;
+
+        PRINT 'El médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+----------Modificar Estado Cita
+
+CREATE PROCEDURE Sp_ModificarEstadoCita
+(
+    @ID_Estado_Cita INT,
+    @Estado VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
+    BEGIN
+        RAISERROR('El ID del estado de cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Estado_Cita WHERE Estado = @Estado AND ID_Estado_Cita <> @ID_Estado_Cita)
+    BEGIN
+        RAISERROR('El estado de cita ya existe con otro ID.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Estado_Cita
+        SET Estado = COALESCE(@Estado, Estado)
+        WHERE ID_Estado_Cita = @ID_Estado_Cita;
+
+        PRINT 'El estado de cita se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el estado de cita: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+----------Modificar Cita
+
+CREATE PROCEDURE Sp_ModificarCita
+(
+    @ID_Cita INT,
+    @Fecha_Cita DATE = NULL,
+    @Hora_Cita TIME = NULL,
+    @ID_Paciente INT = NULL,
+    @ID_Medico INT = NULL,
+    @ID_Estado_Cita INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
+    BEGIN
+        RAISERROR('El ID de la cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Paciente IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    BEGIN
+        RAISERROR('El ID de paciente no existe.', 16, 2);
+        RETURN;
+    END
+
+    IF @ID_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
+    BEGIN
+        RAISERROR('El ID del médico no existe.', 16, 2);
+        RETURN;
+    END
+
+    IF @ID_Estado_Cita IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
+    BEGIN
+        RAISERROR('El ID del estado de la cita no existe.', 16, 2);
+        RETURN;
+    END
+
+    IF (@Fecha_Cita IS NOT NULL AND @Hora_Cita IS NOT NULL) AND EXISTS (
+        SELECT 1 FROM Cita
+        WHERE ID_Paciente = @ID_Paciente 
+          AND Fecha_Cita = @Fecha_Cita 
+          AND Hora_Cita = @Hora_Cita
+          AND ID_Cita <> @ID_Cita) 
+    BEGIN
+        RAISERROR('El paciente ya tiene una cita a la misma hora y fecha.', 16, 3);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Cita
+        SET 
+            Fecha_Cita = COALESCE(@Fecha_Cita, Fecha_Cita),
+            Hora_Cita = COALESCE(@Hora_Cita, Hora_Cita),
+            ID_Paciente = COALESCE(@ID_Paciente, ID_Paciente),
+            ID_Medico = COALESCE(@ID_Medico, ID_Medico),
+            ID_Estado_Cita = COALESCE(@ID_Estado_Cita, ID_Estado_Cita)
+        WHERE ID_Cita = @ID_Cita;
+
+        PRINT 'La cita se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la cita: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+---------Modificar Tipo de Pago
+
+CREATE PROCEDURE Sp_ModificarTipoPago
+(
+    @ID_Tipo_Pago INT,
+    @Descripcion_Tipo_Pago VARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
+    BEGIN
+        RAISERROR('El ID del tipo de pago no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Descripcion_Tipo_Pago IS NOT NULL AND EXISTS (SELECT 1 FROM Tipo_Pago WHERE Descripcion_Tipo_Pago = @Descripcion_Tipo_Pago AND ID_Tipo_Pago <> @ID_Tipo_Pago)
+    BEGIN
+        RAISERROR('El tipo de pago con la descripción especificada ya existe.', 16, 2);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Tipo_Pago
+        SET 
+            Descripcion_Tipo_Pago = COALESCE(@Descripcion_Tipo_Pago, Descripcion_Tipo_Pago)
+        WHERE ID_Tipo_Pago = @ID_Tipo_Pago;
+
+        PRINT 'El tipo de pago se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el tipo de pago: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+-------------Modificar Factura
+
+CREATE PROCEDURE Sp_ModificarFactura
+(
+    @ID_Factura INT,
+    @Fecha_Factura DATE = NULL,
+    @Monto_Total MONEY = NULL,
+    @ID_Paciente INT = NULL,
+    @ID_Cita INT = NULL,
+    @ID_Tipo_Pago INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Factura WHERE ID_Factura = @ID_Factura)
+    BEGIN
+        RAISERROR('El ID de factura no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Paciente IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    BEGIN
+        RAISERROR('El ID de paciente no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Cita IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
+    BEGIN
+        RAISERROR('El ID de cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Tipo_Pago IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
+    BEGIN
+        RAISERROR('El ID del tipo de pago no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Factura
+        SET 
+            Fecha_Factura = COALESCE(@Fecha_Factura, Fecha_Factura),
+            Monto_Total = COALESCE(@Monto_Total, Monto_Total),
+            ID_Paciente = COALESCE(@ID_Paciente, ID_Paciente),
+            ID_Cita = COALESCE(@ID_Cita, ID_Cita),
+            ID_Tipo_Pago = COALESCE(@ID_Tipo_Pago, ID_Tipo_Pago)
+        WHERE ID_Factura = @ID_Factura;
+
+        PRINT 'La factura se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la factura: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+-----------Modificar Historial Medico
+
+CREATE PROCEDURE Sp_ModificarHistorialMedico
+(
+    @ID_Historial_Medico INT,
+    @Fecha_Registro DATE,
+    @ID_Paciente INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
+    BEGIN
+        RAISERROR('El ID del historial médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    BEGIN
+        RAISERROR('El ID de paciente no existe.', 16, 2);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Historial_Medico
+        SET Fecha_Registro = COALESCE(@Fecha_Registro, Fecha_Registro) -- Actualiza solo si se proporciona un nuevo valor
+        WHERE ID_Historial_Medico = @ID_Historial_Medico;
+
+        PRINT 'El historial médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el historial médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+---------Modificar Estado Sala
+
+CREATE PROCEDURE Sp_ModificarEstadoSala
+(
+    @ID_Estado_Sala INT,
+    @Nombre VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE ID_Estado_Sala = @ID_Estado_Sala)
+    BEGIN
+        RAISERROR('El ID del estado de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Estado_Sala WHERE Nombre = @Nombre AND ID_Estado_Sala <> @ID_Estado_Sala)
+    BEGIN
+        RAISERROR('El nombre del estado de sala ya existe.', 16, 2);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Estado_Sala
+        SET Nombre = @Nombre
+        WHERE ID_Estado_Sala = @ID_Estado_Sala;
+
+        PRINT 'El estado de sala se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el estado de sala: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+---------------Modificar Tipo de Sala
+
+CREATE PROCEDURE Sp_ModificarTipoSala
+(
+    @ID_Tipo_Sala INT,
+    @Descripcion_Tipo_Sala VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE ID_Tipo_Sala = @ID_Tipo_Sala)
+    BEGIN
+        RAISERROR('El ID del tipo de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Tipo_Sala WHERE Descripcion_Tipo_Sala = @Descripcion_Tipo_Sala AND ID_Tipo_Sala <> @ID_Tipo_Sala)
+    BEGIN
+        RAISERROR('La descripción del tipo de sala ya existe.', 16, 2);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Tipo_Sala
+        SET Descripcion_Tipo_Sala = @Descripcion_Tipo_Sala
+        WHERE ID_Tipo_Sala = @ID_Tipo_Sala;
+
+        PRINT 'El tipo de sala se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el tipo de sala: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+---------Modificar Sala
+
+CREATE PROCEDURE Sp_ModificarSala
+(
+    @ID_Sala INT,
+    @Nombre_Sala VARCHAR(50) = NULL, 
+    @Capacidad_Sala INT = NULL,       
+    @ID_Tipo_Sala INT = NULL,         
+    @ID_Estado_Sala INT = NULL        
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    BEGIN
+        RAISERROR('El ID de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Tipo_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE ID_Tipo_Sala = @ID_Tipo_Sala)
+    BEGIN
+        RAISERROR('El ID de tipo de sala no existe.', 16, 2);
+        RETURN;
+    END
+
+    IF @ID_Estado_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE ID_Estado_Sala = @ID_Estado_Sala)
+    BEGIN
+        RAISERROR('El ID de estado de sala no existe.', 16, 3);
+        RETURN;
+    END
+
+    IF @Nombre_Sala IS NOT NULL AND EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala AND ID_Sala <> @ID_Sala)
+    BEGIN
+        RAISERROR('El nombre de la sala ya existe.', 16, 4);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Sala
+        SET 
+            Nombre_Sala = COALESCE(@Nombre_Sala, Nombre_Sala), 
+            Capacidad_Sala = COALESCE(@Capacidad_Sala, Capacidad_Sala), 
+            ID_Tipo_Sala = COALESCE(@ID_Tipo_Sala, ID_Tipo_Sala), 
+            ID_Estado_Sala = COALESCE(@ID_Estado_Sala, ID_Estado_Sala) 
+        WHERE ID_Sala = @ID_Sala;
+
+        PRINT 'La sala se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la sala: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+----------Modificar Tipo de Procedimiento
+
+CREATE PROCEDURE Sp_ModificarTipoProcedimiento
+(
+    @ID_Tipo_Procedimiento INT,
+    @Nuevo_Nombre_Procedimiento VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento)
+    BEGIN
+        RAISERROR('El ID del tipo de procedimiento no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE Nombre_Procedimiento = @Nuevo_Nombre_Procedimiento AND ID_Tipo_Procedimiento <> @ID_Tipo_Procedimiento)
+    BEGIN
+        RAISERROR('El nombre del tipo de procedimiento ya existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Tipo_Procedimiento
+        SET Nombre_Procedimiento = @Nuevo_Nombre_Procedimiento
+        WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento;
+
+        PRINT 'El tipo de procedimiento se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el tipo de procedimiento: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+---------------Modificar Procedimiento
+
+CREATE PROCEDURE Sp_ModificarProcedimiento
+(
+    @ID_Procedimiento INT,
+    @Descripcion_Procedimiento VARCHAR(150) = NULL,
+    @Fecha_Procedimiento DATE = NULL,
+    @Hora_Procedimiento TIME = NULL,
+    @Monto_Procedimiento MONEY = NULL,
+    @Receta VARCHAR(150) = NULL,
+    @ID_Sala INT = NULL,
+    @ID_Historial_Medico INT = NULL,
+    @ID_Cita INT = NULL,
+    @ID_Tipo_Procedimiento INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento)
+    BEGIN
+        RAISERROR('El ID de procedimiento no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    BEGIN
+        RAISERROR('El ID de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Historial_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
+    BEGIN
+        RAISERROR('El ID de historial médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Cita IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
+    BEGIN
+        RAISERROR('El ID de cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Tipo_Procedimiento IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento)
+    BEGIN
+        RAISERROR('El ID de tipo de procedimiento no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Procedimiento
+        SET 
+            Descripcion_Procedimiento = COALESCE(@Descripcion_Procedimiento, Descripcion_Procedimiento),
+            Fecha_Procedimiento = COALESCE(@Fecha_Procedimiento, Fecha_Procedimiento),
+            Hora_Procedimiento = COALESCE(@Hora_Procedimiento, Hora_Procedimiento),
+            Monto_Procedimiento = COALESCE(@Monto_Procedimiento, Monto_Procedimiento),
+            Receta = COALESCE(@Receta, Receta),
+            ID_Sala = COALESCE(@ID_Sala, ID_Sala),
+            ID_Historial_Medico = COALESCE(@ID_Historial_Medico, ID_Historial_Medico),
+            ID_Cita = COALESCE(@ID_Cita, ID_Cita),
+            ID_Tipo_Procedimiento = COALESCE(@ID_Tipo_Procedimiento, ID_Tipo_Procedimiento)
+        WHERE ID_Procedimiento = @ID_Procedimiento;
+
+        PRINT 'El procedimiento se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el procedimiento: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+------------Modificar Estado Recurso Medico
+
+CREATE PROCEDURE Sp_ModificarEstadoRecursoMedico
+(
+    @ID_Estado_Recurso_Medico INT,
+    @Estado_Recurso VARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
+    BEGIN
+        RAISERROR('El ID de estado de recurso médico no existe.', 16, 1);
+        RETURN;
+    END
+
+	    IF @Estado_Recurso IS NOT NULL AND EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE Estado_Recurso = @Estado_Recurso AND ID_Estado_Recurso_Medico <> @ID_Estado_Recurso_Medico)
+    BEGIN
+        RAISERROR('El estado de recurso médico ya existe en otro registro.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Estado_Recurso_Medico
+        SET Estado_Recurso = COALESCE(@Estado_Recurso, Estado_Recurso)
+        WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico;
+
+        PRINT 'El estado de recurso médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el estado de recurso médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-------------Modificar Tipo de Recurso
+
+CREATE PROCEDURE Sp_ModificarTipoRecurso
+(
+    @ID_Tipo_Recurso INT,
+    @Titulo_Recurso VARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
+    BEGIN
+        RAISERROR('El ID de tipo de recurso no existe.', 16, 1);
+        RETURN;
+    END
+
+	    IF @Titulo_Recurso IS NOT NULL AND EXISTS (SELECT 1 FROM Tipo_Recurso WHERE Titulo_Recurso = @Titulo_Recurso AND ID_Tipo_Recurso <> @ID_Tipo_Recurso)
+    BEGIN
+        RAISERROR('El título de recurso ya existe en otro registro.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Tipo_Recurso
+        SET Titulo_Recurso = COALESCE(@Titulo_Recurso, Titulo_Recurso)
+        WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso;
+
+        PRINT 'El tipo de recurso se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el tipo de recurso: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+---------------Modificar Recurso Medico
+
+CREATE PROCEDURE Sp_ModificarRecursoMedico
+(
+    @ID_Recurso_Medico INT,
+    @Nombre_Recurso VARCHAR(50) = NULL,
+    @Lote VARCHAR(50) = NULL,
+    @Cantidad_Stock_Total INT = NULL,
+    @Ubicacion_Recurso VARCHAR(150) = NULL,
+    @ID_Tipo_Recurso INT = NULL,
+    @ID_Estado_Recurso_Medico INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
+    BEGIN
+        RAISERROR('El ID de recurso médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Tipo_Recurso IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
+    BEGIN
+        RAISERROR('El ID de tipo de recurso no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Estado_Recurso_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
+    BEGIN
+        RAISERROR('El ID de estado de recurso médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Recurso_Medico
+        SET 
+            Nombre_Recurso = COALESCE(@Nombre_Recurso, Nombre_Recurso),
+            Lote = COALESCE(@Lote, Lote),
+            Cantidad_Stock_Total = COALESCE(@Cantidad_Stock_Total, Cantidad_Stock_Total),
+            Ubicacion_Recurso = COALESCE(@Ubicacion_Recurso, Ubicacion_Recurso),
+            ID_Tipo_Recurso = COALESCE(@ID_Tipo_Recurso, ID_Tipo_Recurso),
+            ID_Estado_Recurso_Medico = COALESCE(@ID_Estado_Recurso_Medico, ID_Estado_Recurso_Medico)
+        WHERE ID_Recurso_Medico = @ID_Recurso_Medico;
+
+        PRINT 'El recurso médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el recurso médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-------------Modificar Recurso_Medico Sala
+
+CREATE PROCEDURE Sp_ModificarRecursoMedicoSala
+(
+    @ID_Recurso_Medico_Sala INT,
+    @Fecha DATE = NULL,
+    @Cantidad_Recurso INT = NULL,
+    @ID_Recurso_Medico INT = NULL,
+    @ID_Sala INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico_Sala = @ID_Recurso_Medico_Sala)
+    BEGIN
+        RAISERROR('El ID de recurso médico en sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Recurso_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
+    BEGIN
+        RAISERROR('El ID de recurso médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    BEGIN
+        RAISERROR('El ID de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Recurso_Medico_Sala
+        SET 
+            Fecha = COALESCE(@Fecha, Fecha),
+            Cantidad_Recurso = COALESCE(@Cantidad_Recurso, Cantidad_Recurso),
+            ID_Recurso_Medico = COALESCE(@ID_Recurso_Medico, ID_Recurso_Medico),
+            ID_Sala = COALESCE(@ID_Sala, ID_Sala)
+        WHERE ID_Recurso_Medico_Sala = @ID_Recurso_Medico_Sala;
+
+        PRINT 'El recurso médico en sala se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el recurso médico en sala: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-------------Modificar Horario Trabajo
+
+CREATE PROCEDURE Sp_ModificarHorarioTrabajo
+(
+    @ID_Horario_Trabajo INT,
+    @Nombre_Horario VARCHAR(50) = NULL,
+    @Hora_Inicio TIME = NULL,
+    @Hora_Fin TIME = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
+    BEGIN
+        RAISERROR('El ID de horario de trabajo no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Horario_Trabajo
+        SET 
+            Nombre_Horario = COALESCE(@Nombre_Horario, Nombre_Horario),
+            Hora_Inicio = COALESCE(@Hora_Inicio, Hora_Inicio),
+            Hora_Fin = COALESCE(@Hora_Fin, Hora_Fin)
+        WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo;
+
+        PRINT 'El horario de trabajo se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el horario de trabajo: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-----------------Modificar Planificacion de Recursos
+
+CREATE PROCEDURE Sp_ModificarPlanificacionRecurso
+(
+    @ID_Planificacion INT,
+    @Descripcion_Planificacion VARCHAR(150) = NULL,
+    @Fecha_Planificacion DATE = NULL,
+    @ID_Sala INT = NULL,
+    @ID_Horario_Trabajo INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
+    BEGIN
+        RAISERROR('El ID de planificación no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    BEGIN
+        RAISERROR('El ID de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Horario_Trabajo IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
+    BEGIN
+        RAISERROR('El ID de horario de trabajo no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Planificacion_Recurso
+        SET 
+            Descripcion_Planificacion = COALESCE(@Descripcion_Planificacion, Descripcion_Planificacion),
+            Fecha_Planificacion = COALESCE(@Fecha_Planificacion, Fecha_Planificacion),
+            ID_Sala = COALESCE(@ID_Sala, ID_Sala),
+            ID_Horario_Trabajo = COALESCE(@ID_Horario_Trabajo, ID_Horario_Trabajo)
+        WHERE ID_Planificacion = @ID_Planificacion;
+
+        PRINT 'La planificación de recurso se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la planificación de recurso: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-----------Modificar Medico Planificacion Recurso
+
+CREATE PROCEDURE Sp_ModificarMedicoPlanificacionRecurso
+(
+    @ID_Medico_Planificacion_Recurso INT,
+    @Fecha_Planificacion_Personal DATE = NULL,
+    @ID_Planificacion INT = NULL,
+    @ID_Medico INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico_Planificacion_Recurso = @ID_Medico_Planificacion_Recurso)
+    BEGIN
+        RAISERROR('El ID de planificación del médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
+    BEGIN
+        RAISERROR('El ID de médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Planificacion IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
+    BEGIN
+        RAISERROR('El ID de planificación no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Medico_Planificacion_Recurso
+        SET 
+            Fecha_Planificacion_Personal = COALESCE(@Fecha_Planificacion_Personal, Fecha_Planificacion_Personal),
+            ID_Planificacion = COALESCE(@ID_Planificacion, ID_Planificacion),
+            ID_Medico = COALESCE(@ID_Medico, ID_Medico)
+        WHERE ID_Medico_Planificacion_Recurso = @ID_Medico_Planificacion_Recurso;
+
+        PRINT 'La planificación del médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la planificación del médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+------------Modificar Satisfaccion Paciente
+
+CREATE PROCEDURE Sp_ModificarSatisfaccionPaciente
+(
+    @ID_Satisfaccion INT,
+    @Fecha_Evaluacion DATE = NULL,
+    @Calificacion_Satisfaccion INT = NULL,
+    @ID_Cita INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion)
+    BEGIN
+        RAISERROR('El ID de satisfacción no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Cita IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Cita = @ID_Cita)
+    BEGIN
+        RAISERROR('El ID de cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Calificacion_Satisfaccion IS NOT NULL AND (@Calificacion_Satisfaccion < 1 OR @Calificacion_Satisfaccion > 5)
+    BEGIN
+        RAISERROR('La calificación de satisfacción debe estar entre 1 y 5.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Satisfaccion_Paciente
+        SET 
+            Fecha_Evaluacion = COALESCE(@Fecha_Evaluacion, Fecha_Evaluacion),
+            Calificacion_Satisfaccion = COALESCE(@Calificacion_Satisfaccion, Calificacion_Satisfaccion),
+            ID_Cita = COALESCE(@ID_Cita, ID_Cita)
+        WHERE ID_Satisfaccion = @ID_Satisfaccion;
+
+        PRINT 'La satisfacción del paciente se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la satisfacción del paciente: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-----------------Modificar Rol
+
+CREATE PROCEDURE Sp_ModificarRol
+(
+    @ID_Rol INT,
+    @Nuevo_Nombre_Rol VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Rol WHERE ID_Rol = @ID_Rol)
+    BEGIN
+        RAISERROR('El ID de rol no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Rol WHERE Nombre_Rol = @Nuevo_Nombre_Rol AND ID_Rol <> @ID_Rol)
+    BEGIN
+        RAISERROR('El nuevo nombre del rol ya existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Rol
+        SET Nombre_Rol = @Nuevo_Nombre_Rol
+        WHERE ID_Rol = @ID_Rol;
+
+        PRINT 'El rol se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el rol: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-----------------Modificar Usuario
+
+CREATE PROCEDURE Sp_ModificarUsuario
+(
+    @ID_Usuario INT,
+    @Nuevo_Nombre_Usuario VARCHAR(50) = NULL,
+    @Nuevo_Correo_Usuario VARCHAR(50) = NULL,
+	@Nueva_Contrasena_Usuario VARCHAR(50) = NULL,
+    @Nuevo_Rol INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Usuario WHERE ID_Usuario = @ID_Usuario)
+    BEGIN
+        RAISERROR('El ID de usuario no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Nuevo_Rol IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Rol WHERE ID_Rol = @Nuevo_Rol)
+    BEGIN
+        RAISERROR('El ID de rol no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Usuario
+        SET Nombre_Usuario = COALESCE(@Nuevo_Nombre_Usuario, Nombre_Usuario),
+            Correo_Usuario = COALESCE(@Nuevo_Correo_Usuario, Correo_Usuario),
+			Contraseña_Usuario = COALESCE(@Nueva_Contrasena_Usuario, Contraseña_Usuario),
+            ID_Rol = COALESCE(@Nuevo_Rol, ID_Rol)
+        WHERE ID_Usuario = @ID_Usuario;
+
+        PRINT 'El usuario se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el usuario: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+------------------Modificar Permiso
+
+CREATE PROCEDURE Sp_ModificarPermiso
+(
+    @ID_Permiso INT,
+    @Nuevo_Nombre_Permiso VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Permiso WHERE ID_Permiso = @ID_Permiso)
+    BEGIN
+        RAISERROR('El ID de permiso no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Permiso WHERE Nombre_Permiso = @Nuevo_Nombre_Permiso AND ID_Permiso <> @ID_Permiso)
+    BEGIN
+        RAISERROR('El nuevo nombre del permiso ya existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Permiso
+        SET Nombre_Permiso = @Nuevo_Nombre_Permiso
+        WHERE ID_Permiso = @ID_Permiso;
+
+        PRINT 'El permiso se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el permiso: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+--------------Modificar Rol Permiso
+
+CREATE PROCEDURE Sp_ModificarRolPermiso
+(
+    @ID_Rol_Permiso INT,
+    @Nuevo_ID_Rol INT = NULL,
+    @Nuevo_ID_Permiso INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso)
+    BEGIN
+        RAISERROR('El ID de relación rol-permiso no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Nuevo_ID_Rol IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Rol WHERE ID_Rol = @Nuevo_ID_Rol)
+    BEGIN
+        RAISERROR('El ID de rol no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Nuevo_ID_Permiso IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Permiso WHERE ID_Permiso = @Nuevo_ID_Permiso)
+    BEGIN
+        RAISERROR('El ID de permiso no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Rol_Permiso
+        SET ID_Rol = COALESCE(@Nuevo_ID_Rol, ID_Rol),
+            ID_Permiso = COALESCE(@Nuevo_ID_Permiso, ID_Permiso)
+        WHERE ID_Rol_Permiso = @ID_Rol_Permiso;
+
+        PRINT 'La relación rol-permiso se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la relación rol-permiso: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
