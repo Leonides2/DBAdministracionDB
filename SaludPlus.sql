@@ -1357,6 +1357,20 @@ BEGIN
 END;
 GO
 
+-------------------------------------------------Seguridad-------------------------------------------------------
+
+use SaludPlus
+go
+CREATE SCHEMA Administrador
+go
+CREATE SCHEMA Médico
+go
+CREATE SCHEMA Recepcionista
+go
+
+
+
+
 
 --- INSERCIONES EN EL SCRIPT DE INSERCIONES
 
@@ -1364,7 +1378,15 @@ GO
 
 
 CREATE VIEW vw_Paciente AS
-SELECT Nombre_Paciente ,Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula
+SELECT 
+ID_Paciente,
+Nombre_Paciente ,
+Apellido1_Paciente, 
+Apellido2_Paciente, 
+Telefono_Paciente, 
+Fecha_Nacimiento, 
+Direccion_Paciente, 
+Cedula
 FROM Paciente;
 GO
 
@@ -1404,7 +1426,34 @@ GO
 Select * from vw_Cita
 go
 */
+CREATE VIEW vw_Factura AS
+SELECT 
+Factura.Fecha_Factura,
+Factura.Monto_Total,
+Paciente.Cedula, 
+Tipo_Pago.Descripcion_Tipo_Pago
+FROM Factura inner join Paciente on Factura.ID_Paciente = Paciente.ID_Paciente
+left join Tipo_Pago on Tipo_Pago.ID_Tipo_Pago = Factura.ID_Tipo_Pago;
+GO
 
+/*
+	Select * from vw_Factura
+	go
+*/
+
+CREATE VIEW vw_Recurso_Medico_Sala AS
+SELECT 
+Recurso_Medico_Sala.Fecha,
+Recurso_Medico_Sala.Cantidad_Recurso,
+Recurso_Medico.Lote, 
+Sala.Nombre_Sala
+FROM Recurso_Medico_Sala inner join Recurso_Medico on Recurso_Medico.ID_Recurso_Medico = Recurso_Medico_Sala.ID_Recurso_Medico
+left join Sala on Sala.ID_Sala = Recurso_Medico_Sala.ID_Sala;
+GO
+/*
+	Select * from vw_Recurso_Medico_Sala
+	go
+*/
 
 --------------------------------------------------Procedimientos almacenados INSERT------------------------------
  ---------------------Registrar Paciente
@@ -1629,7 +1678,6 @@ USE SaludPlus
 GO
 CREATE PROCEDURE Sp_RegistrarEstadoCita
 (
-  
     @Estado VARCHAR(50)
 )
 AS
