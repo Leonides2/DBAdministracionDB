@@ -548,6 +548,7 @@ BEGIN
 
     IF EXISTS (SELECT * FROM inserted)
     BEGIN
+		
         INSERT INTO Auditoria (Nombre_Tabla, ID_Registro, Accion, FechaAuditoria, Usuario)
         SELECT 'Cita', ID_Cita, 'Inserción', GETDATE(), @Usuario
         FROM inserted;
@@ -1356,248 +1357,38 @@ BEGIN
 END;
 GO
 
-------------------------------------------------Inserciones 
-USE SaludPlus;
-GO
--- Inserciones para la tabla Paciente
-INSERT INTO Paciente (Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula)
-VALUES 
-('Juan', 'Perez', 'Gomez', '1234567890', '1980-01-01', 'Calle 1, Ciudad A', '12345698'),
-('Maria', 'Lopez', 'Martinez', '2345678901', '1990-02-02', 'Calle 2, Ciudad B', '123454322'),
-('Carlos', 'Garcia', 'Rodriguez', '3456789012', '1985-03-03', 'Calle 3, Ciudad C', '867905532'),
-('Ana', 'Hernandez', 'Sanchez', '4567890123', '1995-04-04', 'Calle 4, Ciudad D', '508975568'),
-('Luis', 'Martinez', 'Diaz', '5678901234', '2000-05-05', 'Calle 5, Ciudad E', '186790004');
 
--- Inserciones para la tabla Tipo Sala
-INSERT INTO Tipo_Sala (Descripcion_Tipo_Sala)
-VALUES 
-('Emergencias'),
-('Cirugia'),
-('Consulta General'),
-('Observacion'),
-('Laboratorio');
+--- INSERCIONES EN EL SCRIPT DE INSERCIONES
+
+--------------------------------------------------Vistas---------------------------------------------------------
+
+---Paciente
+
+CREATE VIEW vw_Paciente AS
+SELECT Nombre_Paciente ,Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula
+FROM Paciente;
 GO
 
--- Inserciones para la tabla Estado Sala
-INSERT INTO Estado_Sala (Nombre)
-VALUES 
-('activa');
+/*
+Select * from vw_Paciente
+go
+*/
+
+CREATE or alter VIEW vw_Medico AS
+SELECT 
+Medico.Nombre1_Medico, 
+Medico.Nombre2_Medico, 
+Medico.Apellido1_Medico, 
+Medico.Apellido2_Medico, 
+Medico.Telefono_Medico,
+Especialidad.Nombre_Especialidad
+FROM Medico inner join Especialidad on Especialidad.ID_Especialidad = Medico.ID_Especialidad;
 GO
 
--- Inserciones para la tabla Sala
-INSERT INTO Sala (Nombre_Sala, ID_Tipo_Sala, Capacidad_Sala, ID_Estado_Sala)
-VALUES 
-('Sala de Emergencias', 1, 5, 1),
-('Sala de Cirugia', 2, 10, 1),
-('Consulta General 1', 2, 3, 1),
-('Sala de Observacion', 4, 3, 1),
-('Laboratorio 1', 5, 2, 1);
-GO
-
--- Inserciones para la tabla Especialidad
-INSERT INTO Especialidad (Nombre_Especialidad)
-VALUES 
-('Cardiología'),
-('Dermatología'),
-('Radiología'),
-('Pediatría'),
-('Cirugía');
-GO
-
--- Inserciones para la tabla Medico
-INSERT INTO Medico (Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
-VALUES 
-('Pedro', 'Jose', 'Ramirez', 'Fernandez', '6789012345', 1),
-('Laura', 'Maria', 'Gonzalez', 'Lopez', '7890123456', 2),
-('Miguel', 'Angel', 'Torres', 'Perez', '8901234567', 3),
-('Sofia', 'Elena', 'Vargas', 'Garcia', '9012345678', 4),
-('Diego', 'Luis', 'Castro', 'Martinez', '1234567890', 5);
-GO
-
--- Inserciones para la tabla Estado Cita
-INSERT INTO Estado_Cita (Estado)
-VALUES 
-('Programada'),   
-('Realizada'),
-('Cancelada');
-GO
-
--- Inserciones para la tabla Cita
-INSERT INTO Cita (Fecha_Cita, Hora_Cita, ID_Estado_Cita, ID_Paciente, ID_Medico)
-VALUES 
-('2024-01-01', '08:00', 1, 1, 1),   
-('2024-02-01', '09:00', 2, 2, 2),
-('2024-03-01', '10:00', 3, 3, 3),
-('2024-04-01', '11:00', 1, 4, 4),
-('2024-05-01', '12:00', 2, 5, 5);
-GO
-
--- Inserciones para la tabla Tipo Pago
-INSERT INTO Tipo_Pago (Descripcion_Tipo_Pago)
-VALUES 
-('Efectivo'),
-('Tarjeta de credito'),
-('Tarjeta de debito'),
-('Transferencia Bancaria'),
-('Sinpe Movil');
-GO
-
--- Inserciones para la tabla Factura
-INSERT INTO Factura (Fecha_Factura, Monto_Total, ID_Paciente, ID_Cita, ID_Tipo_Pago)
-VALUES 
-('2024-01-01', 1000.00, 1, 1, 1),
-('2024-02-01', 2000.00, 2, 2, 2),
-('2024-03-01', 3000.00, 3, 3, 3),
-('2024-04-01', 4000.00, 4, 4, 4),
-('2024-05-01', 5000.00, 5, 5, 5);
-GO
-
--- Inserciones para la tabla Historial_Medico
-INSERT INTO Historial_Medico (Fecha_Registro, ID_Paciente)
-VALUES 
-('2024-01-01', 1),   
-('2024-02-01', 2),
-('2024-03-01', 3),
-('2024-04-01', 4),
-('2024-05-01', 5);
-GO
-
--- Inserciones para la tabla Tipo Procedimiento
-INSERT INTO Tipo_Procedimiento (Nombre_Procedimiento)
-VALUES 
-('Cita de Cirugía'),   
-('Cita de Laboratorio'),
-('Cita de Consulta General'),
-('Emergencias'),
-('Cita de Diagnostico');
-GO
-
--- Inserciones para la tabla Procedimiento
-INSERT INTO Procedimiento (Descripcion_Procedimiento, Fecha_Procedimiento, Hora_Procedimiento, Monto_Procedimiento, Receta, ID_Sala, ID_Historial_Medico, ID_Cita, ID_Tipo_Procedimiento)
-VALUES 
-('Cirugía de corazon', '2024-01-01', '14:00', 10000, 'Ibuprofeno cada seis horas por tres días', 1, 1, 1, 1), 
-('Entrada de emergencia por pierna lesionada', '2024-02-01', '12:30', 200000, 'Ibuprofeno cada seis horas por 5 días', 2, 2, 2, 4),
-('Enfermedad de piel', '2024-03-01', '09:00', 30000, 'Paracetamol cada ocho horas por cinco días', 3, 3, 3, 3),
-('Por dolores fuertes de cabeza', '2024-04-01', '10:00', 400000, 'Paracetamol cada ocho horas por siete días', 4, 4, 4, 3),
-('Laboratorio de cardiología', '2024-05-01', '15:00', 5000000, 'Ibuprofeno cada seis horas por seis días', 5, 5, 5, 2);
-GO
-
--- Inserciones para la tabla Satisfaccion_Paciente
-INSERT INTO Satisfaccion_Paciente (Fecha_Evaluacion, Calificacion_Satisfaccion, ID_Cita)
-VALUES 
-('2024-01-02', 5, 1),
-('2024-02-02', 4, 2),
-('2024-03-02', 3, 3),
-('2024-04-02', 2, 4),
-('2024-05-02', 1, 5);
-GO
-
--- Inserciones para la tabla Tipo_Recurso
-INSERT INTO Tipo_Recurso (Titulo_Recurso)
-VALUES 
-('Medicamento'),
-('Equipo Médico'),
-('Material de Oficina'),
-('Instrumento Quirúrgico'),
-('Suministro Médico');
-GO
-
--- Inserciones para la tabla Estado_Recurso_Medico
-INSERT INTO Estado_Recurso_Medico (Estado_Recurso)
-VALUES 
-('Disponible'),
-('Agotado');
-GO
-
--- Inserciones para la tabla Recurso_Medico
-INSERT INTO Recurso_Medico (Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso, ID_Estado_Recurso_Medico)
-VALUES 
-('Recurso 1', 'Lote 1', 100, 'Almacén 1', 1, 1),
-('Recurso 2', 'Lote 2', 200, 'Almacén 2', 2, 2),
-('Recurso 3', 'Lote 3', 300, 'Almacén 3', 3, 1),
-('Recurso 4', 'Lote 4', 400, 'Almacén 4', 4, 2),
-('Recurso 5', 'Lote 5', 500, 'Almacén 5', 5, 1);
-GO
-
--- Inserciones para la tabla Horario_Trabajo
-INSERT INTO Horario_Trabajo (Nombre_Horario, Hora_Inicio, Hora_Fin)
-VALUES 
-('Mañana', '08:00', '12:00'),
-('Tarde', '13:00', '17:00'),
-('Noche', '18:00', '22:00'),
-('Madrugada', '23:00', '03:00'),
-('Completo', '08:00', '17:00');
-GO 
-
--- Inserciones para la tabla Planificacion_Recurso
-INSERT INTO Planificacion_Recurso (Descripcion_Planificacion, Fecha_Planificacion, ID_Sala, ID_Horario_Trabajo)
-VALUES 
-('Planificación 1', '2024-01-01', 1, 1),
-('Planificación 2', '2024-02-01', 2, 2),
-('Planificación 3', '2024-03-01', 3, 3),
-('Planificación 4', '2024-04-01', 4, 4),
-('Planificación 5', '2024-05-01', 5, 5);
-GO
-
--- Inserciones de la tabla Medico_Planificacion_Recurso
-INSERT INTO Medico_Planificacion_Recurso (Fecha_Planificacion_Personal, ID_Medico, ID_Planificacion)
-VALUES
-('2024-01-01', 1, 1),
-('2024-01-01', 2, 2),
-('2024-01-01', 3, 3),
-('2024-01-01', 4, 4),
-('2024-01-01', 5, 5);
-GO
-
--- Inserciones para la tabla Recurso_Medico_Sala
-INSERT INTO Recurso_Medico_Sala (Fecha, Cantidad_Recurso, ID_Recurso_Medico, ID_Sala)
-VALUES 
-('2024-01-01', 20, 1, 1),
-('2024-01-01', 30, 2, 2),
-('2024-01-01', 40, 3, 3),
-('2024-01-01', 50, 4, 4),
-('2024-01-01', 60, 5, 5);
-GO
-
--- Inserciones de Rol
-INSERT INTO Rol (Nombre_Rol) 
-VALUES
-('Administrador'),
-('Médico'),
-('Recepcionista');
-GO
-
--- Inserciones para el Usuario
-INSERT INTO Usuario (Nombre_Usuario, Correo_Usuario, Contraseña_Usuario, ID_Rol) 
-VALUES
-('Juan Pérez', 'juan.perez@saludplus.com', 'contraseña123', 1),  
-('María Gómez', 'maria.gomez@saludplus.com', 'contraseña456', 2),  
-('Carlos López', 'carlos.lopez@saludplus.com', 'contraseña789', 3);
-GO
-
--- Inserciones de permisos
-INSERT INTO Permiso (Nombre_Permiso) 
-VALUES 
-('Crear Citas'),
-('Ver Citas'),
-('Modificar Citas'),
-('Eliminar Citas'),
-('Acceso a Historial Médico'),
-('Gestionar Pacientes');
-GO
-
--- Inserciones de Rol_Permisos
-INSERT INTO Rol_Permiso (ID_Rol, ID_Permiso) 
-VALUES 
-(1, 1),  -- Administrador puede crear citas
-(1, 2),  -- Administrador puede ver citas
-(1, 3),  -- Administrador puede modificar citas
-(1, 4),  -- Administrador puede eliminar citas
-(1, 5),  -- Administrador puede acceder a historial médico
-(1, 6);  -- Administrador puede gestionar pacientes
-GO
-
-
+/*
+Select * from vw_Medico
+go
+*/
 
 --------------------------------------------------Procedimientos almacenados INSERT------------------------------
  ---------------------Registrar Paciente
@@ -1616,16 +1407,74 @@ CREATE PROCEDURE Sp_RegistrarPaciente
 AS
 BEGIN
     SET NOCOUNT ON;
-
     BEGIN TRY
-        INSERT INTO Paciente (  Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula)
-        VALUES ( @Nombre_Paciente, @Apellido1_Paciente, @Apellido2_Paciente, @Telefono_Paciente, @Fecha_Nacimiento, @Direccion_Paciente, @Cedula);
+		
+		IF LEN(@Nombre_Paciente) < 1
+        BEGIN
+            RAISERROR (N'Debe tener nombre', 16, 1);
+            RETURN;
+        END
+
+		IF LEN(@Apellido1_Paciente) < 1
+        BEGIN
+            RAISERROR (N'Debe tener primer apellido', 16, 1);
+            RETURN;
+        END
+
+		IF LEN(@Apellido2_Paciente) < 1
+        BEGIN
+            RAISERROR (N'Debe tener segundo apellido', 16, 1);
+            RETURN;
+        END
+
+		IF LEN(@Direccion_Paciente) < 1
+        BEGIN
+            RAISERROR (N'Debe tener direccion', 16, 1);
+            RETURN;
+        END
+		
+		IF @Fecha_Nacimiento is null
+		BEGIN
+			RAISERROR (N'La fecha no puede ser nula', 16, 1);
+            RETURN;
+		END
+
+		IF LEN(@Cedula) <> 9
+        BEGIN
+            RAISERROR (N'La cédula debe tener exactamente 9 dígitos', 16, 1);
+            RETURN;
+        END
+        -- Verificar si ya existe un paciente con la misma cédula
+        IF EXISTS (SELECT 1 FROM Paciente WHERE Cedula = @Cedula)
+        BEGIN
+            RAISERROR (N'Ya existe un usuario con esa cédula registrado', 16, 1);
+            RETURN;
+        END
+
+        -- Insertar el nuevo paciente si no existe la cédula
+        INSERT INTO Paciente 
+        (Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula)
+        VALUES 
+        (
+		TRIM(@Nombre_Paciente), 
+		TRIM(@Apellido1_Paciente), 
+		TRIM(@Apellido2_Paciente), 
+		TRIM(@Telefono_Paciente), 
+		TRIM(@Fecha_Nacimiento), 
+		TRIM(@Direccion_Paciente), 
+		TRIM(@Cedula));
 
         PRINT 'El paciente se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el paciente: ' + ERROR_MESSAGE();
-    END CATCH
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el paciente: %s', 16, 1, @ErrorMessage);
+	END CATCH;
 END;
 GO
 
@@ -1636,6 +1485,12 @@ GO
 EXEC Sp_RegistrarPaciente   @Nombre_Paciente = 'Pedro', @Apellido1_Paciente = 'Fernandez', @Apellido2_Paciente = 'Torres',
     @Telefono_Paciente = '5678901122',@Fecha_Nacimiento = '1988-06-06',@Direccion_Paciente = 'Calle 6, Ciudad F',@Cedula = '987654321';
 	go
+
+/*
+EXEC Sp_RegistrarPaciente 'Pedro','Fernandez','Torres',
+    '5678901122','1988-06-06','Calle 6, Ciudad F','987654321';
+	go
+*/
 
 -- Insertar paciente 2
 EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Lucia', @Apellido1_Paciente = 'Cruz',@Apellido2_Paciente = 'Mendez', 
@@ -1652,6 +1507,8 @@ EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Isabella',@Apellido1_Paciente = '
     @Telefono_Paciente = '8901234455',@Fecha_Nacimiento = '1995-09-09',@Direccion_Paciente = 'Calle 9, Ciudad I',@Cedula = '321654987';
 	go
 
+
+
 ------------Registrar Especialidad
 USE SaludPlus
 GO
@@ -1663,19 +1520,33 @@ AS
 BEGIN
     SET NOCOUNT ON;
 	 -- Verificar si el nombre de la especialidad ya existe
-    IF EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Nombre_Especialidad)
-    BEGIN
-        RAISERROR('El nombre de la especialidad ya existe.', 16, 1);
-        RETURN;
-    END
-    BEGIN TRY
+	BEGIN TRY
+		
+		IF LEN(TRIM(@Nombre_Especialidad)) < 1
+        BEGIN
+            RAISERROR (N'Debe tener un nombre', 16, 1);
+            RETURN;
+        END
+		
+		IF EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Nombre_Especialidad)
+		BEGIN
+			RAISERROR('El nombre de la especialidad ya existe.', 16, 1);
+			RETURN;
+		END
+    
         INSERT INTO Especialidad (  Nombre_Especialidad)
-        VALUES ( @Nombre_Especialidad);
+        VALUES ( TRIM(@Nombre_Especialidad));
 
         PRINT 'La especialidad se ha registrado correctamente.';
-    END TRY
+	END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la especialidad: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar la especialidad: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
@@ -1699,26 +1570,63 @@ CREATE PROCEDURE Sp_RegistrarMedico
     @Apellido1_Medico VARCHAR(50),
     @Apellido2_Medico VARCHAR(50),
     @Telefono_Medico VARCHAR(50),
-    @ID_Especialidad INT
+    @Especialidad VARCHAR(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
+	BEGIN TRY
     -- Verificar si la especialidad existe
-    IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE ID_Especialidad = @ID_Especialidad)
+    IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Especialidad)
     BEGIN
-        RAISERROR('El ID de especialidad no existe.', 16, 1);
+		--Sugerir opciones en el error
+
+		DECLARE @Sugerencias NVARCHAR(1000) = ''
+		DECLARE @SugeInSitu varchar(50)
+
+		DECLARE SugerenciasMedico Cursor 
+		For Select top 5 Nombre_Especialidad from Especialidad where Lower(Nombre_Especialidad) like '%'+Lower(@Especialidad)+'%'
+
+		OPEN SugerenciasMedico 
+		fetch SugerenciasMedico into @SugeInSitu
+		WHILE(@@FETCH_STATUS = 0)
+		BEGIN
+			SET @Sugerencias =  @Sugerencias + @SugeInSitu + ', '
+			fetch SugerenciasMedico into @SugeInSitu
+		END
+		CLOSE SugerenciasMedico
+		Deallocate SugerenciasMedico
+
+        RAISERROR('La especialidad no existe. ¿Quizo decir alguna de las siguientes? : %s', 16, 1, @Sugerencias);
         RETURN;
     END
-    BEGIN TRY
-        INSERT INTO Medico (  Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
-        VALUES (@Nombre1_Medico, @Nombre2_Medico, @Apellido1_Medico, @Apellido2_Medico, @Telefono_Medico, @ID_Especialidad);
+
+	IF EXISTS (
+	SELECT
+	)
+
+
+		Declare @ID_Especialidad int = (Select top 1 ID_Especialidad from Especialidad where Nombre_Especialidad like @Especialidad)
+        INSERT INTO Medico (Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
+        VALUES (
+		TRIM(@Nombre1_Medico), 
+		TRIM(@Nombre2_Medico), 
+		TRIM(@Apellido1_Medico), 
+		TRIM(@Apellido2_Medico), 
+		TRIM(@Telefono_Medico), 
+		TRIM(@ID_Especialidad));
 
         PRINT 'El medico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el medico: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el medico: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
@@ -1727,26 +1635,26 @@ GO
 
 -- Insertar m�dico 1
 EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Antonio',@Nombre2_Medico = 'Luis',@Apellido1_Medico = 'Salazar',@Apellido2_Medico = 'Jimenez', 
-    @Telefono_Medico = '2345678901',@ID_Especialidad = 1; -- Cardiología
+    @Telefono_Medico = '2345678901',@Especialidad = 'Cardiología'; -- Cardiología
 	go
 
 -- Insertar m�dico 2
 EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Carmen',@Nombre2_Medico = 'Teresa',@Apellido1_Medico = 'Ruiz',@Apellido2_Medico = 'Mena', 
-    @Telefono_Medico = '3456789012',@ID_Especialidad = 2; -- Dermatología
+    @Telefono_Medico = '3456789012',@Especialidad = 'Dermatología'; -- Dermatología
 	go
 -- Insertar m�dico 3
 EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Francisco',@Nombre2_Medico = 'Javier',@Apellido1_Medico = 'Hernandez',@Apellido2_Medico = 'Bermudez', 
-    @Telefono_Medico = '4567890123',@ID_Especialidad = 3; -- Radiología
+    @Telefono_Medico = '4567890123',@Especialidad = 'Radiología'; -- Radiología
 	go
 
 -- Insertar m�dico 4
 EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Elena',@Nombre2_Medico = 'Cristina',@Apellido1_Medico = 'Alvarez',@Apellido2_Medico = 'Luna', 
-    @Telefono_Medico = '5678901234',@ID_Especialidad = 4; -- Pediatría
+    @Telefono_Medico = '5678901234',@Especialidad = 'Pediatría'; -- Pediatría
 	go
 
 -- Insertar m�dico 5
 EXEC Sp_RegistrarMedico @Nombre1_Medico = 'Ricardo',@Nombre2_Medico = 'Andrés',@Apellido1_Medico = 'Morales',@Apellido2_Medico = 'Santos', 
-    @Telefono_Medico = '6789012345',@ID_Especialidad = 5; -- Cirugía
+    @Telefono_Medico = '6789012345',@Especialidad = 'Cirugía'; -- Cirugía
 	go
 
 -------Registrar Estado de la cita
