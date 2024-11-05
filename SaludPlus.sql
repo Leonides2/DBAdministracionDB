@@ -1459,7 +1459,7 @@ GO
  ---------------------Registrar Paciente
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarPaciente
+CREATE OR ALTER PROCEDURE Sp_RegistrarPaciente
 (
     @Nombre_Paciente VARCHAR(50),
     @Apellido1_Paciente VARCHAR(50),
@@ -1525,13 +1525,13 @@ BEGIN
 		TRIM(@Apellido1_Paciente), 
 		TRIM(@Apellido2_Paciente), 
 		TRIM(@Telefono_Paciente), 
-		TRIM(@Fecha_Nacimiento), 
+		@Fecha_Nacimiento, 
 		TRIM(@Direccion_Paciente), 
 		TRIM(@Cedula));
 
         PRINT 'El paciente se ha registrado correctamente.';
 
-		DECLARE @Current_Usuario int = (Select ID_Paciente from Paciente Where Cedula = Cedula)
+		DECLARE @Current_Usuario int = (Select ID_Paciente from Paciente Where Cedula = @Cedula)
 
 		 -- Insertar historial médico con la fecha de registro automática
         INSERT INTO Historial_Medico (Fecha_Registro, ID_Paciente)
@@ -1555,7 +1555,7 @@ GO
 ------------Registrar Especialidad
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarEspecialidad
+CREATE OR ALTER PROCEDURE Sp_RegistrarEspecialidad
 (
     @Nombre_Especialidad VARCHAR(50)
 )
@@ -1599,7 +1599,7 @@ GO
 ------------------------Registrar Medico
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarMedico
+CREATE OR ALTER PROCEDURE Sp_RegistrarMedico
 (
  
     @Nombre1_Medico VARCHAR(50),
@@ -1676,7 +1676,7 @@ GO
 -------Registrar Estado de la cita
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarEstadoCita
+CREATE OR ALTER PROCEDURE Sp_RegistrarEstado_Cita
 (
     @Estado VARCHAR(50)
 )
@@ -1713,7 +1713,7 @@ GO
 ---------------Registrar Cita
 Use SaludPlus
 go
-CREATE PROCEDURE Sp_RegistrarCita
+CREATE OR ALTER PROCEDURE Sp_RegistrarCita
 (
     
 	@Fecha_Cita DATE,
@@ -1783,7 +1783,7 @@ GO
 -----------------Tipo de Pago
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarTipoPago
+CREATE OR ALTER PROCEDURE Sp_RegistrarTipo_Pago
 (
   
     @Descripcion_Tipo_Pago VARCHAR(50)
@@ -1820,7 +1820,7 @@ GO
 --------------Registrar Factura
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarFactura
+CREATE OR ALTER PROCEDURE Sp_RegistrarFactura
 (
 	@Fecha_Factura DATE,
     @Monto_Total MONEY,
@@ -1868,7 +1868,7 @@ GO
 --------------------Insertar Historial Medico
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarHistorialMedico
+CREATE OR ALTER PROCEDURE Sp_RegistrarHistorial_Medico
 (
     @ID_Paciente INT
 )
@@ -1902,16 +1902,16 @@ GO
 
 
  -- Insertar historial médico para el paciente con ID 6
-EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 6;
+EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 6;
 go
 -- Insertar historial médico para el paciente con ID 7
-EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 7;
+EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 7;
 go
 -- Insertar historial médico para el paciente con ID 8
-EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 8;
+EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 8;
 go
 -- Insertar historial médico para el paciente con ID 9
-EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 9;
+EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 9;
 go
 
 --------
@@ -1925,7 +1925,7 @@ Sigo mañana
 -----------Insertar Estado de la Sala
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarEstadoSala
+CREATE OR ALTER PROCEDURE Sp_RegistrarEstado_Sala
 (
    
     @Nombre VARCHAR(50)
@@ -1952,19 +1952,19 @@ END;
 GO
 
 -- Insertar estado de sala 1
-EXEC Sp_RegistrarEstadoSala  @Nombre = 'Inactiva';
+EXEC Sp_RegistrarEstado_Sala  @Nombre = 'Inactiva';
 go
 -- Insertar estado de sala 2
-EXEC Sp_RegistrarEstadoSala  @Nombre = 'En mantenimiento';
+EXEC Sp_RegistrarEstado_Sala  @Nombre = 'En mantenimiento';
 go
 -- Insertar estado de sala 3
-EXEC Sp_RegistrarEstadoSala  @Nombre = 'Cerrada';
+EXEC Sp_RegistrarEstado_Sala  @Nombre = 'Cerrada';
 go
 
 ------------------Registrar Tipo de Sala
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarTipoSala
+CREATE OR ALTER PROCEDURE Sp_RegistrarTipo_Sala
 (
     @Descripcion_Tipo_Sala VARCHAR(50)
 )
@@ -1990,22 +1990,22 @@ END;
 GO
 
 -- Insertar tipo de sala 1
-EXEC Sp_RegistrarTipoSala  @Descripcion_Tipo_Sala = 'Ginecología';
+EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Ginecología';
 go
 -- Insertar tipo de sala 2
-EXEC Sp_RegistrarTipoSala  @Descripcion_Tipo_Sala = 'Traumatología';
+EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Traumatología';
 go
 -- Insertar tipo de sala 3
-EXEC Sp_RegistrarTipoSala  @Descripcion_Tipo_Sala = 'Cardiología';
+EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Cardiología';
 go
 -- Insertar tipo de sala 5
-EXEC Sp_RegistrarTipoSala  @Descripcion_Tipo_Sala = 'Oncología';
+EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Oncología';
 go
 
 -------------------Insertar Sala  
 Use SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarSala
+CREATE OR ALTER PROCEDURE Sp_RegistrarSala
 (
     @Nombre_Sala VARCHAR(50),
     @Capacidad_Sala INT,
@@ -2060,7 +2060,7 @@ go
 ------------------Registrar Tipo de Procedimiento 
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarTipoProcedimiento
+CREATE OR ALTER PROCEDURE Sp_RegistrarTipo_Procedimiento
 (
     @Nombre_Procedimiento VARCHAR(50)
 )
@@ -2085,19 +2085,19 @@ BEGIN
 END;
 GO
 -- Insertar tipo de procedimiento 1
-EXEC Sp_RegistrarTipoProcedimiento  @Nombre_Procedimiento = 'Cita de Ginecología';
+EXEC Sp_RegistrarTipo_Procedimiento  @Nombre_Procedimiento = 'Cita de Ginecología';
 go
 -- Insertar tipo de procedimiento 2
-EXEC Sp_RegistrarTipoProcedimiento   @Nombre_Procedimiento = 'Cita de Traumatología';
+EXEC Sp_RegistrarTipo_Procedimiento   @Nombre_Procedimiento = 'Cita de Traumatología';
 go
 -- Insertar tipo de procedimiento 3
-EXEC Sp_RegistrarTipoProcedimiento  @Nombre_Procedimiento = 'Cita de Cardiología';
+EXEC Sp_RegistrarTipo_Procedimiento  @Nombre_Procedimiento = 'Cita de Cardiología';
 go
 
 ---------------------Registrar Procedimiento
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarProcedimiento
+CREATE OR ALTER PROCEDURE Sp_RegistrarProcedimiento
 (
     @Descripcion_Procedimiento VARCHAR(150),
     @Fecha_Procedimiento DATE,
@@ -2169,7 +2169,7 @@ EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Consulta de ortope
 -------------Registrar Estado del Recurso Medico
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarEstadoRecursoMedico
+CREATE OR ALTER PROCEDURE Sp_RegistrarEstado_Recurso_Medico
 (
      
     @Estado_Recurso VARCHAR(50)
@@ -2195,18 +2195,18 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarEstadoRecursoMedico  @Estado_Recurso = 'En mantenimiento';
+EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'En mantenimiento';
 go
-EXEC Sp_RegistrarEstadoRecursoMedico  @Estado_Recurso = 'Reparación necesaria';
+EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Reparación necesaria';
 go
-EXEC Sp_RegistrarEstadoRecursoMedico  @Estado_Recurso = 'Fuera de servicio';
+EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Fuera de servicio';
 go
-EXEC Sp_RegistrarEstadoRecursoMedico  @Estado_Recurso = 'Reservado';
+EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Reservado';
 go
 --------------------Registrar Tipo de Recurso
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarTipoRecurso
+CREATE OR ALTER PROCEDURE Sp_RegistrarTipo_Recurso
 (
     @Titulo_Recurso VARCHAR(50)
 )
@@ -2231,19 +2231,19 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarTipoRecurso  @Titulo_Recurso = 'Recurso de Diagnóstico';
+EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Recurso de Diagnóstico';
 go
-EXEC Sp_RegistrarTipoRecurso  @Titulo_Recurso = 'Equipos de Protección Personal';
+EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Equipos de Protección Personal';
 go
-EXEC Sp_RegistrarTipoRecurso  @Titulo_Recurso = 'Suministros de Emergencia';
+EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Suministros de Emergencia';
 go
-EXEC Sp_RegistrarTipoRecurso  @Titulo_Recurso = 'Material de Curación';
+EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Material de Curación';
 go
 
 ---------------Insertar Recurso Medico
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarRecursoMedico
+CREATE OR ALTER PROCEDURE Sp_RegistrarRecurso_Medico
 (
     @Nombre_Recurso VARCHAR(50),
     @Lote VARCHAR(50),
@@ -2281,16 +2281,16 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarRecursoMedico   @Nombre_Recurso = 'Recurso 6',@Lote = 'Lote 6',@Cantidad_Stock_Total = 150,@Ubicacion_Recurso = 'Almacen 6', 
+EXEC Sp_RegistrarRecurso_Medico   @Nombre_Recurso = 'Recurso 6',@Lote = 'Lote 6',@Cantidad_Stock_Total = 150,@Ubicacion_Recurso = 'Almacen 6', 
     @ID_Tipo_Recurso = 1,@ID_Estado_Recurso_Medico = 4;
 	go
-EXEC Sp_RegistrarRecursoMedico  @Nombre_Recurso = 'Recurso 7',@Lote = 'Lote 7',@Cantidad_Stock_Total = 250,@Ubicacion_Recurso = 'Almacen 7', 
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 7',@Lote = 'Lote 7',@Cantidad_Stock_Total = 250,@Ubicacion_Recurso = 'Almacen 7', 
     @ID_Tipo_Recurso = 2,@ID_Estado_Recurso_Medico = 6;
 	go
-EXEC Sp_RegistrarRecursoMedico  @Nombre_Recurso = 'Recurso 8',@Lote = 'Lote 8',@Cantidad_Stock_Total = 350,@Ubicacion_Recurso = 'Almacen 8', 
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 8',@Lote = 'Lote 8',@Cantidad_Stock_Total = 350,@Ubicacion_Recurso = 'Almacen 8', 
     @ID_Tipo_Recurso = 3,@ID_Estado_Recurso_Medico = 5;
 	go
-EXEC Sp_RegistrarRecursoMedico  @Nombre_Recurso = 'Recurso 9',@Lote = 'Lote 9',@Cantidad_Stock_Total = 450,@Ubicacion_Recurso = 'Almacen 9', 
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 9',@Lote = 'Lote 9',@Cantidad_Stock_Total = 450,@Ubicacion_Recurso = 'Almacen 9', 
     @ID_Tipo_Recurso = 6,@ID_Estado_Recurso_Medico = 2;
 
 
@@ -2298,7 +2298,7 @@ EXEC Sp_RegistrarRecursoMedico  @Nombre_Recurso = 'Recurso 9',@Lote = 'Lote 9',@
 
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarRecursoMedicoSala
+CREATE OR ALTER PROCEDURE Sp_RegistrarRecurso_Medico_Sala
 (
     @Fecha DATE,
     @Cantidad_Recurso INT,
@@ -2335,13 +2335,13 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-01',@Cantidad_Recurso = 25,@ID_Recurso_Medico = 1,@ID_Sala = 1;
+EXEC Sp_RegistrarRecurso_Medico_Sala  @Fecha = '2024-02-01',@Cantidad_Recurso = 25,@ID_Recurso_Medico = 1,@ID_Sala = 1;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-02',@Cantidad_Recurso = 35,@ID_Recurso_Medico = 2,@ID_Sala = 2;
+EXEC Sp_RegistrarRecurso_Medico_Sala  @Fecha = '2024-02-02',@Cantidad_Recurso = 35,@ID_Recurso_Medico = 2,@ID_Sala = 2;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-03',@Cantidad_Recurso = 45,@ID_Recurso_Medico = 6,@ID_Sala = 3;
+EXEC Sp_RegistrarRecurso_Medico_Sala  @Fecha = '2024-02-03',@Cantidad_Recurso = 45,@ID_Recurso_Medico = 6,@ID_Sala = 3;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-04',@Cantidad_Recurso =  55,@ID_Recurso_Medico = 7,@ID_Sala = 8;
+EXEC Sp_RegistrarRecurso_Medico_Sala  @Fecha = '2024-02-04',@Cantidad_Recurso =  55,@ID_Recurso_Medico = 7,@ID_Sala = 8;
 go
 
 
@@ -2349,7 +2349,7 @@ go
 ------------- insertar Horario de trabajo
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarHorarioTrabajo
+CREATE OR ALTER PROCEDURE Sp_RegistrarHorario_Trabajo
 (
     @Nombre_Horario VARCHAR(50),
     @Hora_Inicio TIME,
@@ -2376,18 +2376,18 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarHorarioTrabajo  @Nombre_Horario = 'Turno de fin de semana', @Hora_Inicio = '09:00',@Hora_Fin = '13:00';
+EXEC Sp_RegistrarHorario_Trabajo  @Nombre_Horario = 'Turno de fin de semana', @Hora_Inicio = '09:00',@Hora_Fin = '13:00';
 go
-EXEC Sp_RegistrarHorarioTrabajo  @Nombre_Horario = 'Turno de tarde extendido',@Hora_Inicio = '14:00',@Hora_Fin = '18:30';
+EXEC Sp_RegistrarHorario_Trabajo  @Nombre_Horario = 'Turno de tarde extendido',@Hora_Inicio = '14:00',@Hora_Fin = '18:30';
 go
-EXEC Sp_RegistrarHorarioTrabajo  @Nombre_Horario = 'Turno nocturno',@Hora_Inicio = '20:00', @Hora_Fin = '23:00';
+EXEC Sp_RegistrarHorario_Trabajo  @Nombre_Horario = 'Turno nocturno',@Hora_Inicio = '20:00', @Hora_Fin = '23:00';
 go
-EXEC Sp_RegistrarHorarioTrabajo  @Nombre_Horario = 'Horario de consultas especiales',@Hora_Inicio = '10:00',@Hora_Fin = '14:00';
+EXEC Sp_RegistrarHorario_Trabajo  @Nombre_Horario = 'Horario de consultas especiales',@Hora_Inicio = '10:00',@Hora_Fin = '14:00';
 go
 ------------------------------Registrar Planificacion de Recurso
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarPlanificacionRecurso
+CREATE OR ALTER PROCEDURE Sp_RegistrarPlanificacion_Recurso
 (
     @Descripcion_Planificacion VARCHAR(150),
     @Fecha_Planificacion DATE,
@@ -2423,23 +2423,23 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarPlanificacionRecurso  @Descripcion_Planificacion = 'Planificación 6',@Fecha_Planificacion = '2024-06-01',@ID_Sala = 1, 
+EXEC Sp_RegistrarPlanificacion_Recurso  @Descripcion_Planificacion = 'Planificación 6',@Fecha_Planificacion = '2024-06-01',@ID_Sala = 1, 
     @ID_Horario_Trabajo = 1;
 	go
-EXEC Sp_RegistrarPlanificacionRecurso  @Descripcion_Planificacion = 'Planificación 7',@Fecha_Planificacion = '2024-07-01',@ID_Sala = 2, 
+EXEC Sp_RegistrarPlanificacion_Recurso  @Descripcion_Planificacion = 'Planificación 7',@Fecha_Planificacion = '2024-07-01',@ID_Sala = 2, 
     @ID_Horario_Trabajo = 2;
 	go
-EXEC Sp_RegistrarPlanificacionRecurso  @Descripcion_Planificacion = 'Planificación 8',@Fecha_Planificacion = '2024-08-01',@ID_Sala = 8, 
+EXEC Sp_RegistrarPlanificacion_Recurso  @Descripcion_Planificacion = 'Planificación 8',@Fecha_Planificacion = '2024-08-01',@ID_Sala = 8, 
     @ID_Horario_Trabajo = 5;
 	go
-EXEC Sp_RegistrarPlanificacionRecurso  @Descripcion_Planificacion = 'Planificación 9',@Fecha_Planificacion = '2024-09-01',@ID_Sala = 3, 
+EXEC Sp_RegistrarPlanificacion_Recurso  @Descripcion_Planificacion = 'Planificación 9',@Fecha_Planificacion = '2024-09-01',@ID_Sala = 3, 
     @ID_Horario_Trabajo = 8;
 	go
 
 ----------- insertar Medico Planificacion de Recursos
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarMedicoPlanificacionRecurso
+CREATE OR ALTER PROCEDURE Sp_RegistrarMedico_Planificacion_Recurso
 (
      
     @Fecha_Planificacion_Personal DATE,
@@ -2475,18 +2475,18 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarMedicoPlanificacionRecurso  @Fecha_Planificacion_Personal = '2024-02-01',@ID_Planificacion = 1,@ID_Medico = 1;
+EXEC Sp_RegistrarMedico_Planificacion_Recurso  @Fecha_Planificacion_Personal = '2024-02-01',@ID_Planificacion = 1,@ID_Medico = 1;
 go
-EXEC Sp_RegistrarMedicoPlanificacionRecurso  @Fecha_Planificacion_Personal = '2024-02-01',@ID_Planificacion = 2,@ID_Medico = 2;
+EXEC Sp_RegistrarMedico_Planificacion_Recurso  @Fecha_Planificacion_Personal = '2024-02-01',@ID_Planificacion = 2,@ID_Medico = 2;
 go
-EXEC Sp_RegistrarMedicoPlanificacionRecurso  @Fecha_Planificacion_Personal = '2024-02-01',@ID_Planificacion = 3,@ID_Medico = 3;
+EXEC Sp_RegistrarMedico_Planificacion_Recurso  @Fecha_Planificacion_Personal = '2024-02-01',@ID_Planificacion = 3,@ID_Medico = 3;
 go
-EXEC Sp_RegistrarMedicoPlanificacionRecurso  @Fecha_Planificacion_Personal = '2024-02-01',@ID_Planificacion = 4, @ID_Medico = 10;
+EXEC Sp_RegistrarMedico_Planificacion_Recurso  @Fecha_Planificacion_Personal = '2024-02-01',@ID_Planificacion = 4, @ID_Medico = 10;
 go
 ---------Insertar Satiscaccion de Paciente
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarSatisfaccionPaciente
+CREATE OR ALTER PROCEDURE Sp_RegistrarSatisfaccion_Paciente
 (
      
     @Fecha_Evaluacion DATE,
@@ -2521,18 +2521,18 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarSatisfaccionPaciente  @Fecha_Evaluacion = '2024-06-02',@Calificacion_Satisfaccion = 5,@ID_Cita = 1;
+EXEC Sp_RegistrarSatisfaccion_Paciente  @Fecha_Evaluacion = '2024-06-02',@Calificacion_Satisfaccion = 5,@ID_Cita = 1;
 go
-EXEC Sp_RegistrarSatisfaccionPaciente  @Fecha_Evaluacion = '2024-06-03',@Calificacion_Satisfaccion = 4,@ID_Cita = 2;
+EXEC Sp_RegistrarSatisfaccion_Paciente  @Fecha_Evaluacion = '2024-06-03',@Calificacion_Satisfaccion = 4,@ID_Cita = 2;
 go
-EXEC Sp_RegistrarSatisfaccionPaciente  @Fecha_Evaluacion = '2024-06-04',@Calificacion_Satisfaccion = 3,@ID_Cita = 3;
+EXEC Sp_RegistrarSatisfaccion_Paciente  @Fecha_Evaluacion = '2024-06-04',@Calificacion_Satisfaccion = 3,@ID_Cita = 3;
 go
-EXEC Sp_RegistrarSatisfaccionPaciente  @Fecha_Evaluacion = '2024-06-05',@Calificacion_Satisfaccion = 2,@ID_Cita = 4;
+EXEC Sp_RegistrarSatisfaccion_Paciente  @Fecha_Evaluacion = '2024-06-05',@Calificacion_Satisfaccion = 2,@ID_Cita = 4;
 go
 -----------Insertar Rol
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarRol
+CREATE OR ALTER PROCEDURE Sp_RegistrarRol
 (
    
     @Nombre_Rol VARCHAR(50)
@@ -2561,7 +2561,7 @@ GO
 -------Registrar Usuario
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarUsuario
+CREATE OR ALTER PROCEDURE Sp_RegistrarUsuario
 (
     
     @Nombre_Usuario VARCHAR(50),
@@ -2613,7 +2613,7 @@ EXEC Sp_RegistrarUsuario  @Nombre_Usuario = 'Fernando Martínez',@Correo_Usuario
 ---------Registrar Permiso
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarPermiso
+CREATE OR ALTER PROCEDURE Sp_RegistrarPermiso
 (
 
     @Nombre_Permiso VARCHAR(50)
@@ -2651,7 +2651,7 @@ go
 -----------Registrar Rol Permiso
 USE SaludPlus
 GO
-CREATE PROCEDURE Sp_RegistrarRolPermiso
+CREATE OR ALTER PROCEDURE Sp_RegistrarRol_Permiso
 (
     @ID_Rol INT,
     @ID_Permiso INT
@@ -2686,20 +2686,20 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarRolPermiso  @ID_Rol = 2,@ID_Permiso = 2;  -- M�dico puede ver citas
+EXEC Sp_RegistrarRol_Permiso  @ID_Rol = 2,@ID_Permiso = 2;  -- M�dico puede ver citas
 go
-EXEC Sp_RegistrarRolPermiso  @ID_Rol = 2,@ID_Permiso = 5;  -- M�dico puede acceder a historial m�dico
+EXEC Sp_RegistrarRol_Permiso  @ID_Rol = 2,@ID_Permiso = 5;  -- M�dico puede acceder a historial m�dico
 go
-EXEC Sp_RegistrarRolPermiso  @ID_Rol = 3,@ID_Permiso = 6;  -- Recepcionista puede gestionar pacientes
+EXEC Sp_RegistrarRol_Permiso  @ID_Rol = 3,@ID_Permiso = 6;  -- Recepcionista puede gestionar pacientes
 go
-EXEC Sp_RegistrarRolPermiso  @ID_Rol = 3,@ID_Permiso = 1;  -- Recepcionista puede crear citas
+EXEC Sp_RegistrarRol_Permiso  @ID_Rol = 3,@ID_Permiso = 1;  -- Recepcionista puede crear citas
 go
 
 ------------------------------------------------Procedimientos Amacenados para DELETE
 ----------------------Eliminar Rol Permisos
 Use SaludPlus
 go
-CREATE PROCEDURE EliminarRolPermiso
+CREATE OR ALTER PROCEDURE Sp_EliminarRol_Permiso
     @ID_Rol_Permiso INT
 AS
 BEGIN
@@ -2715,7 +2715,7 @@ go
 -----------------------Eliminar Usuario
 Use SaludPlus
 go
-CREATE PROCEDURE EliminarUsuario
+CREATE OR ALTER PROCEDURE Sp_EliminarUsuario
     @ID_Usuario INT
 AS
 BEGIN
@@ -2730,7 +2730,7 @@ go
 -----------------------Eliminar Rol
 Use SaludPlus
 go
-CREATE PROCEDURE EliminarRol
+CREATE OR ALTER PROCEDURE Sp_EliminarRol
     @ID_Rol INT
 AS
 BEGIN
@@ -2753,7 +2753,7 @@ go
 -----------------------Eliminar Permiso
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarPermiso
+CREATE OR ALTER PROCEDURE Sp_EliminarPermiso
     @ID_Permiso INT
 AS
 BEGIN
@@ -2775,7 +2775,7 @@ GO
 -----------------------Eliminar satisfaccion Paciente
 Use SaludPlus
 go
-CREATE PROCEDURE EliminarSatisfaccionPaciente
+CREATE OR ALTER PROCEDURE Sp_EliminarSatisfaccion_Paciente
     @ID_Satisfaccion INT
 AS
 BEGIN
@@ -2789,7 +2789,7 @@ END
 go
 ------------------ Procedimiento para eliminar Medico_Planificacion_RecursoUse SaludPlus
 go
-CREATE PROCEDURE sp_EliminarMedicoPlanificacionRecurso
+CREATE OR ALTER PROCEDURE sp_EliminarMedicoPlanificacionRecurso
     @ID_Medico_Planificacion_Recurso INT
 AS
 BEGIN
@@ -2806,7 +2806,7 @@ GO
 -- Procedimiento para eliminar Paciente
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarPaciente
+CREATE OR ALTER PROCEDURE Sp_EliminarPaciente
     @ID_Paciente INT
 AS
 BEGIN
@@ -2840,7 +2840,7 @@ GO
 ----------------- Procedimiento para eliminar Cita
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarCita
+CREATE OR ALTER PROCEDURE Sp_EliminarCita
     @ID_Cita INT
 AS
 BEGIN
@@ -2868,7 +2868,7 @@ GO
 ---------------------Procedimiento para eliminar Estado_Cita
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarEstadoCita
+CREATE OR ALTER PROCEDURE sp_EliminarEstado_Cita
     @ID_Estado_Cita INT
 AS
 BEGIN
@@ -2891,7 +2891,7 @@ GO
 ------------ Procedimiento para eliminar Factura
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarFactura
+CREATE OR ALTER PROCEDURE Sp_EliminarFactura
     @ID_Factura INT
 AS
 BEGIN
@@ -2913,7 +2913,7 @@ GO
 ---------------- Procedimiento para eliminar Tipo_Pago
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarTipoPago
+CREATE OR ALTER PROCEDURE Sp_EliminarTipo_Pago
     @ID_Tipo_Pago INT
 AS
 BEGIN
@@ -2936,7 +2936,7 @@ GO
 
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarTipoProcedimiento
+CREATE OR ALTER PROCEDURE Sp_EliminarTipo_Procedimiento
     @ID_Tipo_Procedimiento INT
 AS
 BEGIN
@@ -2958,7 +2958,7 @@ GO
 ------------------------- Procedimiento para eliminar Historial_Medico
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarHistorialMedico
+CREATE OR ALTER PROCEDURE Sp_EliminarHistorial_Medico
     @ID_Historial_Medico INT
 AS
 BEGIN
@@ -2980,7 +2980,7 @@ GO
 ------------------------- Procedimiento para eliminar Recurso_Medico
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarRecursoMedico
+CREATE OR ALTER PROCEDURE Sp_EliminarRecurso_Medico
     @ID_Recurso_Medico INT
 AS
 BEGIN
@@ -3002,7 +3002,7 @@ GO
 ------------------------- Procedimiento para eliminar Sala
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarSala
+CREATE OR ALTER PROCEDURE Sp_EliminarSala
     @ID_Sala INT
 AS
 BEGIN
@@ -3030,7 +3030,7 @@ GO
 -------------------------Procedimiento para eliminar Estado_Recurso_Medico
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarEstadoRecursoMedico
+CREATE OR ALTER PROCEDURE Sp_EliminarEstado_Recurso_Medico
     @ID_Estado_Recurso_Medico INT
 AS
 BEGIN
@@ -3052,7 +3052,7 @@ GO
 -------------------------Procedimiento para eliminar Tipo_Recurso
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarTipoRecurso
+CREATE OR ALTER PROCEDURE Sp_EliminarTipo_Recurso
     @ID_Tipo_Recurso INT
 AS
 BEGIN
@@ -3074,7 +3074,7 @@ GO
 ------------------------- Procedimiento para eliminar Estado_Sala
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarEstadoSala
+CREATE OR ALTER PROCEDURE Sp_EliminarEstado_Sala
     @ID_Estado_Sala INT
 AS
 BEGIN
@@ -3097,7 +3097,7 @@ GO
 
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarTipoSala
+CREATE OR ALTER PROCEDURE Sp_EliminarTipo_Sala
     @ID_Tipo_Sala INT
 AS
 BEGIN
@@ -3119,7 +3119,7 @@ GO
 ------------------------- Procedimiento para eliminar Recurso_Medico_Sala
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarRecursoMedicoSala
+CREATE OR ALTER PROCEDURE Sp_EliminarRecurso_Medico_Sala
     @ID_Recurso_Medico_Sala INT
 AS
 BEGIN
@@ -3136,7 +3136,7 @@ GO
 ------------------------- Procedimiento para eliminar Medico
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarMedico
+CREATE OR ALTER PROCEDURE Sp_EliminarMedico
     @ID_Medico INT
 AS
 BEGIN
@@ -3159,7 +3159,7 @@ GO
 
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarEspecialidad
+CREATE OR ALTER PROCEDURE Sp_EliminarEspecialidad
     @ID_Especialidad INT
 AS
 BEGIN
@@ -3181,7 +3181,7 @@ GO
 ------------------------- Procedimiento para eliminar Horario_Trabajo
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarHorarioTrabajo
+CREATE OR ALTER PROCEDURE Sp_EliminarHorario_Trabajo
     @ID_Horario_Trabajo INT
 AS
 BEGIN
@@ -3203,7 +3203,7 @@ GO
 ------------------------- Procedimiento para eliminar Planificacion_Recurso
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarPlanificacionRecurso
+CREATE OR ALTER PROCEDURE Sp_EliminarPlanificacion_Recurso
     @ID_Planificacion INT
 AS
 BEGIN
@@ -3219,7 +3219,7 @@ GO
 ------------------------- Procedimiento para eliminar Procedimiento
 Use SaludPlus
 go
-CREATE PROCEDURE sp_EliminarProcedimiento
+CREATE OR ALTER PROCEDURE Sp_EliminarProcedimiento
     @ID_Procedimiento INT
 AS
 BEGIN
@@ -3242,7 +3242,7 @@ GO
 
 ------------------Modificar Paciente
 
-CREATE PROCEDURE Sp_ModificarPaciente
+CREATE OR ALTER PROCEDURE Sp_ModificarPaciente
 (
     @ID_Paciente INT,
     @Nombre_Paciente VARCHAR(50) = NULL,
@@ -3278,7 +3278,7 @@ GO
 
 ----------------Modificar Especialidad
 
-CREATE PROCEDURE Sp_ModificarEspecialidad
+CREATE OR ALTER PROCEDURE Sp_ModificarEspecialidad
 (
     @ID_Especialidad INT,
     @Nombre_Especialidad VARCHAR(50) = NULL
@@ -3315,7 +3315,7 @@ GO
 
 -------------Modificar Medico
 
-CREATE PROCEDURE Sp_ModificarMedico
+CREATE OR ALTER PROCEDURE Sp_ModificarMedico
 (
     @ID_Medico INT,
     @Nombre1_Medico VARCHAR(50) = NULL,
@@ -3362,7 +3362,7 @@ GO
 
 ----------Modificar Estado Cita
 
-CREATE PROCEDURE Sp_ModificarEstadoCita
+CREATE OR ALTER PROCEDURE Sp_ModificarEstadoCita
 (
     @ID_Estado_Cita INT,
     @Estado VARCHAR(50)
@@ -3398,7 +3398,7 @@ GO
 
 ----------Modificar Cita
 
-CREATE PROCEDURE Sp_ModificarCita
+CREATE OR ALTER PROCEDURE Sp_ModificarCita
 (
     @ID_Cita INT,
     @Fecha_Cita DATE = NULL,
@@ -3465,7 +3465,7 @@ END;
 
 ---------Modificar Tipo de Pago
 
-CREATE PROCEDURE Sp_ModificarTipoPago
+CREATE OR ALTER PROCEDURE Sp_ModificarTipoPago
 (
     @ID_Tipo_Pago INT,
     @Descripcion_Tipo_Pago VARCHAR(50) = NULL
@@ -3501,7 +3501,7 @@ END;
 
 -------------Modificar Factura
 
-CREATE PROCEDURE Sp_ModificarFactura
+CREATE OR ALTER PROCEDURE Sp_ModificarFactura
 (
     @ID_Factura INT,
     @Fecha_Factura DATE = NULL,
@@ -3557,7 +3557,7 @@ END;
 
 -----------Modificar Historial Medico
 
-CREATE PROCEDURE Sp_ModificarHistorialMedico
+CREATE OR ALTER PROCEDURE Sp_ModificarHistorialMedico
 (
     @ID_Historial_Medico INT,
     @Fecha_Registro DATE,
@@ -3594,7 +3594,7 @@ GO
 
 ---------Modificar Estado Sala
 
-CREATE PROCEDURE Sp_ModificarEstadoSala
+CREATE OR ALTER PROCEDURE Sp_ModificarEstadoSala
 (
     @ID_Estado_Sala INT,
     @Nombre VARCHAR(50)
@@ -3629,7 +3629,7 @@ END;
 
 ---------------Modificar Tipo de Sala
 
-CREATE PROCEDURE Sp_ModificarTipoSala
+CREATE OR ALTER PROCEDURE Sp_ModificarTipoSala
 (
     @ID_Tipo_Sala INT,
     @Descripcion_Tipo_Sala VARCHAR(50)
@@ -3664,7 +3664,7 @@ END;
 
 ---------Modificar Sala
 
-CREATE PROCEDURE Sp_ModificarSala
+CREATE OR ALTER PROCEDURE Sp_ModificarSala
 (
     @ID_Sala INT,
     @Nombre_Sala VARCHAR(50) = NULL, 
@@ -3718,7 +3718,7 @@ END;
 
 ----------Modificar Tipo de Procedimiento
 
-CREATE PROCEDURE Sp_ModificarTipoProcedimiento
+CREATE OR ALTER PROCEDURE Sp_ModificarTipoProcedimiento
 (
     @ID_Tipo_Procedimiento INT,
     @Nuevo_Nombre_Procedimiento VARCHAR(50)
@@ -3754,7 +3754,7 @@ GO
 
 ---------------Modificar Procedimiento
 
-CREATE PROCEDURE Sp_ModificarProcedimiento
+CREATE OR ALTER PROCEDURE Sp_ModificarProcedimiento
 (
     @ID_Procedimiento INT,
     @Descripcion_Procedimiento VARCHAR(150) = NULL,
@@ -3825,7 +3825,7 @@ GO
 
 ------------Modificar Estado Recurso Medico
 
-CREATE PROCEDURE Sp_ModificarEstadoRecursoMedico
+CREATE OR ALTER PROCEDURE Sp_ModificarEstadoRecursoMedico
 (
     @ID_Estado_Recurso_Medico INT,
     @Estado_Recurso VARCHAR(50) = NULL
@@ -3861,7 +3861,7 @@ GO
 
 -------------Modificar Tipo de Recurso
 
-CREATE PROCEDURE Sp_ModificarTipoRecurso
+CREATE OR ALTER PROCEDURE Sp_ModificarTipoRecurso
 (
     @ID_Tipo_Recurso INT,
     @Titulo_Recurso VARCHAR(50) = NULL
@@ -3897,7 +3897,7 @@ GO
 
 ---------------Modificar Recurso Medico
 
-CREATE PROCEDURE Sp_ModificarRecursoMedico
+CREATE OR ALTER PROCEDURE Sp_ModificarRecursoMedico
 (
     @ID_Recurso_Medico INT,
     @Nombre_Recurso VARCHAR(50) = NULL,
@@ -3950,7 +3950,7 @@ GO
 
 -------------Modificar Recurso_Medico Sala
 
-CREATE PROCEDURE Sp_ModificarRecursoMedicoSala
+CREATE OR ALTER PROCEDURE Sp_ModificarRecursoMedicoSala
 (
     @ID_Recurso_Medico_Sala INT,
     @Fecha DATE = NULL,
@@ -3999,7 +3999,7 @@ GO
 
 -------------Modificar Horario Trabajo
 
-CREATE PROCEDURE Sp_ModificarHorarioTrabajo
+CREATE OR ALTER PROCEDURE Sp_ModificarHorarioTrabajo
 (
     @ID_Horario_Trabajo INT,
     @Nombre_Horario VARCHAR(50) = NULL,
@@ -4034,7 +4034,7 @@ GO
 
 -----------------Modificar Planificacion de Recursos
 
-CREATE PROCEDURE Sp_ModificarPlanificacionRecurso
+CREATE OR ALTER PROCEDURE Sp_ModificarPlanificacionRecurso
 (
     @ID_Planificacion INT,
     @Descripcion_Planificacion VARCHAR(150) = NULL,
@@ -4083,7 +4083,7 @@ GO
 
 -----------Modificar Medico Planificacion Recurso
 
-CREATE PROCEDURE Sp_ModificarMedicoPlanificacionRecurso
+CREATE OR ALTER PROCEDURE Sp_ModificarMedicoPlanificacionRecurso
 (
     @ID_Medico_Planificacion_Recurso INT,
     @Fecha_Planificacion_Personal DATE = NULL,
@@ -4130,7 +4130,7 @@ GO
 
 ------------Modificar Satisfaccion Paciente
 
-CREATE PROCEDURE Sp_ModificarSatisfaccionPaciente
+CREATE OR ALTER PROCEDURE Sp_ModificarSatisfaccionPaciente
 (
     @ID_Satisfaccion INT,
     @Fecha_Evaluacion DATE = NULL,
@@ -4177,7 +4177,7 @@ GO
 
 -----------------Modificar Rol
 
-CREATE PROCEDURE Sp_ModificarRol
+CREATE OR ALTER PROCEDURE Sp_ModificarRol
 (
     @ID_Rol INT,
     @Nuevo_Nombre_Rol VARCHAR(50)
@@ -4213,7 +4213,7 @@ GO
 
 -----------------Modificar Usuario
 
-CREATE PROCEDURE Sp_ModificarUsuario
+CREATE OR ALTER PROCEDURE Sp_ModificarUsuario
 (
     @ID_Usuario INT,
     @Nuevo_Nombre_Usuario VARCHAR(50) = NULL,
@@ -4255,7 +4255,7 @@ GO
 
 ------------------Modificar Permiso
 
-CREATE PROCEDURE Sp_ModificarPermiso
+CREATE OR ALTER PROCEDURE Sp_ModificarPermiso
 (
     @ID_Permiso INT,
     @Nuevo_Nombre_Permiso VARCHAR(50)
@@ -4291,7 +4291,7 @@ GO
 
 --------------Modificar Rol Permiso
 
-CREATE PROCEDURE Sp_ModificarRolPermiso
+CREATE OR ALTER PROCEDURE Sp_ModificarRolPermiso
 (
     @ID_Rol_Permiso INT,
     @Nuevo_ID_Rol INT = NULL,

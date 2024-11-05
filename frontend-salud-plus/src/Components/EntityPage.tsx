@@ -17,8 +17,7 @@ type PageProperties = {
 }
 
 const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, entityTableName, addEntityFields}: PageProperties) => {
-    const { data: entities, isLoading, error, refetch } = useQueryGet(`SELECT * FROM ${entityTableName}`);
-    // const { data: entities, isLoading, error, refetch } = useQueryGet(`SELECT * FROM vw_${entityTableName}`);
+    const { data: entities, isLoading, error, refetch } = useQueryGet(`SELECT * FROM vw_${entityTableName}`);
     const { setShow, Modal } = useModal();
     const logOut = useLogOut();
     
