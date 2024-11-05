@@ -3313,3 +3313,1097 @@ BEGIN
 END
 GO
 ----------------------------------------Procedimientos para Modificar---------------------------------------------------------
+
+------------------Modificar Paciente
+
+CREATE PROCEDURE Sp_ModificarPaciente
+(
+    @ID_Paciente INT,
+    @Nombre_Paciente VARCHAR(50) = NULL,
+    @Apellido1_Paciente VARCHAR(50) = NULL,
+    @Apellido2_Paciente VARCHAR(50) = NULL,
+    @Telefono_Paciente VARCHAR(50) = NULL,
+	@Fecha_Nacimiento DATE = NULL,
+    @Direccion_Paciente VARCHAR(150) = NULL,
+	@Cedula VARCHAR(20) = NULL
+)
+AS
+BEGIN
+    IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    BEGIN
+        PRINT 'No existe el Paciente con ID_Paciente = ' + CAST(@ID_Paciente AS VARCHAR)
+        RETURN
+    END
+
+    UPDATE Paciente
+    SET 
+        Nombre_Paciente = COALESCE(@Nombre_Paciente, Nombre_Paciente),
+        Apellido1_Paciente = COALESCE(@Apellido1_Paciente, Apellido1_Paciente),
+        Apellido2_Paciente = COALESCE(@Apellido2_Paciente, Apellido2_Paciente),
+        Telefono_Paciente = COALESCE(@Telefono_Paciente, Telefono_Paciente),
+		Fecha_Nacimiento = COALESCE(@Fecha_Nacimiento, Fecha_Nacimiento),
+        Direccion_Paciente = COALESCE(@Direccion_Paciente, Direccion_Paciente),
+		Cedula = COALESCE(@Cedula, Cedula)
+    WHERE ID_Paciente = @ID_Paciente
+
+	PRINT 'Paciente con ID_Paciente = ' + CAST(@ID_Paciente AS VARCHAR) + ' modificado exitosamente.';
+END
+GO
+
+----------------Modificar Especialidad
+
+CREATE PROCEDURE Sp_ModificarEspecialidad
+(
+    @ID_Especialidad INT,
+    @Nombre_Especialidad VARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE ID_Especialidad = @ID_Especialidad)
+    BEGIN
+        PRINT 'No existe una especialidad con el ID especificado.';
+        RETURN;
+    END
+
+    IF @Nombre_Especialidad IS NOT NULL AND 
+       EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Nombre_Especialidad AND ID_Especialidad <> @ID_Especialidad)
+    BEGIN
+        RAISERROR('El nombre de la especialidad ya existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Especialidad
+        SET Nombre_Especialidad = COALESCE(@Nombre_Especialidad, Nombre_Especialidad)
+        WHERE ID_Especialidad = @ID_Especialidad;
+
+        PRINT 'La especialidad ha sido modificada correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la especialidad: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-------------Modificar Medico
+
+CREATE PROCEDURE Sp_ModificarMedico
+(
+    @ID_Medico INT,
+    @Nombre1_Medico VARCHAR(50) = NULL,
+    @Nombre2_Medico VARCHAR(50) = NULL,
+    @Apellido1_Medico VARCHAR(50) = NULL,
+    @Apellido2_Medico VARCHAR(50) = NULL,
+    @Telefono_Medico VARCHAR(50) = NULL,
+    @ID_Especialidad INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
+    BEGIN
+        RAISERROR('El ID del médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Especialidad IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Especialidad WHERE ID_Especialidad = @ID_Especialidad)
+    BEGIN
+        RAISERROR('El ID de especialidad no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Medico
+        SET 
+            Nombre1_Medico = COALESCE(@Nombre1_Medico, Nombre1_Medico),
+			Nombre2_Medico = COALESCE(@Nombre2_Medico, Nombre2_Medico),
+			Apellido1_Medico = COALESCE(@Apellido1_Medico, Apellido1_Medico),
+			Apellido2_Medico = COALESCE(@Apellido2_Medico, Apellido2_Medico),
+			Telefono_Medico = COALESCE(@Telefono_Medico, Telefono_Medico),
+			ID_Especialidad = COALESCE(@ID_Especialidad, ID_Especialidad)
+        WHERE ID_Medico = @ID_Medico;
+
+        PRINT 'El médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+----------Modificar Estado Cita
+
+CREATE PROCEDURE Sp_ModificarEstadoCita
+(
+    @ID_Estado_Cita INT,
+    @Estado VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
+    BEGIN
+        RAISERROR('El ID del estado de cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Estado_Cita WHERE Estado = @Estado AND ID_Estado_Cita <> @ID_Estado_Cita)
+    BEGIN
+        RAISERROR('El estado de cita ya existe con otro ID.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Estado_Cita
+        SET Estado = COALESCE(@Estado, Estado)
+        WHERE ID_Estado_Cita = @ID_Estado_Cita;
+
+        PRINT 'El estado de cita se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el estado de cita: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+----------Modificar Cita
+
+CREATE PROCEDURE Sp_ModificarCita
+(
+    @ID_Cita INT,
+    @Fecha_Cita DATE = NULL,
+    @Hora_Cita TIME = NULL,
+    @ID_Paciente INT = NULL,
+    @ID_Medico INT = NULL,
+    @ID_Estado_Cita INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
+    BEGIN
+        RAISERROR('El ID de la cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Paciente IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    BEGIN
+        RAISERROR('El ID de paciente no existe.', 16, 2);
+        RETURN;
+    END
+
+    IF @ID_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
+    BEGIN
+        RAISERROR('El ID del médico no existe.', 16, 2);
+        RETURN;
+    END
+
+    IF @ID_Estado_Cita IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
+    BEGIN
+        RAISERROR('El ID del estado de la cita no existe.', 16, 2);
+        RETURN;
+    END
+
+    IF (@Fecha_Cita IS NOT NULL AND @Hora_Cita IS NOT NULL) AND EXISTS (
+        SELECT 1 FROM Cita
+        WHERE ID_Paciente = @ID_Paciente 
+          AND Fecha_Cita = @Fecha_Cita 
+          AND Hora_Cita = @Hora_Cita
+          AND ID_Cita <> @ID_Cita) 
+    BEGIN
+        RAISERROR('El paciente ya tiene una cita a la misma hora y fecha.', 16, 3);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Cita
+        SET 
+            Fecha_Cita = COALESCE(@Fecha_Cita, Fecha_Cita),
+            Hora_Cita = COALESCE(@Hora_Cita, Hora_Cita),
+            ID_Paciente = COALESCE(@ID_Paciente, ID_Paciente),
+            ID_Medico = COALESCE(@ID_Medico, ID_Medico),
+            ID_Estado_Cita = COALESCE(@ID_Estado_Cita, ID_Estado_Cita)
+        WHERE ID_Cita = @ID_Cita;
+
+        PRINT 'La cita se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la cita: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+---------Modificar Tipo de Pago
+
+CREATE PROCEDURE Sp_ModificarTipoPago
+(
+    @ID_Tipo_Pago INT,
+    @Descripcion_Tipo_Pago VARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
+    BEGIN
+        RAISERROR('El ID del tipo de pago no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Descripcion_Tipo_Pago IS NOT NULL AND EXISTS (SELECT 1 FROM Tipo_Pago WHERE Descripcion_Tipo_Pago = @Descripcion_Tipo_Pago AND ID_Tipo_Pago <> @ID_Tipo_Pago)
+    BEGIN
+        RAISERROR('El tipo de pago con la descripción especificada ya existe.', 16, 2);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Tipo_Pago
+        SET 
+            Descripcion_Tipo_Pago = COALESCE(@Descripcion_Tipo_Pago, Descripcion_Tipo_Pago)
+        WHERE ID_Tipo_Pago = @ID_Tipo_Pago;
+
+        PRINT 'El tipo de pago se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el tipo de pago: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+-------------Modificar Factura
+
+CREATE PROCEDURE Sp_ModificarFactura
+(
+    @ID_Factura INT,
+    @Fecha_Factura DATE = NULL,
+    @Monto_Total MONEY = NULL,
+    @ID_Paciente INT = NULL,
+    @ID_Cita INT = NULL,
+    @ID_Tipo_Pago INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Factura WHERE ID_Factura = @ID_Factura)
+    BEGIN
+        RAISERROR('El ID de factura no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Paciente IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    BEGIN
+        RAISERROR('El ID de paciente no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Cita IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
+    BEGIN
+        RAISERROR('El ID de cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Tipo_Pago IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
+    BEGIN
+        RAISERROR('El ID del tipo de pago no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Factura
+        SET 
+            Fecha_Factura = COALESCE(@Fecha_Factura, Fecha_Factura),
+            Monto_Total = COALESCE(@Monto_Total, Monto_Total),
+            ID_Paciente = COALESCE(@ID_Paciente, ID_Paciente),
+            ID_Cita = COALESCE(@ID_Cita, ID_Cita),
+            ID_Tipo_Pago = COALESCE(@ID_Tipo_Pago, ID_Tipo_Pago)
+        WHERE ID_Factura = @ID_Factura;
+
+        PRINT 'La factura se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la factura: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+-----------Modificar Historial Medico
+
+CREATE PROCEDURE Sp_ModificarHistorialMedico
+(
+    @ID_Historial_Medico INT,
+    @Fecha_Registro DATE,
+    @ID_Paciente INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
+    BEGIN
+        RAISERROR('El ID del historial médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    BEGIN
+        RAISERROR('El ID de paciente no existe.', 16, 2);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Historial_Medico
+        SET Fecha_Registro = COALESCE(@Fecha_Registro, Fecha_Registro) -- Actualiza solo si se proporciona un nuevo valor
+        WHERE ID_Historial_Medico = @ID_Historial_Medico;
+
+        PRINT 'El historial médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el historial médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+---------Modificar Estado Sala
+
+CREATE PROCEDURE Sp_ModificarEstadoSala
+(
+    @ID_Estado_Sala INT,
+    @Nombre VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE ID_Estado_Sala = @ID_Estado_Sala)
+    BEGIN
+        RAISERROR('El ID del estado de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Estado_Sala WHERE Nombre = @Nombre AND ID_Estado_Sala <> @ID_Estado_Sala)
+    BEGIN
+        RAISERROR('El nombre del estado de sala ya existe.', 16, 2);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Estado_Sala
+        SET Nombre = @Nombre
+        WHERE ID_Estado_Sala = @ID_Estado_Sala;
+
+        PRINT 'El estado de sala se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el estado de sala: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+---------------Modificar Tipo de Sala
+
+CREATE PROCEDURE Sp_ModificarTipoSala
+(
+    @ID_Tipo_Sala INT,
+    @Descripcion_Tipo_Sala VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE ID_Tipo_Sala = @ID_Tipo_Sala)
+    BEGIN
+        RAISERROR('El ID del tipo de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Tipo_Sala WHERE Descripcion_Tipo_Sala = @Descripcion_Tipo_Sala AND ID_Tipo_Sala <> @ID_Tipo_Sala)
+    BEGIN
+        RAISERROR('La descripción del tipo de sala ya existe.', 16, 2);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Tipo_Sala
+        SET Descripcion_Tipo_Sala = @Descripcion_Tipo_Sala
+        WHERE ID_Tipo_Sala = @ID_Tipo_Sala;
+
+        PRINT 'El tipo de sala se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el tipo de sala: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+---------Modificar Sala
+
+CREATE PROCEDURE Sp_ModificarSala
+(
+    @ID_Sala INT,
+    @Nombre_Sala VARCHAR(50) = NULL, 
+    @Capacidad_Sala INT = NULL,       
+    @ID_Tipo_Sala INT = NULL,         
+    @ID_Estado_Sala INT = NULL        
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    BEGIN
+        RAISERROR('El ID de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Tipo_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE ID_Tipo_Sala = @ID_Tipo_Sala)
+    BEGIN
+        RAISERROR('El ID de tipo de sala no existe.', 16, 2);
+        RETURN;
+    END
+
+    IF @ID_Estado_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE ID_Estado_Sala = @ID_Estado_Sala)
+    BEGIN
+        RAISERROR('El ID de estado de sala no existe.', 16, 3);
+        RETURN;
+    END
+
+    IF @Nombre_Sala IS NOT NULL AND EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala AND ID_Sala <> @ID_Sala)
+    BEGIN
+        RAISERROR('El nombre de la sala ya existe.', 16, 4);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Sala
+        SET 
+            Nombre_Sala = COALESCE(@Nombre_Sala, Nombre_Sala), 
+            Capacidad_Sala = COALESCE(@Capacidad_Sala, Capacidad_Sala), 
+            ID_Tipo_Sala = COALESCE(@ID_Tipo_Sala, ID_Tipo_Sala), 
+            ID_Estado_Sala = COALESCE(@ID_Estado_Sala, ID_Estado_Sala) 
+        WHERE ID_Sala = @ID_Sala;
+
+        PRINT 'La sala se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la sala: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+
+----------Modificar Tipo de Procedimiento
+
+CREATE PROCEDURE Sp_ModificarTipoProcedimiento
+(
+    @ID_Tipo_Procedimiento INT,
+    @Nuevo_Nombre_Procedimiento VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento)
+    BEGIN
+        RAISERROR('El ID del tipo de procedimiento no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE Nombre_Procedimiento = @Nuevo_Nombre_Procedimiento AND ID_Tipo_Procedimiento <> @ID_Tipo_Procedimiento)
+    BEGIN
+        RAISERROR('El nombre del tipo de procedimiento ya existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Tipo_Procedimiento
+        SET Nombre_Procedimiento = @Nuevo_Nombre_Procedimiento
+        WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento;
+
+        PRINT 'El tipo de procedimiento se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el tipo de procedimiento: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+---------------Modificar Procedimiento
+
+CREATE PROCEDURE Sp_ModificarProcedimiento
+(
+    @ID_Procedimiento INT,
+    @Descripcion_Procedimiento VARCHAR(150) = NULL,
+    @Fecha_Procedimiento DATE = NULL,
+    @Hora_Procedimiento TIME = NULL,
+    @Monto_Procedimiento MONEY = NULL,
+    @Receta VARCHAR(150) = NULL,
+    @ID_Sala INT = NULL,
+    @ID_Historial_Medico INT = NULL,
+    @ID_Cita INT = NULL,
+    @ID_Tipo_Procedimiento INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento)
+    BEGIN
+        RAISERROR('El ID de procedimiento no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    BEGIN
+        RAISERROR('El ID de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Historial_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
+    BEGIN
+        RAISERROR('El ID de historial médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Cita IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
+    BEGIN
+        RAISERROR('El ID de cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Tipo_Procedimiento IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento)
+    BEGIN
+        RAISERROR('El ID de tipo de procedimiento no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Procedimiento
+        SET 
+            Descripcion_Procedimiento = COALESCE(@Descripcion_Procedimiento, Descripcion_Procedimiento),
+            Fecha_Procedimiento = COALESCE(@Fecha_Procedimiento, Fecha_Procedimiento),
+            Hora_Procedimiento = COALESCE(@Hora_Procedimiento, Hora_Procedimiento),
+            Monto_Procedimiento = COALESCE(@Monto_Procedimiento, Monto_Procedimiento),
+            Receta = COALESCE(@Receta, Receta),
+            ID_Sala = COALESCE(@ID_Sala, ID_Sala),
+            ID_Historial_Medico = COALESCE(@ID_Historial_Medico, ID_Historial_Medico),
+            ID_Cita = COALESCE(@ID_Cita, ID_Cita),
+            ID_Tipo_Procedimiento = COALESCE(@ID_Tipo_Procedimiento, ID_Tipo_Procedimiento)
+        WHERE ID_Procedimiento = @ID_Procedimiento;
+
+        PRINT 'El procedimiento se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el procedimiento: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+------------Modificar Estado Recurso Medico
+
+CREATE PROCEDURE Sp_ModificarEstadoRecursoMedico
+(
+    @ID_Estado_Recurso_Medico INT,
+    @Estado_Recurso VARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
+    BEGIN
+        RAISERROR('El ID de estado de recurso médico no existe.', 16, 1);
+        RETURN;
+    END
+
+	    IF @Estado_Recurso IS NOT NULL AND EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE Estado_Recurso = @Estado_Recurso AND ID_Estado_Recurso_Medico <> @ID_Estado_Recurso_Medico)
+    BEGIN
+        RAISERROR('El estado de recurso médico ya existe en otro registro.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Estado_Recurso_Medico
+        SET Estado_Recurso = COALESCE(@Estado_Recurso, Estado_Recurso)
+        WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico;
+
+        PRINT 'El estado de recurso médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el estado de recurso médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-------------Modificar Tipo de Recurso
+
+CREATE PROCEDURE Sp_ModificarTipoRecurso
+(
+    @ID_Tipo_Recurso INT,
+    @Titulo_Recurso VARCHAR(50) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
+    BEGIN
+        RAISERROR('El ID de tipo de recurso no existe.', 16, 1);
+        RETURN;
+    END
+
+	    IF @Titulo_Recurso IS NOT NULL AND EXISTS (SELECT 1 FROM Tipo_Recurso WHERE Titulo_Recurso = @Titulo_Recurso AND ID_Tipo_Recurso <> @ID_Tipo_Recurso)
+    BEGIN
+        RAISERROR('El título de recurso ya existe en otro registro.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Tipo_Recurso
+        SET Titulo_Recurso = COALESCE(@Titulo_Recurso, Titulo_Recurso)
+        WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso;
+
+        PRINT 'El tipo de recurso se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el tipo de recurso: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+---------------Modificar Recurso Medico
+
+CREATE PROCEDURE Sp_ModificarRecursoMedico
+(
+    @ID_Recurso_Medico INT,
+    @Nombre_Recurso VARCHAR(50) = NULL,
+    @Lote VARCHAR(50) = NULL,
+    @Cantidad_Stock_Total INT = NULL,
+    @Ubicacion_Recurso VARCHAR(150) = NULL,
+    @ID_Tipo_Recurso INT = NULL,
+    @ID_Estado_Recurso_Medico INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
+    BEGIN
+        RAISERROR('El ID de recurso médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Tipo_Recurso IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
+    BEGIN
+        RAISERROR('El ID de tipo de recurso no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Estado_Recurso_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
+    BEGIN
+        RAISERROR('El ID de estado de recurso médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Recurso_Medico
+        SET 
+            Nombre_Recurso = COALESCE(@Nombre_Recurso, Nombre_Recurso),
+            Lote = COALESCE(@Lote, Lote),
+            Cantidad_Stock_Total = COALESCE(@Cantidad_Stock_Total, Cantidad_Stock_Total),
+            Ubicacion_Recurso = COALESCE(@Ubicacion_Recurso, Ubicacion_Recurso),
+            ID_Tipo_Recurso = COALESCE(@ID_Tipo_Recurso, ID_Tipo_Recurso),
+            ID_Estado_Recurso_Medico = COALESCE(@ID_Estado_Recurso_Medico, ID_Estado_Recurso_Medico)
+        WHERE ID_Recurso_Medico = @ID_Recurso_Medico;
+
+        PRINT 'El recurso médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el recurso médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-------------Modificar Recurso_Medico Sala
+
+CREATE PROCEDURE Sp_ModificarRecursoMedicoSala
+(
+    @ID_Recurso_Medico_Sala INT,
+    @Fecha DATE = NULL,
+    @Cantidad_Recurso INT = NULL,
+    @ID_Recurso_Medico INT = NULL,
+    @ID_Sala INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico_Sala = @ID_Recurso_Medico_Sala)
+    BEGIN
+        RAISERROR('El ID de recurso médico en sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Recurso_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
+    BEGIN
+        RAISERROR('El ID de recurso médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    BEGIN
+        RAISERROR('El ID de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Recurso_Medico_Sala
+        SET 
+            Fecha = COALESCE(@Fecha, Fecha),
+            Cantidad_Recurso = COALESCE(@Cantidad_Recurso, Cantidad_Recurso),
+            ID_Recurso_Medico = COALESCE(@ID_Recurso_Medico, ID_Recurso_Medico),
+            ID_Sala = COALESCE(@ID_Sala, ID_Sala)
+        WHERE ID_Recurso_Medico_Sala = @ID_Recurso_Medico_Sala;
+
+        PRINT 'El recurso médico en sala se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el recurso médico en sala: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-------------Modificar Horario Trabajo
+
+CREATE PROCEDURE Sp_ModificarHorarioTrabajo
+(
+    @ID_Horario_Trabajo INT,
+    @Nombre_Horario VARCHAR(50) = NULL,
+    @Hora_Inicio TIME = NULL,
+    @Hora_Fin TIME = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
+    BEGIN
+        RAISERROR('El ID de horario de trabajo no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Horario_Trabajo
+        SET 
+            Nombre_Horario = COALESCE(@Nombre_Horario, Nombre_Horario),
+            Hora_Inicio = COALESCE(@Hora_Inicio, Hora_Inicio),
+            Hora_Fin = COALESCE(@Hora_Fin, Hora_Fin)
+        WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo;
+
+        PRINT 'El horario de trabajo se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el horario de trabajo: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-----------------Modificar Planificacion de Recursos
+
+CREATE PROCEDURE Sp_ModificarPlanificacionRecurso
+(
+    @ID_Planificacion INT,
+    @Descripcion_Planificacion VARCHAR(150) = NULL,
+    @Fecha_Planificacion DATE = NULL,
+    @ID_Sala INT = NULL,
+    @ID_Horario_Trabajo INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
+    BEGIN
+        RAISERROR('El ID de planificación no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    BEGIN
+        RAISERROR('El ID de sala no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Horario_Trabajo IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
+    BEGIN
+        RAISERROR('El ID de horario de trabajo no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Planificacion_Recurso
+        SET 
+            Descripcion_Planificacion = COALESCE(@Descripcion_Planificacion, Descripcion_Planificacion),
+            Fecha_Planificacion = COALESCE(@Fecha_Planificacion, Fecha_Planificacion),
+            ID_Sala = COALESCE(@ID_Sala, ID_Sala),
+            ID_Horario_Trabajo = COALESCE(@ID_Horario_Trabajo, ID_Horario_Trabajo)
+        WHERE ID_Planificacion = @ID_Planificacion;
+
+        PRINT 'La planificación de recurso se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la planificación de recurso: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-----------Modificar Medico Planificacion Recurso
+
+CREATE PROCEDURE Sp_ModificarMedicoPlanificacionRecurso
+(
+    @ID_Medico_Planificacion_Recurso INT,
+    @Fecha_Planificacion_Personal DATE = NULL,
+    @ID_Planificacion INT = NULL,
+    @ID_Medico INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico_Planificacion_Recurso = @ID_Medico_Planificacion_Recurso)
+    BEGIN
+        RAISERROR('El ID de planificación del médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
+    BEGIN
+        RAISERROR('El ID de médico no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Planificacion IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
+    BEGIN
+        RAISERROR('El ID de planificación no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Medico_Planificacion_Recurso
+        SET 
+            Fecha_Planificacion_Personal = COALESCE(@Fecha_Planificacion_Personal, Fecha_Planificacion_Personal),
+            ID_Planificacion = COALESCE(@ID_Planificacion, ID_Planificacion),
+            ID_Medico = COALESCE(@ID_Medico, ID_Medico)
+        WHERE ID_Medico_Planificacion_Recurso = @ID_Medico_Planificacion_Recurso;
+
+        PRINT 'La planificación del médico se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la planificación del médico: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+------------Modificar Satisfaccion Paciente
+
+CREATE PROCEDURE Sp_ModificarSatisfaccionPaciente
+(
+    @ID_Satisfaccion INT,
+    @Fecha_Evaluacion DATE = NULL,
+    @Calificacion_Satisfaccion INT = NULL,
+    @ID_Cita INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion)
+    BEGIN
+        RAISERROR('El ID de satisfacción no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @ID_Cita IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Cita = @ID_Cita)
+    BEGIN
+        RAISERROR('El ID de cita no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Calificacion_Satisfaccion IS NOT NULL AND (@Calificacion_Satisfaccion < 1 OR @Calificacion_Satisfaccion > 5)
+    BEGIN
+        RAISERROR('La calificación de satisfacción debe estar entre 1 y 5.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Satisfaccion_Paciente
+        SET 
+            Fecha_Evaluacion = COALESCE(@Fecha_Evaluacion, Fecha_Evaluacion),
+            Calificacion_Satisfaccion = COALESCE(@Calificacion_Satisfaccion, Calificacion_Satisfaccion),
+            ID_Cita = COALESCE(@ID_Cita, ID_Cita)
+        WHERE ID_Satisfaccion = @ID_Satisfaccion;
+
+        PRINT 'La satisfacción del paciente se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la satisfacción del paciente: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-----------------Modificar Rol
+
+CREATE PROCEDURE Sp_ModificarRol
+(
+    @ID_Rol INT,
+    @Nuevo_Nombre_Rol VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Rol WHERE ID_Rol = @ID_Rol)
+    BEGIN
+        RAISERROR('El ID de rol no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Rol WHERE Nombre_Rol = @Nuevo_Nombre_Rol AND ID_Rol <> @ID_Rol)
+    BEGIN
+        RAISERROR('El nuevo nombre del rol ya existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Rol
+        SET Nombre_Rol = @Nuevo_Nombre_Rol
+        WHERE ID_Rol = @ID_Rol;
+
+        PRINT 'El rol se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el rol: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+-----------------Modificar Usuario
+
+CREATE PROCEDURE Sp_ModificarUsuario
+(
+    @ID_Usuario INT,
+    @Nuevo_Nombre_Usuario VARCHAR(50) = NULL,
+    @Nuevo_Correo_Usuario VARCHAR(50) = NULL,
+	@Nueva_Contrasena_Usuario VARCHAR(50) = NULL,
+    @Nuevo_Rol INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Usuario WHERE ID_Usuario = @ID_Usuario)
+    BEGIN
+        RAISERROR('El ID de usuario no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Nuevo_Rol IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Rol WHERE ID_Rol = @Nuevo_Rol)
+    BEGIN
+        RAISERROR('El ID de rol no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Usuario
+        SET Nombre_Usuario = COALESCE(@Nuevo_Nombre_Usuario, Nombre_Usuario),
+            Correo_Usuario = COALESCE(@Nuevo_Correo_Usuario, Correo_Usuario),
+			Contraseña_Usuario = COALESCE(@Nueva_Contrasena_Usuario, Contraseña_Usuario),
+            ID_Rol = COALESCE(@Nuevo_Rol, ID_Rol)
+        WHERE ID_Usuario = @ID_Usuario;
+
+        PRINT 'El usuario se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el usuario: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+------------------Modificar Permiso
+
+CREATE PROCEDURE Sp_ModificarPermiso
+(
+    @ID_Permiso INT,
+    @Nuevo_Nombre_Permiso VARCHAR(50)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Permiso WHERE ID_Permiso = @ID_Permiso)
+    BEGIN
+        RAISERROR('El ID de permiso no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF EXISTS (SELECT 1 FROM Permiso WHERE Nombre_Permiso = @Nuevo_Nombre_Permiso AND ID_Permiso <> @ID_Permiso)
+    BEGIN
+        RAISERROR('El nuevo nombre del permiso ya existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Permiso
+        SET Nombre_Permiso = @Nuevo_Nombre_Permiso
+        WHERE ID_Permiso = @ID_Permiso;
+
+        PRINT 'El permiso se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar el permiso: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
+--------------Modificar Rol Permiso
+
+CREATE PROCEDURE Sp_ModificarRolPermiso
+(
+    @ID_Rol_Permiso INT,
+    @Nuevo_ID_Rol INT = NULL,
+    @Nuevo_ID_Permiso INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso)
+    BEGIN
+        RAISERROR('El ID de relación rol-permiso no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Nuevo_ID_Rol IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Rol WHERE ID_Rol = @Nuevo_ID_Rol)
+    BEGIN
+        RAISERROR('El ID de rol no existe.', 16, 1);
+        RETURN;
+    END
+
+    IF @Nuevo_ID_Permiso IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Permiso WHERE ID_Permiso = @Nuevo_ID_Permiso)
+    BEGIN
+        RAISERROR('El ID de permiso no existe.', 16, 1);
+        RETURN;
+    END
+
+    BEGIN TRY
+        UPDATE Rol_Permiso
+        SET ID_Rol = COALESCE(@Nuevo_ID_Rol, ID_Rol),
+            ID_Permiso = COALESCE(@Nuevo_ID_Permiso, ID_Permiso)
+        WHERE ID_Rol_Permiso = @ID_Rol_Permiso;
+
+        PRINT 'La relación rol-permiso se ha modificado correctamente.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error al modificar la relación rol-permiso: ' + ERROR_MESSAGE();
+    END CATCH
+END;
+GO
+
