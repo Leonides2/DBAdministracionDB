@@ -19,12 +19,15 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn, entityFields}
         postUpdateQuery([`UPDATE ${tableName} SET `, Object.entries(entity).filter(([key, _]) => key !== idFieldName).map(([key, value]) => 
             `${key} = ${typeof(value) !== "string" ? data[key] : `'${data[key]}'` }`
         ).join(', '), `WHERE ${idFieldName} = ${entity[idFieldName]}`].join(' '));
+
         reset();
         setEdit(false);
     }
 
     const DeleteEntity = () => {
         postDeleteQuery(`DELETE FROM ${tableName} WHERE ${idFieldName} = ${entity[idFieldName]}`);
+
+        alert(`EXEC Sp_Eliminar${tableName} ${entity[idFieldName]}`);
     }
 
     const cancelEdit = () => {
