@@ -1362,7 +1362,6 @@ GO
 
 --------------------------------------------------Vistas---------------------------------------------------------
 
----Paciente
 
 CREATE VIEW vw_Paciente AS
 SELECT Nombre_Paciente ,Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula
@@ -1374,7 +1373,7 @@ Select * from vw_Paciente
 go
 */
 
-CREATE or alter VIEW vw_Medico AS
+CREATE VIEW vw_Medico AS
 SELECT 
 Medico.Nombre1_Medico, 
 Medico.Nombre2_Medico, 
@@ -1389,6 +1388,23 @@ GO
 Select * from vw_Medico
 go
 */
+
+CREATE VIEW vw_Cita AS
+SELECT 
+Cita.Fecha_Cita,
+Cita.Hora_Cita,
+Cita.ID_Medico, 
+Estado_Cita.Estado, 
+Paciente.Cedula
+FROM Cita inner join Paciente on Cita.ID_Paciente = Paciente.ID_Paciente
+left join Estado_Cita on Cita.ID_Estado_Cita = Estado_Cita.ID_Estado_Cita;
+GO
+
+/*
+Select * from vw_Cita
+go
+*/
+
 
 --------------------------------------------------Procedimientos almacenados INSERT------------------------------
  ---------------------Registrar Paciente
@@ -1465,6 +1481,14 @@ BEGIN
 		TRIM(@Cedula));
 
         PRINT 'El paciente se ha registrado correctamente.';
+
+		DECLARE @Current_Usuario int = (Select ID_Paciente from Paciente Where Cedula = Cedula)
+
+		 -- Insertar historial médico con la fecha de registro automática
+        INSERT INTO Historial_Medico (Fecha_Registro, ID_Paciente)
+        VALUES (CAST(GETDATE() AS DATE), @Current_Usuario);  -- Usa la fecha actual
+        PRINT 'El historial médico se ha registrado correctamente.';
+
     END TRY
     BEGIN CATCH
 		DECLARE @ErrorMessage NVARCHAR(4000);
@@ -1478,36 +1502,6 @@ BEGIN
 END;
 GO
 
-USE SaludPlus
-GO
-
--- Insertar paciente 1
-EXEC Sp_RegistrarPaciente   @Nombre_Paciente = 'Pedro', @Apellido1_Paciente = 'Fernandez', @Apellido2_Paciente = 'Torres',
-    @Telefono_Paciente = '5678901122',@Fecha_Nacimiento = '1988-06-06',@Direccion_Paciente = 'Calle 6, Ciudad F',@Cedula = '987654321';
-	go
-
-/*
-EXEC Sp_RegistrarPaciente 'Pedro','Fernandez','Torres',
-    '5678901122','1988-06-06','Calle 6, Ciudad F','987654321';
-	go
-*/
-
--- Insertar paciente 2
-EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Lucia', @Apellido1_Paciente = 'Cruz',@Apellido2_Paciente = 'Mendez', 
-    @Telefono_Paciente = '6789012233',@Fecha_Nacimiento = '1992-07-07',@Direccion_Paciente = 'Calle 7, Ciudad G',@Cedula = '456789012';
-	go
-
--- Insertar paciente 3
-EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Fernando',@Apellido1_Paciente = 'Ramirez',@Apellido2_Paciente = 'Soto', 
-    @Telefono_Paciente = '7890123344',@Fecha_Nacimiento = '1982-08-08',@Direccion_Paciente = 'Calle 8, Ciudad H',@Cedula = '654321789';
-	go
-
--- Insertar paciente 4
-EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Isabella',@Apellido1_Paciente = 'Alvarez',@Apellido2_Paciente = 'Paredes', 
-    @Telefono_Paciente = '8901234455',@Fecha_Nacimiento = '1995-09-09',@Direccion_Paciente = 'Calle 9, Ciudad I',@Cedula = '321654987';
-	go
-
-
 
 ------------Registrar Especialidad
 USE SaludPlus
@@ -1519,7 +1513,7 @@ CREATE PROCEDURE Sp_RegistrarEspecialidad
 AS
 BEGIN
     SET NOCOUNT ON;
-	 -- Verificar si el nombre de la especialidad ya existe
+	 
 	BEGIN TRY
 		
 		IF LEN(TRIM(@Nombre_Especialidad)) < 1
@@ -1527,7 +1521,7 @@ BEGIN
             RAISERROR (N'Debe tener un nombre', 16, 1);
             RETURN;
         END
-		
+		-- Verificar si el nombre de la especialidad ya existe
 		IF EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Nombre_Especialidad)
 		BEGIN
 			RAISERROR('El nombre de la especialidad ya existe.', 16, 1);
@@ -1551,13 +1545,7 @@ BEGIN
 END;
 GO
 
--- Insertar especialidad 1
-EXEC Sp_RegistrarEspecialidad  @Nombre_Especialidad = 'Ginecología';
-go
 
--- Insertar especialidad 2
-EXEC Sp_RegistrarEspecialidad  @Nombre_Especialidad = 'Psiquiatría';
-go
 
 ------------------------Registrar Medico
 USE SaludPlus
@@ -1602,10 +1590,13 @@ BEGIN
         RETURN;
     END
 
-	IF EXISTS (
-	SELECT
-	)
-
+	IF EXISTS (SELECT 1 FROM Medico Where Lower(@Nombre1_Medico+@Nombre2_Medico+@Apellido1_Medico+@Apellido2_Medico) 
+	= LOWER(TRIM(@Nombre1_Medico)+ TRIM(@Nombre2_Medico)+ TRIM(@Apellido1_Medico)+ TRIM(@Apellido2_Medico)))
+		BEGIN	
+			
+			RAISERROR('El medico ya existe.', 16, 1, @Sugerencias);
+			RETURN;
+		END
 
 		Declare @ID_Especialidad int = (Select top 1 ID_Especialidad from Especialidad where Nombre_Especialidad like @Especialidad)
         INSERT INTO Medico (Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
@@ -1615,7 +1606,7 @@ BEGIN
 		TRIM(@Apellido1_Medico), 
 		TRIM(@Apellido2_Medico), 
 		TRIM(@Telefono_Medico), 
-		TRIM(@ID_Especialidad));
+		@ID_Especialidad);
 
         PRINT 'El medico se ha registrado correctamente.';
     END TRY
@@ -1633,30 +1624,6 @@ GO
 
 
 
--- Insertar m�dico 1
-EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Antonio',@Nombre2_Medico = 'Luis',@Apellido1_Medico = 'Salazar',@Apellido2_Medico = 'Jimenez', 
-    @Telefono_Medico = '2345678901',@Especialidad = 'Cardiología'; -- Cardiología
-	go
-
--- Insertar m�dico 2
-EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Carmen',@Nombre2_Medico = 'Teresa',@Apellido1_Medico = 'Ruiz',@Apellido2_Medico = 'Mena', 
-    @Telefono_Medico = '3456789012',@Especialidad = 'Dermatología'; -- Dermatología
-	go
--- Insertar m�dico 3
-EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Francisco',@Nombre2_Medico = 'Javier',@Apellido1_Medico = 'Hernandez',@Apellido2_Medico = 'Bermudez', 
-    @Telefono_Medico = '4567890123',@Especialidad = 'Radiología'; -- Radiología
-	go
-
--- Insertar m�dico 4
-EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Elena',@Nombre2_Medico = 'Cristina',@Apellido1_Medico = 'Alvarez',@Apellido2_Medico = 'Luna', 
-    @Telefono_Medico = '5678901234',@Especialidad = 'Pediatría'; -- Pediatría
-	go
-
--- Insertar m�dico 5
-EXEC Sp_RegistrarMedico @Nombre1_Medico = 'Ricardo',@Nombre2_Medico = 'Andrés',@Apellido1_Medico = 'Morales',@Apellido2_Medico = 'Santos', 
-    @Telefono_Medico = '6789012345',@Especialidad = 'Cirugía'; -- Cirugía
-	go
-
 -------Registrar Estado de la cita
 USE SaludPlus
 GO
@@ -1668,34 +1635,32 @@ CREATE PROCEDURE Sp_RegistrarEstadoCita
 AS
 BEGIN
     SET NOCOUNT ON;
-	-- Verificar si el estado ya existe
-    IF EXISTS (SELECT 1 FROM Estado_Cita WHERE Estado = @Estado)
-    BEGIN
-        RAISERROR('El estado de cita ya existe.', 16, 1);
-        RETURN;
-    END
-    BEGIN TRY
+	BEGIN TRY
+		-- Verificar si el estado ya existe
+		IF EXISTS (SELECT 1 FROM Estado_Cita WHERE Lower(Estado) = Lower(@Estado))
+		BEGIN
+			RAISERROR('El estado de cita ya existe.', 16, 1);
+			RETURN;
+		END
+    
         INSERT INTO Estado_Cita (  Estado)
-        VALUES (  @Estado);
+        VALUES (TRIM(@Estado));
 
         PRINT 'El estado de cita se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el estado de cita: ' + ERROR_MESSAGE();
+
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el estado de cita: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
--- Insertar estado de cita 1
-EXEC Sp_RegistrarEstadoCita   @Estado = 'En Espera';
-go
-
--- Insertar estado de cita 2
-EXEC Sp_RegistrarEstadoCita  @Estado = 'No Asistió';
-go
--- Insertar estado de cita 3
-EXEC Sp_RegistrarEstadoCita   @Estado = 'Finalizada';
-go
 
 ---------------Registrar Cita
 Use SaludPlus
@@ -1705,65 +1670,67 @@ CREATE PROCEDURE Sp_RegistrarCita
     
 	@Fecha_Cita DATE,
     @Hora_Cita TIME,
-    @ID_Paciente INT,
-    @ID_Medico INT,
-	@ID_Estado_Cita  INT
+	@ID_Medico INT,
+	@Estado VARCHAR(50),
+    @Cedula VARCHAR(12)
 )
 AS
 BEGIN
- IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
-        BEGIN
-            RAISERROR('El ID de paciente no existe.', 16, 1);
-            RETURN;
-        END
 
-    IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
-        BEGIN
-            RAISERROR('El ID de la especialidad médico no existe.', 16, 2);
-            RETURN;
-        END
-		IF NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
-        BEGIN
-            RAISERROR('El ID del estado de la cita no existe.', 16, 2);
-            RETURN;
-	END
-	 -- Verificar si el paciente ya tiene una cita a la misma hora y fecha
-    IF EXISTS (SELECT 1 FROM Cita WHERE ID_Paciente = @ID_Paciente AND Fecha_Cita = @Fecha_Cita AND Hora_Cita = @Hora_Cita)
-    BEGIN
-        RAISERROR('El paciente ya tiene una cita a la misma hora y fecha.', 16, 3);
-        RETURN;
-    END
 	BEGIN TRY
-    INSERT INTO Cita ( Fecha_Cita, Hora_Cita, ID_Paciente, ID_Medico, ID_Estado_Cita)
-    VALUES ( @Fecha_Cita, @Hora_Cita, @ID_Paciente, @ID_Medico,@ID_Estado_Cita);
 
-	PRINT 'La cita se ha registrado correctamente';
+		IF LEN(@Cedula) <> 9
+        BEGIN
+            RAISERROR (N'La cédula debe tener exactamente 9 dígitos', 16, 1);
+            RETURN;
+        END
+
+		IF NOT EXISTS (SELECT 1 FROM Paciente WHERE Cedula = Trim(@Cedula))
+			BEGIN
+				RAISERROR('La cedula del paciente no existe.', 16, 1);
+				RETURN;
+			END
+
+		IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
+			BEGIN
+				RAISERROR('El ID del médico no existe.', 16, 2);
+				RETURN;
+			END
+
+		IF NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE Lower(Estado) like TRIM(lower(@Estado)))
+        BEGIN
+            RAISERROR('El estado de la cita no existe.', 16, 2);
+            RETURN;
+		END
+
+		DECLARE @ID_Paciente int = (Select top 1 ID_Paciente from Paciente where Cedula like @Cedula)
+		DECLARE @ID_Estado_Cita int = (Select top 1 ID_Estado_Cita from Estado_Cita where Lower(Estado) like Trim(Lower(@Estado)))
+		
+
+	 -- Verificar si el paciente ya tiene una cita a la misma hora y fecha
+		IF EXISTS (SELECT 1 FROM Cita WHERE ID_Paciente = @ID_Paciente AND Fecha_Cita = @Fecha_Cita AND Hora_Cita = @Hora_Cita)
+		BEGIN
+			RAISERROR('El paciente ya tiene una cita a la misma hora y fecha.', 16, 3);
+			RETURN;
+		END
+	
+		INSERT INTO Cita ( Fecha_Cita, Hora_Cita, ID_Paciente, ID_Medico, ID_Estado_Cita)
+		VALUES ( @Fecha_Cita, @Hora_Cita, @ID_Paciente, @ID_Medico,@ID_Estado_Cita);
+
+		PRINT 'La cita se ha registrado correctamente';
 	END TRY
     BEGIN CATCH
-    PRINT 'Error al registrar la cita: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar la cita: %s', 16, 1, @ErrorMessage);
     END CATCH
 	END;
 GO
 
--- Insertar cita 2
-
-execute Sp_RegistrarCita   @Fecha_Cita= '2024-01-01',  @Hora_Cita= '08:00', @ID_Paciente=5 , @ID_Medico=1, @ID_Estado_Cita =1
-go
--- Insertar cita 2
-EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-06-01',@Hora_Cita = '08:30',@ID_Paciente = 2,@ID_Medico = 2,@ID_Estado_Cita = 1;
-go
--- Insertar cita 3
-EXEC Sp_RegistrarCita   @Fecha_Cita = '2024-07-01',@Hora_Cita = '09:30',@ID_Paciente = 2,@ID_Medico = 3,@ID_Estado_Cita = 2;
-go
--- Insertar cita 4
-EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-08-01',@Hora_Cita = '10:30',@ID_Paciente = 3,@ID_Medico = 4,@ID_Estado_Cita = 3;
-go
--- Insertar cita 5
-EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-09-01',@Hora_Cita = '11:30', @ID_Paciente = 6,@ID_Medico = 5,@ID_Estado_Cita = 1;
-go
--- Insertar cita 6
-EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-09-01',@Hora_Cita = '14:30',@ID_Paciente = 7,@ID_Medico = 7,@ID_Estado_Cita = 2;
-go
 
 -----------------Tipo de Pago
 USE SaludPlus
@@ -1776,23 +1743,32 @@ CREATE PROCEDURE Sp_RegistrarTipoPago
 AS
 BEGIN
     SET NOCOUNT ON;
+	BEGIN TRY
 	-- Verificar si el tipo de pago ya existe
     IF EXISTS (SELECT 1 FROM Tipo_Pago WHERE Descripcion_Tipo_Pago = @Descripcion_Tipo_Pago)
     BEGIN
         RAISERROR('El tipo de pago ya existe.', 16, 1);
         RETURN;
     END
-    BEGIN TRY
+    
         INSERT INTO Tipo_Pago (  Descripcion_Tipo_Pago)
         VALUES ( @Descripcion_Tipo_Pago);
 
         PRINT 'El tipo de pago se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el tipo de pago: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el tipo de pago: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
+
+
 --------------Registrar Factura
 USE SaludPlus
 GO
@@ -1800,34 +1776,36 @@ CREATE PROCEDURE Sp_RegistrarFactura
 (
 	@Fecha_Factura DATE,
     @Monto_Total MONEY,
-    @ID_Paciente INT,
+    @Cedula VARCHAR(12),
     @ID_Cita INT,
-	@ID_Tipo_Pago INT
+	@Tipo_Pago VARCHAR(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
-
+	BEGIN TRY
     -- Verificar si el paciente existe
-    IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
-        BEGIN
-            RAISERROR('El ID de paciente no existe.', 16, 1);
-            RETURN;
-        END
+	IF NOT EXISTS (SELECT 1 FROM Paciente WHERE Cedula = Trim(@Cedula))
+			BEGIN
+				RAISERROR('La cedula del paciente no existe.', 16, 1);
+				RETURN;
+			END
 		 -- Verificar si la cita existe
     IF NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
         BEGIN
             RAISERROR('El ID de cita no existe.', 16, 1);
             RETURN;
         END
-		 
-		 -- Verificar si el tipo de pago existe
-    IF NOT EXISTS (SELECT 1 FROM	Tipo_Pago WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
-        BEGIN
-            RAISERROR('El ID del tipo de pago no existe.', 16, 1);
-            RETURN;
-        END
-    BEGIN TRY
+
+	IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE Lower(Descripcion_Tipo_Pago) = Trim(Lower(@Tipo_Pago)))
+    BEGIN
+        RAISERROR('El tipo de pago no existe.', 16, 1);
+        RETURN;
+    END
+
+	DECLARE @ID_Paciente int = (Select top 1 ID_Paciente from Paciente where Cedula like @Cedula)
+	DECLARE @ID_Tipo_Pago int = (Select top 1 ID_Tipo_Pago from Tipo_Pago where Lower(Descripcion_Tipo_Pago) like Trim(Lower(@Tipo_Pago)))
+		
         INSERT INTO Factura ( Fecha_Factura, Monto_Total, ID_Paciente, ID_Cita,ID_Tipo_Pago)
         VALUES ( @Fecha_Factura, @Monto_Total, @ID_Paciente, @ID_Cita,@ID_Tipo_Pago);
 
@@ -1838,22 +1816,6 @@ BEGIN
     END CATCH
 END;
 GO
-
--- Insertar factura 1
-EXEC Sp_RegistrarFactura   @Fecha_Factura = '2024-06-01', @Monto_Total = 1500.00,@ID_Paciente = 1,@ID_Cita = 1,@ID_Tipo_Pago = 1;
-go
--- Insertar factura 2
-EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-07-01',@Monto_Total = 2500.00,@ID_Paciente = 2,@ID_Cita = 2, @ID_Tipo_Pago = 2;
-go
--- Insertar factura 3
-EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-08-01',@Monto_Total = 3500.00,@ID_Paciente = 3,@ID_Cita = 3,@ID_Tipo_Pago = 3;
-go
--- Insertar factura 4
-EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-09-01',@Monto_Total = 4500.00,@ID_Paciente = 4,@ID_Cita = 4,@ID_Tipo_Pago = 4;
-go
--- Insertar factura 5
-EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-10-01',@Monto_Total = 5500.00,@ID_Paciente = 5,@ID_Cita = 5,@ID_Tipo_Pago = 5;
-go
 
 --------------------Insertar Historial Medico
 USE SaludPlus
@@ -1903,6 +1865,14 @@ go
 -- Insertar historial médico para el paciente con ID 9
 EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 9;
 go
+
+--------
+/*
+Sigo mañana
+
+
+*/
+
 
 -----------Insertar Estado de la Sala
 USE SaludPlus

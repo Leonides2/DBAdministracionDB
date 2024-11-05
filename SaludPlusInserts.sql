@@ -1,4 +1,4 @@
-
+Ôªø
 ------------------------------------------------Inserciones 
 USE SaludPlus;
 GO
@@ -40,11 +40,11 @@ GO
 -- Inserciones para la tabla Especialidad
 INSERT INTO Especialidad (Nombre_Especialidad)
 VALUES 
-('CardiologÌa'),
-('DermatologÌa'),
-('RadiologÌa'),
-('PediatrÌa'),
-('CirugÌa');
+('Cardiolog√≠a'),
+('Dermatolog√≠a'),
+('Radiolog√≠a'),
+('Pediatr√≠a'),
+('Cirug√≠a');
 GO
 
 -- Inserciones para la tabla Medico
@@ -108,7 +108,7 @@ GO
 -- Inserciones para la tabla Tipo Procedimiento
 INSERT INTO Tipo_Procedimiento (Nombre_Procedimiento)
 VALUES 
-('Cita de CirugÌa'),   
+('Cita de Cirug√≠a'),   
 ('Cita de Laboratorio'),
 ('Cita de Consulta General'),
 ('Emergencias'),
@@ -118,11 +118,11 @@ GO
 -- Inserciones para la tabla Procedimiento
 INSERT INTO Procedimiento (Descripcion_Procedimiento, Fecha_Procedimiento, Hora_Procedimiento, Monto_Procedimiento, Receta, ID_Sala, ID_Historial_Medico, ID_Cita, ID_Tipo_Procedimiento)
 VALUES 
-('CirugÌa de corazon', '2024-01-01', '14:00', 10000, 'Ibuprofeno cada seis horas por tres dÌas', 1, 1, 1, 1), 
-('Entrada de emergencia por pierna lesionada', '2024-02-01', '12:30', 200000, 'Ibuprofeno cada seis horas por 5 dÌas', 2, 2, 2, 4),
-('Enfermedad de piel', '2024-03-01', '09:00', 30000, 'Paracetamol cada ocho horas por cinco dÌas', 3, 3, 3, 3),
-('Por dolores fuertes de cabeza', '2024-04-01', '10:00', 400000, 'Paracetamol cada ocho horas por siete dÌas', 4, 4, 4, 3),
-('Laboratorio de cardiologÌa', '2024-05-01', '15:00', 5000000, 'Ibuprofeno cada seis horas por seis dÌas', 5, 5, 5, 2);
+('Cirug√≠a de corazon', '2024-01-01', '14:00', 10000, 'Ibuprofeno cada seis horas por tres d√≠as', 1, 1, 1, 1), 
+('Entrada de emergencia por pierna lesionada', '2024-02-01', '12:30', 200000, 'Ibuprofeno cada seis horas por 5 d√≠as', 2, 2, 2, 4),
+('Enfermedad de piel', '2024-03-01', '09:00', 30000, 'Paracetamol cada ocho horas por cinco d√≠as', 3, 3, 3, 3),
+('Por dolores fuertes de cabeza', '2024-04-01', '10:00', 400000, 'Paracetamol cada ocho horas por siete d√≠as', 4, 4, 4, 3),
+('Laboratorio de cardiolog√≠a', '2024-05-01', '15:00', 5000000, 'Ibuprofeno cada seis horas por seis d√≠as', 5, 5, 5, 2);
 GO
 
 -- Inserciones para la tabla Satisfaccion_Paciente
@@ -139,10 +139,10 @@ GO
 INSERT INTO Tipo_Recurso (Titulo_Recurso)
 VALUES 
 ('Medicamento'),
-('Equipo MÈdico'),
+('Equipo M√©dico'),
 ('Material de Oficina'),
-('Instrumento Quir˙rgico'),
-('Suministro MÈdico');
+('Instrumento Quir√∫rgico'),
+('Suministro M√©dico');
 GO
 
 -- Inserciones para la tabla Estado_Recurso_Medico
@@ -155,17 +155,17 @@ GO
 -- Inserciones para la tabla Recurso_Medico
 INSERT INTO Recurso_Medico (Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso, ID_Estado_Recurso_Medico)
 VALUES 
-('Recurso 1', 'Lote 1', 100, 'AlmacÈn 1', 1, 1),
-('Recurso 2', 'Lote 2', 200, 'AlmacÈn 2', 2, 2),
-('Recurso 3', 'Lote 3', 300, 'AlmacÈn 3', 3, 1),
-('Recurso 4', 'Lote 4', 400, 'AlmacÈn 4', 4, 2),
-('Recurso 5', 'Lote 5', 500, 'AlmacÈn 5', 5, 1);
+('Recurso 1', 'Lote 1', 100, 'Almac√©n 1', 1, 1),
+('Recurso 2', 'Lote 2', 200, 'Almac√©n 2', 2, 2),
+('Recurso 3', 'Lote 3', 300, 'Almac√©n 3', 3, 1),
+('Recurso 4', 'Lote 4', 400, 'Almac√©n 4', 4, 2),
+('Recurso 5', 'Lote 5', 500, 'Almac√©n 5', 5, 1);
 GO
 
 -- Inserciones para la tabla Horario_Trabajo
 INSERT INTO Horario_Trabajo (Nombre_Horario, Hora_Inicio, Hora_Fin)
 VALUES 
-('MaÒana', '08:00', '12:00'),
+('Ma√±ana', '08:00', '12:00'),
 ('Tarde', '13:00', '17:00'),
 ('Noche', '18:00', '22:00'),
 ('Madrugada', '23:00', '03:00'),
@@ -175,11 +175,11 @@ GO
 -- Inserciones para la tabla Planificacion_Recurso
 INSERT INTO Planificacion_Recurso (Descripcion_Planificacion, Fecha_Planificacion, ID_Sala, ID_Horario_Trabajo)
 VALUES 
-('PlanificaciÛn 1', '2024-01-01', 1, 1),
-('PlanificaciÛn 2', '2024-02-01', 2, 2),
-('PlanificaciÛn 3', '2024-03-01', 3, 3),
-('PlanificaciÛn 4', '2024-04-01', 4, 4),
-('PlanificaciÛn 5', '2024-05-01', 5, 5);
+('Planificaci√≥n 1', '2024-01-01', 1, 1),
+('Planificaci√≥n 2', '2024-02-01', 2, 2),
+('Planificaci√≥n 3', '2024-03-01', 3, 3),
+('Planificaci√≥n 4', '2024-04-01', 4, 4),
+('Planificaci√≥n 5', '2024-05-01', 5, 5);
 GO
 
 -- Inserciones de la tabla Medico_Planificacion_Recurso
@@ -206,16 +206,16 @@ GO
 INSERT INTO Rol (Nombre_Rol) 
 VALUES
 ('Administrador'),
-('MÈdico'),
+('M√©dico'),
 ('Recepcionista');
 GO
 
 -- Inserciones para el Usuario
-INSERT INTO Usuario (Nombre_Usuario, Correo_Usuario, ContraseÒa_Usuario, ID_Rol) 
+INSERT INTO Usuario (Nombre_Usuario, Correo_Usuario, Contrase√±a_Usuario, ID_Rol) 
 VALUES
-('Juan PÈrez', 'juan.perez@saludplus.com', 'contraseÒa123', 1),  
-('MarÌa GÛmez', 'maria.gomez@saludplus.com', 'contraseÒa456', 2),  
-('Carlos LÛpez', 'carlos.lopez@saludplus.com', 'contraseÒa789', 3);
+('Juan P√©rez', 'juan.perez@saludplus.com', 'contrase√±a123', 1),  
+('Mar√≠a G√≥mez', 'maria.gomez@saludplus.com', 'contrase√±a456', 2),  
+('Carlos L√≥pez', 'carlos.lopez@saludplus.com', 'contrase√±a789', 3);
 GO
 
 -- Inserciones de permisos
@@ -225,7 +225,7 @@ VALUES
 ('Ver Citas'),
 ('Modificar Citas'),
 ('Eliminar Citas'),
-('Acceso a Historial MÈdico'),
+('Acceso a Historial M√©dico'),
 ('Gestionar Pacientes');
 GO
 
@@ -236,6 +236,112 @@ VALUES
 (1, 2),  -- Administrador puede ver citas
 (1, 3),  -- Administrador puede modificar citas
 (1, 4),  -- Administrador puede eliminar citas
-(1, 5),  -- Administrador puede acceder a historial mÈdico
+(1, 5),  -- Administrador puede acceder a historial m√©dico
 (1, 6);  -- Administrador puede gestionar pacientes
 GO
+
+
+
+-------------------Inserciones por procedimientos almacenados-Testing ------------
+
+
+-- Insertar paciente 1
+EXEC Sp_RegistrarPaciente   @Nombre_Paciente = 'Pedro', @Apellido1_Paciente = 'Fernandez', @Apellido2_Paciente = 'Torres',
+    @Telefono_Paciente = '5678901122',@Fecha_Nacimiento = '1988-06-06',@Direccion_Paciente = 'Calle 6, Ciudad F',@Cedula = '987654321';
+	go
+
+
+-- Insertar paciente 2
+EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Lucia', @Apellido1_Paciente = 'Cruz',@Apellido2_Paciente = 'Mendez', 
+    @Telefono_Paciente = '6789012233',@Fecha_Nacimiento = '1992-07-07',@Direccion_Paciente = 'Calle 7, Ciudad G',@Cedula = '456789012';
+	go
+
+-- Insertar paciente 3
+EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Fernando',@Apellido1_Paciente = 'Ramirez',@Apellido2_Paciente = 'Soto', 
+    @Telefono_Paciente = '7890123344',@Fecha_Nacimiento = '1982-08-08',@Direccion_Paciente = 'Calle 8, Ciudad H',@Cedula = '654321789';
+	go
+
+-- Insertar paciente 4
+EXEC Sp_RegistrarPaciente  @Nombre_Paciente = 'Isabella',@Apellido1_Paciente = 'Alvarez',@Apellido2_Paciente = 'Paredes', 
+    @Telefono_Paciente = '8901234455',@Fecha_Nacimiento = '1995-09-09',@Direccion_Paciente = 'Calle 9, Ciudad I',@Cedula = '321654987';
+	go
+
+
+
+-- Insertar especialidad 1
+EXEC Sp_RegistrarEspecialidad  @Nombre_Especialidad = 'Ginecolog√≠a';
+go
+
+-- Insertar especialidad 2
+EXEC Sp_RegistrarEspecialidad  @Nombre_Especialidad = 'Psiquiatr√≠a';
+go
+
+
+
+-- Insertar mÔøΩdico 1
+EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Antonio',@Nombre2_Medico = 'Luis',@Apellido1_Medico = 'Salazar',@Apellido2_Medico = 'Jimenez', 
+    @Telefono_Medico = '2345678901',@Especialidad = 'Cardiolog√≠a'; -- Cardiolog√≠a
+	go
+
+-- Insertar mÔøΩdico 2
+EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Carmen',@Nombre2_Medico = 'Teresa',@Apellido1_Medico = 'Ruiz',@Apellido2_Medico = 'Mena', 
+    @Telefono_Medico = '3456789012',@Especialidad = 'Dermatolog√≠a'; -- Dermatolog√≠a
+	go
+-- Insertar mÔøΩdico 3
+EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Francisco',@Nombre2_Medico = 'Javier',@Apellido1_Medico = 'Hernandez',@Apellido2_Medico = 'Bermudez', 
+    @Telefono_Medico = '4567890123',@Especialidad = 'Radiolog√≠a'; -- Radiolog√≠a
+	go
+
+-- Insertar mÔøΩdico 4
+EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Elena',@Nombre2_Medico = 'Cristina',@Apellido1_Medico = 'Alvarez',@Apellido2_Medico = 'Luna', 
+    @Telefono_Medico = '5678901234',@Especialidad = 'Pediatr√≠a'; -- Pediatr√≠a
+	go
+
+-- Insertar mÔøΩdico 5
+EXEC Sp_RegistrarMedico @Nombre1_Medico = 'Ricardo',@Nombre2_Medico = 'Andr√©s',@Apellido1_Medico = 'Morales',@Apellido2_Medico = 'Santos', 
+    @Telefono_Medico = '6789012345',@Especialidad = 'Cirug√≠a'; -- Cirug√≠a
+	go
+
+-- Insertar estado de cita 1
+EXEC Sp_RegistrarEstadoCita   @Estado = 'En Espera';
+go
+
+-- Insertar estado de cita 2
+EXEC Sp_RegistrarEstadoCita  @Estado = 'No Asisti√≥';
+go
+-- Insertar estado de cita 3
+EXEC Sp_RegistrarEstadoCita   @Estado = 'Finalizada';
+go
+
+
+-- Insertar cita 1
+execute Sp_RegistrarCita  @Fecha_Cita= '2024-01-01',  @Hora_Cita= '08:00', @Cedula='456789012' , @ID_Medico=1, @Estado='Programada'
+go
+-- Insertar cita 2
+EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-06-01',@Hora_Cita = '08:30',@Cedula = '321654987',@ID_Medico = 2,@Estado='Programada';
+go
+-- Insertar cita 3
+EXEC Sp_RegistrarCita   @Fecha_Cita = '2024-07-01',@Hora_Cita = '09:30',@Cedula = '987654321',@ID_Medico = 3,@Estado='En Espera';
+go
+-- Insertar cita 4
+EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-08-01',@Hora_Cita = '10:30',@Cedula = '456789012',@ID_Medico = 4,@Estado = 'Realizada';
+go
+
+-- Insertar cita 5
+EXEC Sp_RegistrarCita  @Fecha_Cita = '2024-08-01',@Hora_Cita = '11:30',@Cedula = '867905532',@ID_Medico = 4,@Estado = 'Programada';
+go
+
+
+-- Insertar factura 1
+EXEC Sp_RegistrarFactura   @Fecha_Factura = '2024-06-01', @Monto_Total = 1500.00,@Cedula='456789012',@ID_Cita = 1,@Tipo_Pago = 'Efectivo';
+go
+-- Insertar factura 2
+EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-07-01',@Monto_Total = 2500.00,@Cedula = '867905532',@ID_Cita = 2, @Tipo_Pago = 'Tarjeta de debito';
+go
+-- Insertar factura 3
+EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-08-01',@Monto_Total = 3500.00,@Cedula = '987654321',@ID_Cita = 3,@Tipo_Pago = 'Sinpe Movil';
+go
+-- Insertar factura 4
+EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-09-01',@Monto_Total = 4500.00,@Cedula = '321654987',@ID_Cita = 4,@Tipo_Pago = 'Efectivo';
+go
+
