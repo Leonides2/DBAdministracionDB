@@ -87,9 +87,10 @@ add file
     MAXSIZE = 500MB, --5000MB
     FILEGROWTH = 200MB
 )to FILEGROUP Recursos
--------------------------
 go
-------------------------------creacion de tablas--------------
+-------------------------
+ 
+ ------------------------------creacion de tablas--------------
 use SaludPlus
 go
 create table Cita
@@ -282,13 +283,14 @@ create table Recurso_Medico_Sala
 ( 
 ID_Recurso_Medico_Sala int not null IDENTITY(1,1),
 Fecha date not null,
-Descripcion varchar(150) not null,
+Cantidad_Recurso int not null,
 ID_Recurso_Medico int not null,
 ID_Sala int not null,
 CONSTRAINT PK_Recurso_Medico_Sala
 PRIMARY KEY CLUSTERED (ID_Recurso_Medico_Sala)
 ) on 'Recursos'
 go
+ 
 -------------------
 use SaludPlus
 go
@@ -1548,13 +1550,13 @@ VALUES
 GO
 
 -- Inserciones para la tabla Recurso_Medico_Sala
-INSERT INTO Recurso_Medico_Sala (Fecha, Descripcion, ID_Recurso_Medico, ID_Sala)
+INSERT INTO Recurso_Medico_Sala (Fecha, Cantidad_Recurso, ID_Recurso_Medico, ID_Sala)
 VALUES 
-('2024-01-01', 'Sala tiene 20 recursos', 1, 1),
-('2024-01-01', 'Sala tiene 30 recursos', 2, 2),
-('2024-01-01', 'Sala tiene 40 recursos', 3, 3),
-('2024-01-01', 'Sala tiene 50 recursos', 4, 4),
-('2024-01-01', 'Sala tiene 60 recursos', 5, 5);
+('2024-01-01', 20, 1, 1),
+('2024-01-01', 30, 2, 2),
+('2024-01-01', 40, 3, 3),
+('2024-01-01', 50, 4, 4),
+('2024-01-01', 60, 5, 5);
 GO
 
 -- Inserciones de Rol
@@ -1743,7 +1745,7 @@ EXEC Sp_RegistrarMedico  @Nombre1_Medico = 'Elena',@Nombre2_Medico = 'Cristina',
 	go
 
 -- Insertar m�dico 5
-EXEC Sp_RegistrarMedico @Nombre1_Medico = 'Ricardo',@Nombre2_Medico = 'Andr�s',@Apellido1_Medico = 'Morales',@Apellido2_Medico = 'Santos', 
+EXEC Sp_RegistrarMedico @Nombre1_Medico = 'Ricardo',@Nombre2_Medico = 'Andrés',@Apellido1_Medico = 'Morales',@Apellido2_Medico = 'Santos', 
     @Telefono_Medico = '6789012345',@ID_Especialidad = 5; -- Cirugía
 	go
 
@@ -1950,8 +1952,6 @@ USE SaludPlus
 GO
 CREATE PROCEDURE Sp_RegistrarHistorialMedico
 (
-    
-    @Fecha_Registro DATE,
     @ID_Paciente INT
 )
 AS
@@ -1970,10 +1970,10 @@ BEGIN
         RETURN;
     END
 
-    BEGIN TRY
-        INSERT INTO Historial_Medico (  Fecha_Registro, ID_Paciente)
-        VALUES (  @Fecha_Registro, @ID_Paciente);
-
+     BEGIN TRY
+        -- Insertar historial médico con la fecha de registro automática
+        INSERT INTO Historial_Medico (Fecha_Registro, ID_Paciente)
+        VALUES (CAST(GETDATE() AS DATE), @ID_Paciente);  -- Usa la fecha actual
         PRINT 'El historial médico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
@@ -1983,19 +1983,18 @@ END;
 GO
 
 
--- Insertar historial m�dico 1
-EXEC Sp_RegistrarHistorialMedico  @Fecha_Registro = '2024-06-01',@ID_Paciente = 6;
+ -- Insertar historial médico para el paciente con ID 6
+EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 6;
 go
--- Insertar historial m�dico 2
-EXEC Sp_RegistrarHistorialMedico  @Fecha_Registro = '2024-07-01',@ID_Paciente = 7;
+-- Insertar historial médico para el paciente con ID 7
+EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 7;
 go
--- Insertar historial m�dico 3
-EXEC Sp_RegistrarHistorialMedico  @Fecha_Registro = '2024-08-01',@ID_Paciente = 8;
+-- Insertar historial médico para el paciente con ID 8
+EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 8;
 go
--- Insertar historial m�dico 4
-EXEC Sp_RegistrarHistorialMedico  @Fecha_Registro = '2024-09-01',@ID_Paciente = 9;
+-- Insertar historial médico para el paciente con ID 9
+EXEC Sp_RegistrarHistorialMedico @ID_Paciente = 9;
 go
-
 
 -----------Insertar Estado de la Sala
 USE SaludPlus
@@ -2376,7 +2375,7 @@ GO
 CREATE PROCEDURE Sp_RegistrarRecursoMedicoSala
 (
     @Fecha DATE,
-    @Descripcion VARCHAR(150),
+    @Cantidad_Recurso INT,
     @ID_Recurso_Medico INT,
     @ID_Sala INT
 )
@@ -2399,8 +2398,8 @@ BEGIN
     END
 
     BEGIN TRY
-        INSERT INTO Recurso_Medico_Sala (  Fecha, Descripcion, ID_Recurso_Medico, ID_Sala)
-        VALUES (  @Fecha, @Descripcion, @ID_Recurso_Medico, @ID_Sala);
+        INSERT INTO Recurso_Medico_Sala (  Fecha, Cantidad_Recurso, ID_Recurso_Medico, ID_Sala)
+        VALUES (  @Fecha, @Cantidad_Recurso, @ID_Recurso_Medico, @ID_Sala);
 
         PRINT 'El recurso médico en sala se ha registrado correctamente.';
     END TRY
@@ -2410,13 +2409,13 @@ BEGIN
 END;
 GO
 
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-01',@Descripcion = 'Sala tiene 25 recursos',@ID_Recurso_Medico = 1,@ID_Sala = 1;
+EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-01',@Cantidad_Recurso = 25,@ID_Recurso_Medico = 1,@ID_Sala = 1;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-02',@Descripcion = 'Sala tiene 35 recursos',@ID_Recurso_Medico = 2,@ID_Sala = 2;
+EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-02',@Cantidad_Recurso = 35,@ID_Recurso_Medico = 2,@ID_Sala = 2;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-03',@Descripcion = 'Sala tiene 45 recursos',@ID_Recurso_Medico = 6,@ID_Sala = 3;
+EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-03',@Cantidad_Recurso = 45,@ID_Recurso_Medico = 6,@ID_Sala = 3;
 go
-EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-04',@Descripcion = 'Sala tiene 55 recursos',@ID_Recurso_Medico = 7,@ID_Sala = 8;
+EXEC Sp_RegistrarRecursoMedicoSala  @Fecha = '2024-02-04',@Cantidad_Recurso =  55,@ID_Recurso_Medico = 7,@ID_Sala = 8;
 go
 
 
