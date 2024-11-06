@@ -1,32 +1,67 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+
+import './Navbar.css'
 
 const Navbar = () => {
+    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+
+    const navigate = useNavigate();
+
+    // Define las rutas y etiquetas de los botones
+    const links = [
+        { path: "/citas", label: "Citas" },
+        { path: "/pacientes", label: "Pacientes" },
+        { path: "/especialidades", label: "Especialidades" },
+        { path: "/facturas", label: "Facturas" },
+        { path: "/estado-citas", label: "Estados de Cita" },
+        { path: "/estado-recurso-medicos", label: "Estados de Recurso Medico" },
+        { path: "/estado-salas", label: "Estados de Sala" },
+        { path: "/historiales-medicos", label: "Historiales Medicos" },
+        { path: "/horarios-trabajo", label: "Horarios de Trabajo" },
+        { path: "/medicos", label: "Medicos" },
+        { path: "/tipos-pago", label: "Tipos de Pago" },
+        { path: "/procedimientos", label: "Procedimientos" },
+        { path: "/tipos-procedimiento", label: "Tipos de Procedimiento" },
+        { path: "/recursos-medicos", label: "Recursos Medicos" },
+        { path: "/tipos-recurso", label: "Tipos de Recurso" },
+        { path: "/salas", label: "Salas" },
+        { path: "/tipos-salas", label: "Tipos de Salas" },
+        { path: "/recursos-medicos-salas", label: "Recursos Medicos en Salas" },
+        { path: "/planificaciones-recursos", label: "Planificaciones de Recursos" },
+        { path: "/medico-planificaciones-recursos", label: "Medico-Planificaciones" },
+        { path: "/satisfaccion-pacientes", label: "Evaluaciones de Satisfacción" },
+        { path: "/registrar-usuario", label: "Registro de Usuarios" },
+    ];
+
+    const handleButtonClick = (index: number) => {
+        setSelectedIndex(index);
+    };
+
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light p-3" style={{overflowX: "auto"}}>
-            <Link className="mr-2" to="/citas"><button type="button" className="btn btn-sm btn-outline-secondary">Citas</button></Link>
-            <Link className="mr-2" to="/pacientes"><button type="button" className="btn btn-sm btn-outline-secondary">Pacientes</button></Link>
-            <Link className="mr-2" to="/especialidades"><button type="button" className="btn btn-sm btn-outline-secondary">Especialidades</button></Link>
-            <Link className="mr-2" to="/facturas"><button type="button" className="btn btn-sm btn-outline-secondary">Facturas</button></Link>
-            <Link className="mr-2" to="/estado-citas"><button type="button" className="btn btn-sm btn-outline-secondary">Estados de Cita</button></Link>
-            <Link className="mr-2" to="/estado-recurso-medicos"><button type="button" className="btn btn-sm btn-outline-secondary">Estados de Recurso Medico</button></Link>
-            <Link className="mr-2" to="/estado-salas"><button type="button" className="btn btn-sm btn-outline-secondary">Estados de Sala</button></Link>
-            <Link className="mr-2" to="/historiales-medicos"><button type="button" className="btn btn-sm btn-outline-secondary">Historiales Medicos</button></Link>
-            <Link className="mr-2" to="/horarios-trabajo"><button type="button" className="btn btn-sm btn-outline-secondary">Horarios de Trabajo</button></Link>
-            <Link className="mr-2" to="/medicos"><button type="button" className="btn btn-sm btn-outline-secondary">Medicos</button></Link>
-            <Link className="mr-2" to="/tipos-pago"><button type="button" className="btn btn-sm btn-outline-secondary">Tipos de Pago</button></Link>
-            <Link className="mr-2" to="/procedimientos"><button type="button" className="btn btn-sm btn-outline-secondary">Procedimientos</button></Link>
-            <Link className="mr-2" to="/tipos-procedimiento"><button type="button" className="btn btn-sm btn-outline-secondary">Tipos de Procedimiento</button></Link>
-            <Link className="mr-2" to="/recursos-medicos"><button type="button" className="btn btn-sm btn-outline-secondary">Recursos Medicos</button></Link>
-            <Link className="mr-2" to="/tipos-recurso"><button type="button" className="btn btn-sm btn-outline-secondary">Tipos de Recurso</button></Link>
-            <Link className="mr-2" to="/salas"><button type="button" className="btn btn-sm btn-outline-secondary">Salas</button></Link>
-            <Link className="mr-2" to="/tipos-salas"><button type="button" className="btn btn-sm btn-outline-secondary">Tipos de Salas</button></Link>
-            <Link className="mr-2" to="/recursos-medicos-salas"><button type="button" className="btn btn-sm btn-outline-secondary">Recursos Medicos en Salas</button></Link>
-            <Link className="mr-2" to="/planificaciones-recursos"><button type="button" className="btn btn-sm btn-outline-secondary">Planificaciones de Recursos</button></Link>
-            <Link className="mr-2" to="/medico-planificaciones-recursos"><button type="button" className="btn btn-sm btn-outline-secondary">Medico-Planificaciones</button></Link>
-            <Link className="mr-2" to="/satisfaccion-pacientes"><button type="button" className="btn btn-sm btn-outline-secondary">Evaluaciones de Satisfacción</button></Link>
-            <Link className="mr-2" to="/registro-usuario"><button type="button" className="btn btn-sm btn-outline-secondary">Registro de Usuarios</button></Link>
+        <nav className="navbar navbar-expand-lg navbar-light bg-light p-3" >
+            {
+            links.map((link, index) => (
+                
+                
+                    //<Link key={link.path} className="mr-2" to={link.path}>
+                
+                    <button
+                        type="button"
+                        className={`btn btn-sm ${selectedIndex === index ? "btn-primary" : "btn-outline-secondary"}`}
+                        onClick={() => {
+                            handleButtonClick(index)
+                            navigate(link.path)
+                        }}
+                    >
+                        {link.label}
+                    </button>
+                    
+                    //</Link>
+                    
+            ))}
         </nav>
-    )
-}
+    );
+};
 
 export default Navbar;
