@@ -30,9 +30,7 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn, entityFields}
     }
 
     const DeleteEntity = () => {
-        postDeleteQuery(`DELETE FROM ${tableName} WHERE ${idFieldName} = ${entity[idFieldName]}`);
-
-        alert(`EXEC Sp_Eliminar${tableName} ${entity[idFieldName]}`);
+        postDeleteQuery(`EXEC Sp_Eliminar${tableName} ${entity[idFieldName]}`);
     }
 
     const cancelEdit = () => {
