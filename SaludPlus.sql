@@ -2198,24 +2198,19 @@ BEGIN
         PRINT 'El historial médico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el historial médico: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el historial médico: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
 
- -- Insertar historial médico para el paciente con ID 6
-EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 6;
-go
--- Insertar historial médico para el paciente con ID 7
-EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 7;
-go
--- Insertar historial médico para el paciente con ID 8
-EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 8;
-go
--- Insertar historial médico para el paciente con ID 9
-EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 9;
-go
+
 
 --------
 /*
@@ -2236,33 +2231,33 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarEstado_Sala
 AS
 BEGIN
     SET NOCOUNT ON;
-	-- Verificar si el nombre del estado de sala ya existe
-    IF EXISTS (SELECT 1 FROM Estado_Sala WHERE Nombre = @Nombre)
-    BEGIN
-        RAISERROR('El nombre del estado de sala ya existe.', 16, 1);
-        RETURN;
-    END
-    BEGIN TRY
+	BEGIN TRY
+		-- Verificar si el nombre del estado de sala ya existe
+		IF EXISTS (SELECT 1 FROM Estado_Sala WHERE Lower(Nombre) = Lower(@Nombre))
+		BEGIN
+			RAISERROR('El nombre del estado de sala ya existe.', 16, 1);
+			RETURN;
+		END
+    
         INSERT INTO Estado_Sala (  Nombre)
         VALUES (  @Nombre);
 
         PRINT 'El estado de sala se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el estado de sala: ' + ERROR_MESSAGE();
+
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el estado de sala: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
--- Insertar estado de sala 1
-EXEC Sp_RegistrarEstado_Sala  @Nombre = 'Inactiva';
-go
--- Insertar estado de sala 2
-EXEC Sp_RegistrarEstado_Sala  @Nombre = 'En mantenimiento';
-go
--- Insertar estado de sala 3
-EXEC Sp_RegistrarEstado_Sala  @Nombre = 'Cerrada';
-go
+
 
 ------------------Registrar Tipo de Sala
 USE SaludPlus
@@ -2274,36 +2269,33 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarTipo_Sala
 AS
 BEGIN
     SET NOCOUNT ON;
+	BEGIN TRY
 	-- Verificar si la descripci�n del tipo de sala ya existe
     IF EXISTS (SELECT 1 FROM Tipo_Sala WHERE Descripcion_Tipo_Sala = @Descripcion_Tipo_Sala)
     BEGIN
         RAISERROR('La descripción del tipo de sala ya existe.', 16, 1);
         RETURN;
     END
-    BEGIN TRY
+    
         INSERT INTO Tipo_Sala (  Descripcion_Tipo_Sala)
         VALUES (  @Descripcion_Tipo_Sala);
 
         PRINT 'El tipo de sala se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el tipo de sala: ' + ERROR_MESSAGE();
+
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el tipo de sala: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
--- Insertar tipo de sala 1
-EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Ginecología';
-go
--- Insertar tipo de sala 2
-EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Traumatología';
-go
--- Insertar tipo de sala 3
-EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Cardiología';
-go
--- Insertar tipo de sala 5
-EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Oncología';
-go
+
 
 -------------------Insertar Sala  
 Use SaludPlus
@@ -2312,52 +2304,55 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarSala
 (
     @Nombre_Sala VARCHAR(50),
     @Capacidad_Sala INT,
-    @ID_Tipo_Sala INT,
-    @ID_Estado_Sala INT
+    @Descripcion_Tipo_Sala VARCHAR(50),
+    @Estado_Sala VARCHAR(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
+	BEGIN TRY
+		-- Verificar si el tipo y estado de sala existen
+		IF NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE Descripcion_Tipo_Sala LIKE @Descripcion_Tipo_Sala)
+		BEGIN
+			RAISERROR('El tipo de sala no existe.', 16, 1);
+			RETURN;
+		END
 
-    -- Verificar si el tipo y estado de sala existen
-    IF NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE ID_Tipo_Sala = @ID_Tipo_Sala)
-    BEGIN
-        RAISERROR('El ID de tipo de sala no existe.', 16, 1);
-        RETURN;
-    END
+		IF NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE Nombre LIKE @Estado_Sala)
+		BEGIN
+			RAISERROR('El estado de sala no existe.', 16, 1);
+			RETURN;
+		END
+		-- Verificar si el nombre de la sala ya existe
+		IF EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala)
+		BEGIN
+			RAISERROR('El nombre de la sala ya existe.', 16, 1);
+			RETURN;
+		END
+    
+		DECLARE @ID_Tipo_Sala int = (Select top 1 ID_Tipo_Sala from Tipo_Sala where Descripcion_Tipo_Sala like @Descripcion_Tipo_Sala)
+		DECLARE @ID_Estado_Sala int = (Select top 1 ID_Estado_Sala from Estado_Sala where Nombre like @Estado_Sala)
 
-    IF NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE ID_Estado_Sala = @ID_Estado_Sala)
-    BEGIN
-        RAISERROR('El ID de estado de sala no existe.', 16, 1);
-        RETURN;
-    END
-	-- Verificar si el nombre de la sala ya existe
-    IF EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala)
-    BEGIN
-        RAISERROR('El nombre de la sala ya existe.', 16, 1);
-        RETURN;
-    END
-    BEGIN TRY
+
+
         INSERT INTO Sala (  Nombre_Sala, Capacidad_Sala, ID_Tipo_Sala, ID_Estado_Sala)
         VALUES (  @Nombre_Sala, @Capacidad_Sala, @ID_Tipo_Sala, @ID_Estado_Sala);
 
         PRINT 'La sala se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la sala: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar la sala: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
--- Insertar sala 1
-EXEC Sp_RegistrarSala  @Nombre_Sala = 'Sala de Ginecología',@Capacidad_Sala = 4,@ID_Tipo_Sala = 2,@ID_Estado_Sala = 3;
-go
--- Insertar sala 2
-EXEC Sp_RegistrarSala  @Nombre_Sala = 'Sala de Traumatología',@Capacidad_Sala = 5,@ID_Tipo_Sala = 3,@ID_Estado_Sala = 2;
-go
--- Insertar sala 3
-EXEC Sp_RegistrarSala  @Nombre_Sala = 'Sala de Cardiología',@Capacidad_Sala = 3,@ID_Tipo_Sala = 4,@ID_Estado_Sala = 1;
-go
+
 
 
 ------------------Registrar Tipo de Procedimiento 
@@ -2370,32 +2365,31 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarTipo_Procedimiento
 AS
 BEGIN
     SET NOCOUNT ON;
+
+	BEGIN TRY
 	-- Verificar si el nombre del tipo de procedimiento ya existe
     IF EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE Nombre_Procedimiento = @Nombre_Procedimiento)
     BEGIN
         RAISERROR('El nombre del tipo de procedimiento ya existe.', 16, 1);
         RETURN;
     END
-    BEGIN TRY
+    
         INSERT INTO Tipo_Procedimiento (  Nombre_Procedimiento)
         VALUES (  @Nombre_Procedimiento);
 
         PRINT 'El tipo de procedimiento se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el tipo de procedimiento: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el tipo de procedimiento: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
--- Insertar tipo de procedimiento 1
-EXEC Sp_RegistrarTipo_Procedimiento  @Nombre_Procedimiento = 'Cita de Ginecología';
-go
--- Insertar tipo de procedimiento 2
-EXEC Sp_RegistrarTipo_Procedimiento   @Nombre_Procedimiento = 'Cita de Traumatología';
-go
--- Insertar tipo de procedimiento 3
-EXEC Sp_RegistrarTipo_Procedimiento  @Nombre_Procedimiento = 'Cita de Cardiología';
-go
 
 ---------------------Registrar Procedimiento
 USE SaludPlus
@@ -2407,67 +2401,62 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarProcedimiento
     @Hora_Procedimiento TIME,
     @Monto_Procedimiento MONEY,
     @Receta VARCHAR(150),
-    @ID_Sala INT,
+    @Nombre_Sala VARCHAR(50),
     @ID_Historial_Medico INT,
     @ID_Cita INT,
-    @ID_Tipo_Procedimiento INT
+    @Nombre_Procedimiento VARCHAR(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
+	BEGIN TRY
+		-- Verificaciones para ID_Sala, ID_Historial_Medico, ID_Cita y ID_Tipo_Procedimiento
+		IF NOT EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala like @Nombre_Sala)
+		BEGIN
+			RAISERROR('La sala no existe.', 16, 1);
+			RETURN;
+		END
 
-    -- Verificaciones para ID_Sala, ID_Historial_Medico, ID_Cita y ID_Tipo_Procedimiento
-    IF NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
-    BEGIN
-        RAISERROR('El ID de sala no existe.', 16, 1);
-        RETURN;
-    END
+		IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
+		BEGIN
+			RAISERROR('El ID de historial médico no existe.', 16, 1);
+			RETURN;
+		END
 
-    IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
-    BEGIN
-        RAISERROR('El ID de historial médico no existe.', 16, 1);
-        RETURN;
-    END
+		IF NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
+		BEGIN
+			RAISERROR('El ID de cita no existe.', 16, 1);
+			RETURN;
+		END
 
-    IF NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
-    BEGIN
-        RAISERROR('El ID de cita no existe.', 16, 1);
-        RETURN;
-    END
+		IF NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE Nombre_Procedimiento = @Nombre_Procedimiento)
+		BEGIN
+			RAISERROR('El tipo de procedimiento no existe.', 16, 1);
+			RETURN;
+		END
 
-    IF NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento)
-    BEGIN
-        RAISERROR('El ID de tipo de procedimiento no existe.', 16, 1);
-        RETURN;
-    END
+		DECLARE @ID_Sala int = (Select top 1 ID_Sala from Sala where Nombre_Sala like @Nombre_Sala)
+		DECLARE @ID_Tipo_Procedimiento int = (Select top 1 ID_Tipo_Procedimiento from Tipo_Procedimiento where Nombre_Procedimiento like @Nombre_Procedimiento)
 
-    BEGIN TRY
         INSERT INTO Procedimiento (  Descripcion_Procedimiento, Fecha_Procedimiento, Hora_Procedimiento, Monto_Procedimiento, Receta, ID_Sala, ID_Historial_Medico, ID_Cita, ID_Tipo_Procedimiento)
         VALUES (  @Descripcion_Procedimiento, @Fecha_Procedimiento, @Hora_Procedimiento, @Monto_Procedimiento, @Receta, @ID_Sala, @ID_Historial_Medico, @ID_Cita, @ID_Tipo_Procedimiento);
 
         PRINT 'El procedimiento se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el procedimiento: ' + ERROR_MESSAGE();
+
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el procedimiento: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
-EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Consulta de medicina interna',@Fecha_Procedimiento = '2024-08-01', 
-    @Hora_Procedimiento = '11:00',@Monto_Procedimiento = 5000,@Receta = 'Reposo y seguimiento',@ID_Sala = 1,@ID_Historial_Medico = 6,@ID_Cita = 6,@ID_Tipo_Procedimiento = 1;
-	go
-EXEC Sp_RegistrarProcedimiento @Descripcion_Procedimiento = 'Examen de laboratorio',@Fecha_Procedimiento = '2024-08-15',
-    @Hora_Procedimiento = '09:30',@Monto_Procedimiento = 1500,@Receta = 'Ninguna',@ID_Sala = 2,@ID_Historial_Medico = 7,@ID_Cita = 7,@ID_Tipo_Procedimiento = 2;
-	go
-EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Radiografía de abdomen',@Fecha_Procedimiento = '2024-08-20',
-    @Hora_Procedimiento = '13:00',@Monto_Procedimiento = 2000,@Receta = 'Ninguna',@ID_Sala = 3,@ID_Historial_Medico = 8,@ID_Cita = 8,@ID_Tipo_Procedimiento = 2;
-	go
-EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Consulta pediátrica',@Fecha_Procedimiento = '2024-09-01',@Hora_Procedimiento = '10:00',
-     @Monto_Procedimiento = 6000,@Receta = 'Paracetamol si es necesario',@ID_Sala = 4,@ID_Historial_Medico = 5,@ID_Cita = 2,@ID_Tipo_Procedimiento = 3;
-	 go
-EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Consulta de ortopedia',@Fecha_Procedimiento = '2024-09-10', 
-    @Hora_Procedimiento = '14:30',@Monto_Procedimiento = 7000,@Receta = 'Hielo y descanso',@ID_Sala = 5,@ID_Historial_Medico =1,@ID_Cita = 10,@ID_Tipo_Procedimiento = 7;
-	go
+
 
 -------------Registrar Estado del Recurso Medico
 USE SaludPlus
@@ -2480,32 +2469,31 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarEstado_Recurso_Medico
 AS
 BEGIN
     SET NOCOUNT ON;
+	BEGIN TRY
     -- Verificar si el estado del recurso m�dico ya existe
     IF EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE Estado_Recurso = @Estado_Recurso)
     BEGIN
         RAISERROR('El estado del recurso médico ya existe.', 16, 1);
         RETURN;
     END
-    BEGIN TRY
         INSERT INTO Estado_Recurso_Medico (  Estado_Recurso)
         VALUES (  @Estado_Recurso);
 
         PRINT 'El estado de recurso médico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el estado de recurso médico: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el estado de recurso médico: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
-EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'En mantenimiento';
-go
-EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Reparación necesaria';
-go
-EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Fuera de servicio';
-go
-EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Reservado';
-go
+
 --------------------Registrar Tipo de Recurso
 USE SaludPlus
 GO
@@ -2516,32 +2504,32 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarTipo_Recurso
 AS
 BEGIN
     SET NOCOUNT ON;
+	BEGIN TRY
 	-- Verificar si el tipo de recurso ya existe
     IF EXISTS (SELECT 1 FROM Tipo_Recurso WHERE Titulo_Recurso = @Titulo_Recurso)
     BEGIN
         RAISERROR('El tipo de recurso ya existe.', 16, 1);
         RETURN;
     END
-    BEGIN TRY
+    
         INSERT INTO Tipo_Recurso (  Titulo_Recurso)
         VALUES (  @Titulo_Recurso);
 
         PRINT 'El tipo de recurso se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el tipo de recurso: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el tipo de recurso: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
-EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Recurso de Diagnóstico';
-go
-EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Equipos de Protección Personal';
-go
-EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Suministros de Emergencia';
-go
-EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Material de Curación';
-go
+
 
 ---------------Insertar Recurso Medico
 USE SaludPlus

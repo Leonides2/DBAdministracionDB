@@ -11,8 +11,8 @@ const Salas = () => {
             addEntityFields={[
                 ["Nombre_Sala", "text"],
                 ["Capacidad_Sala", "number"],
-                ["ID_Tipo_Sala", "number"],
-                ["ID_Estado_Sala", "number"],
+                ["Descripcion_Tipo_Sala", "text"],
+                ["Estado_Sala", "text"],
             ]}
         />
     )

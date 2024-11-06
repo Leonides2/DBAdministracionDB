@@ -14,10 +14,10 @@ const Procedimientos = () => {
                 ["Hora_Procedimiento", "time"],
                 ["Monto_Procedimiento", "number"],
                 ["Receta", "text"],
-                ["ID_Sala", "number"],
+                ["Nombre_Sala", "text"],
                 ["ID_Historial_Medico", "number"],
                 ["ID_Cita", "number"],
-                ["ID_Tipo_Procedimiento", "number"],
+                ["Nombre_Procedimiento", "text"],
             ]}
         />
     )
