@@ -2085,7 +2085,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarTipoProcedimiento
+CREATE OR ALTER PROCEDURE Sp_ModificarTipo_Procedimiento
 (
     @ID_Tipo_Procedimiento INT,
     @Nuevo_Nombre_Procedimiento VARCHAR(50)
@@ -2209,7 +2209,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarEstadoRecursoMedico
+CREATE OR ALTER PROCEDURE Sp_ModificarEstado_Recurso_Medico
 (
     @ID_Estado_Recurso_Medico INT,
     @Estado_Recurso VARCHAR(50) = NULL
@@ -2254,7 +2254,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarTipoRecurso
+CREATE OR ALTER PROCEDURE Sp_ModificarTipo_Recurso
 (
     @ID_Tipo_Recurso INT,
     @Titulo_Recurso VARCHAR(50) = NULL
@@ -2299,7 +2299,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarRecursoMedico
+CREATE OR ALTER PROCEDURE Sp_ModificarRecurso_Medico
 (
     @ID_Recurso_Medico INT,
     @Nombre_Recurso VARCHAR(50) = NULL,
@@ -2360,7 +2360,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarRecursoMedicoSala
+CREATE OR ALTER PROCEDURE Sp_ModificarRecurso_Medico_Sala
 (
     @ID_Recurso_Medico_Sala INT,
     @Fecha DATE = NULL,
@@ -2418,7 +2418,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarHorarioTrabajo
+CREATE OR ALTER PROCEDURE Sp_ModificarHorario_Trabajo
 (
     @ID_Horario_Trabajo INT,
     @Nombre_Horario VARCHAR(50) = NULL,
@@ -2459,7 +2459,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarPlanificacionRecurso
+CREATE OR ALTER PROCEDURE Sp_ModificarPlanificacion_Recurso
 (
     @ID_Planificacion INT,
     @Descripcion_Planificacion VARCHAR(150) = NULL,
@@ -2517,7 +2517,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarMedicoPlanificacionRecurso
+CREATE OR ALTER PROCEDURE Sp_ModificarMedico_Planificacion_Recurso
 (
     @ID_Medico_Planificacion_Recurso INT,
     @Fecha_Planificacion_Personal DATE = NULL,
@@ -2572,7 +2572,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarSatisfaccionPaciente
+CREATE OR ALTER PROCEDURE Sp_ModificarSatisfaccion_Paciente
 (
     @ID_Satisfaccion INT,
     @Fecha_Evaluacion DATE = NULL,
@@ -2764,7 +2764,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarRolPermiso
+CREATE OR ALTER PROCEDURE Sp_ModificarRol_Permiso
 (
     @ID_Rol_Permiso INT,
     @Nuevo_ID_Rol INT = NULL,
@@ -2825,7 +2825,7 @@ BEGIN
 
 		IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso)
 		BEGIN
-			PRINT 'No existe la relación Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
+			RAISERROR('No existe la relación Rol-Permiso con ID_Rol_Permiso = %d', 16, 1, @ID_Rol_Permiso)
 			RETURN
 		END
 
@@ -2853,7 +2853,7 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Usuario WHERE ID_Usuario = @ID_Usuario)
         BEGIN
-            PRINT 'No existe el Usuario con ID_Usuario = ' + CAST(@ID_Usuario AS VARCHAR)
+            RAISERROR('No existe el Usuario con ID_Usuario = %d', 16, 1, @ID_Usuario)
             RETURN
         END
 
@@ -2882,14 +2882,14 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Rol WHERE ID_Rol = @ID_Rol)
         BEGIN
-            PRINT 'No existe el Rol con ID_Rol = ' + CAST(@ID_Rol AS VARCHAR)
+            RAISERROR('No existe el Rol con ID_Rol = %d', 16, 1, @ID_Rol)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Usuario WHERE ID_Rol = @ID_Rol) OR
            EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol = @ID_Rol)
         BEGIN
-            PRINT 'No se puede eliminar el Rol. Existen usuarios o permisos asociados.'
+            RAISERROR('No se puede eliminar el Rol. Existen usuarios o permisos asociados.', 16, 1)
             RETURN
         END
 
@@ -2918,13 +2918,13 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Permiso WHERE ID_Permiso = @ID_Permiso)
         BEGIN
-            PRINT 'No existe el Permiso con ID_Permiso = ' + CAST(@ID_Permiso AS VARCHAR)
+            RAISERROR('No existe el Permiso con ID_Permiso = %d', 16, 1, @ID_Permiso)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Permiso = @ID_Permiso)
         BEGIN
-            PRINT 'No se puede eliminar el Permiso, tiene roles asociados.'
+            RAISERROR('No se puede eliminar el Permiso, tiene roles asociados.', 16, 1)
             RETURN
         END
 
@@ -2945,20 +2945,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE EliminarSatisfaccionPaciente
+CREATE OR ALTER PROCEDURE EliminarSatisfaccion_Paciente
     @ID_Satisfaccion INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Satisfaccion = @ID_Satisfaccion)
         BEGIN
-            PRINT 'No existe la Satisfacción del Paciente con ID_Satisfaccion = ' + CAST(@ID_Satisfaccion AS VARCHAR)
+            RAISERROR('No existe la Satisfacción del Paciente con ID_Satisfaccion = %d', 16, 1, @ID_Satisfaccion)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Cita = @ID_Satisfaccion)
         BEGIN
-            PRINT 'No se puede eliminar la Satisfacción del Paciente con ID_Satisfaccion = ' + CAST(@ID_Satisfaccion AS VARCHAR) + ' porque tiene citas asociadas.'
+            RAISERROR('No se puede eliminar la Satisfacción del Paciente con ID_Satisfaccion = %d porque tiene citas asociadas.', 16, 1, @ID_Satisfaccion)
             RETURN
         END
 
@@ -2980,14 +2980,14 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarMedicoPlanificacionRecurso
+CREATE OR ALTER PROCEDURE sp_EliminarMedico_Planificacion_Recurso
     @ID_Medico_Planificacion_Recurso INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico_Planificacion_Recurso = @ID_Medico_Planificacion_Recurso)
         BEGIN
-            PRINT 'No existe la planificación de recurso médico con ID_Medico_Planificacion_Recurso = ' + CAST(@ID_Medico_Planificacion_Recurso AS VARCHAR)
+            RAISERROR('No existe la planificación de recurso médico con ID_Medico_Planificacion_Recurso = %d', 16, 1, @ID_Medico_Planificacion_Recurso)
             RETURN
         END
 
@@ -3017,25 +3017,25 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
         BEGIN
-            PRINT 'No existe el Paciente con ID_Paciente = ' + CAST(@ID_Paciente AS VARCHAR)
+            RAISERROR('No existe el Paciente con ID_Paciente = %d', 16, 1, @ID_Paciente)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Paciente = @ID_Paciente)
         BEGIN
-            PRINT 'No se puede eliminar el Paciente, tiene historial médico asociado.'
+            RAISERROR('No se puede eliminar el Paciente, tiene historial médico asociado.', 16, 1)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Cita WHERE ID_Paciente = @ID_Paciente)
         BEGIN
-            PRINT 'No se puede eliminar el Paciente, tiene citas asociadas.'
+            RAISERROR('No se puede eliminar el Paciente, tiene citas asociadas.', 16, 1)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Factura WHERE ID_Paciente = @ID_Paciente)
         BEGIN
-            PRINT 'No se puede eliminar el Paciente, tiene facturas asociadas.'
+            RAISERROR('No se puede eliminar el Paciente, tiene facturas asociadas.', 16, 1)
             RETURN
         END
 
@@ -3064,19 +3064,19 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Cita WHERE ID_Cita = @ID_Cita)
         BEGIN
-            PRINT 'No existe la Cita con ID_Cita = ' + CAST(@ID_Cita AS VARCHAR)
+            RAISERROR('No existe la Cita con ID_Cita = %d', 16, 1, @ID_Cita)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Factura WHERE ID_Cita = @ID_Cita)
         BEGIN
-            PRINT 'No se puede eliminar la Cita, tiene facturas asociadas.'
+            RAISERROR('No se puede eliminar la Cita, tiene facturas asociadas.', 16, 1)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Satisfaccion_Paciente WHERE ID_Cita = @ID_Cita)
         BEGIN
-            PRINT 'No se puede eliminar la Cita, tiene satisfacción asociada.'
+            RAISERROR('No se puede eliminar la Cita, tiene satisfacción asociada.', 16, 1)
             RETURN
         END
 
@@ -3105,13 +3105,13 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Estado_Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
         BEGIN
-            PRINT 'No existe el Estado de Cita con ID_Estado_Cita = ' + CAST(@ID_Estado_Cita AS VARCHAR)
+            RAISERROR('No existe el Estado de Cita con ID_Estado_Cita = %d', 16, 1, @ID_Estado_Cita)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Cita WHERE ID_Estado_Cita = @ID_Estado_Cita)
         BEGIN
-            PRINT 'No se puede eliminar el Estado de Cita, hay citas asociadas.'
+            RAISERROR('No se puede eliminar el Estado de Cita, hay citas asociadas.', 16, 1)
             RETURN
         END
 
@@ -3141,13 +3141,13 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Factura WHERE ID_Factura = @ID_Factura)
         BEGIN
-            PRINT 'No existe la Factura con ID_Factura = ' + CAST(@ID_Factura AS VARCHAR)
+            RAISERROR('No existe la Factura con ID_Factura = %d', 16, 1, @ID_Factura)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Cita WHERE ID_Cita IN (SELECT ID_Cita FROM Factura WHERE ID_Factura = @ID_Factura))
         BEGIN
-            PRINT 'No se puede eliminar la Factura, tiene citas asociadas.'
+            RAISERROR('No se puede eliminar la Factura, tiene citas asociadas.', 16, 1)
             RETURN
         END
 
@@ -3168,20 +3168,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarTipoPago
+CREATE OR ALTER PROCEDURE sp_EliminarTipo_Pago
     @ID_Tipo_Pago INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
         BEGIN
-            PRINT 'No existe el Tipo de Pago con ID_Tipo_Pago = ' + CAST(@ID_Tipo_Pago AS VARCHAR)
+            RAISERROR('No existe el Tipo de Pago con ID_Tipo_Pago = %d', 16, 1, @ID_Tipo_Pago)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Factura WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
         BEGIN
-            PRINT 'No se puede eliminar el Tipo de Pago, tiene facturas asociadas.'
+            RAISERROR('No se puede eliminar el Tipo de Pago, tiene facturas asociadas.', 16, 1)
             RETURN
         END
 
@@ -3204,20 +3204,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarTipoProcedimiento
+CREATE OR ALTER PROCEDURE sp_EliminarTipo_Procedimiento
     @ID_Tipo_Procedimiento INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento)
         BEGIN
-            PRINT 'No existe el Tipo de Procedimiento con ID_Tipo_Procedimiento = ' + CAST(@ID_Tipo_Procedimiento AS VARCHAR)
+            RAISERROR('No existe el Tipo de Procedimiento con ID_Tipo_Procedimiento = %d', 16, 1, @ID_Tipo_Procedimiento)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento)
         BEGIN
-            PRINT 'No se puede eliminar el Tipo de Procedimiento, tiene procedimientos asociados.'
+            RAISERROR('No se puede eliminar el Tipo de Procedimiento, tiene procedimientos asociados.', 16, 1)
             RETURN
         END
 
@@ -3238,20 +3238,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarHistorialMedico
+CREATE OR ALTER PROCEDURE sp_EliminarHistorial_Medico
     @ID_Historial_Medico INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico = @ID_Historial_Medico)
         BEGIN
-            PRINT 'No existe el Historial Médico con ID_Historial_Medico = ' + CAST(@ID_Historial_Medico AS VARCHAR)
+            RAISERROR('No existe el Historial Médico con ID_Historial_Medico = %d', 16, 1, @ID_Historial_Medico)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Historial_Medico = @ID_Historial_Medico)
         BEGIN
-            PRINT 'No se puede eliminar el Historial Médico, tiene procedimientos asociados.'
+            RAISERROR('No se puede eliminar el Historial Médico, tiene procedimientos asociados.', 16, 1)
             RETURN
         END
 
@@ -3272,20 +3272,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarRecursoMedico
+CREATE OR ALTER PROCEDURE sp_EliminarRecurso_Medico
     @ID_Recurso_Medico INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
         BEGIN
-            PRINT 'No existe el Recurso Médico con ID_Recurso_Medico = ' + CAST(@ID_Recurso_Medico AS VARCHAR)
+            RAISERROR('No existe el Recurso Médico con ID_Recurso_Medico = %d', 16, 1, @ID_Recurso_Medico)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
         BEGIN
-            PRINT 'No se puede eliminar el Recurso Médico, tiene asignaciones a salas.'
+            RAISERROR('No se puede eliminar el Recurso Médico, tiene asignaciones a salas.', 16, 1)
             RETURN
         END
 
@@ -3314,13 +3314,13 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
         BEGIN
-            PRINT 'No existe la Sala con ID_Sala = ' + CAST(@ID_Sala AS VARCHAR)
+            RAISERROR('No existe la Sala con ID_Sala = %d', 16, 1, @ID_Sala)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Sala = @ID_Sala)
         BEGIN
-            PRINT 'No se puede eliminar la Sala, tiene recursos médicos asociados.'
+            RAISERROR('No se puede eliminar la Sala, tiene recursos médicos asociados.', 16, 1)
             RETURN
         END
 
@@ -3348,20 +3348,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarEstadoRecursoMedico
+CREATE OR ALTER PROCEDURE sp_EliminarEstado_Recurso_Medico
     @ID_Estado_Recurso_Medico INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
         BEGIN
-            PRINT 'No existe el Estado de Recurso Médico con ID_Estado_Recurso_Medico = ' + CAST(@ID_Estado_Recurso_Medico AS VARCHAR)
+            RAISERROR('No existe el Estado de Recurso Médico con ID_Estado_Recurso_Medico = %d', 16, 1, @ID_Estado_Recurso_Medico)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
         BEGIN
-            PRINT 'No se puede eliminar el Estado de Recurso Médico, tiene recursos médicos asociados.'
+            RAISERROR('No se puede eliminar el Estado de Recurso Médico, tiene recursos médicos asociados.', 16, 1)
             RETURN
         END
 
@@ -3383,20 +3383,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarTipoRecurso
+CREATE OR ALTER PROCEDURE sp_EliminarTipo_Recurso
     @ID_Tipo_Recurso INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
         BEGIN
-            PRINT 'No existe el Tipo de Recurso con ID_Tipo_Recurso = ' + CAST(@ID_Tipo_Recurso AS VARCHAR)
+            RAISERROR('No existe el Tipo de Recurso con ID_Tipo_Recurso = %d', 16, 1, @ID_Tipo_Recurso)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
         BEGIN
-            PRINT 'No se puede eliminar el Tipo de Recurso, tiene recursos médicos asociados.'
+            RAISERROR('No se puede eliminar el Tipo de Recurso, tiene recursos médicos asociados.', 16, 1)
             RETURN
         END
 
@@ -3418,20 +3418,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarEstadoSala
+CREATE OR ALTER PROCEDURE sp_EliminarEstado_Sala
     @ID_Estado_Sala INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE ID_Estado_Sala = @ID_Estado_Sala)
         BEGIN
-            PRINT 'No existe el Estado de Sala con ID_Estado_Sala = ' + CAST(@ID_Estado_Sala AS VARCHAR)
+            RAISERROR('No existe el Estado de Sala con ID_Estado_Sala = %d', 16, 1, @ID_Estado_Sala)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Sala WHERE ID_Estado_Sala = @ID_Estado_Sala)
         BEGIN
-            PRINT 'No se puede eliminar el Estado de Sala, tiene salas asociadas.'
+            RAISERROR('No se puede eliminar el Estado de Sala, tiene salas asociadas.', 16, 1)
             RETURN
         END
 
@@ -3454,20 +3454,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarTipoSala
+CREATE OR ALTER PROCEDURE sp_EliminarTipo_Sala
     @ID_Tipo_Sala INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE ID_Tipo_Sala = @ID_Tipo_Sala)
         BEGIN
-            PRINT 'No existe el Tipo de Sala con ID_Tipo_Sala = ' + CAST(@ID_Tipo_Sala AS VARCHAR)
+            RAISERROR('No existe el Tipo de Sala con ID_Tipo_Sala = %d', 16, 1, @ID_Tipo_Sala)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Sala WHERE ID_Tipo_Sala = @ID_Tipo_Sala)
         BEGIN
-            PRINT 'No se puede eliminar el Tipo de Sala, tiene salas asociadas.'
+            RAISERROR('No se puede eliminar el Tipo de Sala, tiene salas asociadas.', 16, 1)
             RETURN
         END
 
@@ -3488,14 +3488,14 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarRecursoMedicoSala
+CREATE OR ALTER PROCEDURE sp_EliminarRecurso_Medico_Sala
     @ID_Recurso_Medico_Sala INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Recurso_Medico_Sala WHERE ID_Recurso_Medico_Sala = @ID_Recurso_Medico_Sala)
         BEGIN
-            PRINT 'No existe el Recurso Médico en Sala con ID_Recurso_Medico_Sala = ' + CAST(@ID_Recurso_Medico_Sala AS VARCHAR)
+            RAISERROR('No existe el Recurso Médico en Sala con ID_Recurso_Medico_Sala = %d', 16, 1, @ID_Recurso_Medico_Sala)
             RETURN
         END
 
@@ -3524,13 +3524,13 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
         BEGIN
-            PRINT 'No existe el Médico con ID_Medico = ' + CAST(@ID_Medico AS VARCHAR)
+            RAISERROR('No existe el Médico con ID_Medico = %d', 16, 1, @ID_Medico)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Medico = @ID_Medico)
         BEGIN
-            PRINT 'No se puede eliminar el Médico, tiene planificación de recursos asociada.'
+            RAISERROR('No se puede eliminar el Médico, tiene planificación de recursos asociada.', 16, 1)
             RETURN
         END
 
@@ -3559,13 +3559,13 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE ID_Especialidad = @ID_Especialidad)
         BEGIN
-            PRINT 'No existe la Especialidad con ID_Especialidad = ' + CAST(@ID_Especialidad AS VARCHAR)
+            RAISERROR('No existe la Especialidad con ID_Especialidad = %d', 16, 1, @ID_Especialidad)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Medico WHERE ID_Especialidad = @ID_Especialidad)
         BEGIN
-            PRINT 'No se puede eliminar la Especialidad, tiene médicos asociados.'
+            RAISERROR('No se puede eliminar la Especialidad, tiene médicos asociados.', 16, 1)
             RETURN
         END
 
@@ -3586,20 +3586,20 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarHorarioTrabajo
+CREATE OR ALTER PROCEDURE sp_EliminarHorario_Trabajo
     @ID_Horario_Trabajo INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
         BEGIN
-            PRINT 'No existe el Horario de Trabajo con ID_Horario_Trabajo = ' + CAST(@ID_Horario_Trabajo AS VARCHAR)
+            RAISERROR('No existe el Horario de Trabajo con ID_Horario_Trabajo = %d', 16, 1,@ID_Horario_Trabajo)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
         BEGIN
-            PRINT 'No se puede eliminar el Horario de Trabajo, tiene planificación de recursos asociada.'
+            RAISERROR('No se puede eliminar el Horario de Trabajo, tiene planificación de recursos asociada.', 16, 1)
             RETURN
         END
 
@@ -3620,14 +3620,14 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE sp_EliminarPlanificacionRecurso
+CREATE OR ALTER PROCEDURE sp_EliminarPlanificacion_Recurso
     @ID_Planificacion INT
 AS
 BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
         BEGIN
-            PRINT 'No existe la Planificación de Recurso con ID_Planificacion = ' + CAST(@ID_Planificacion AS VARCHAR)
+            RAISERROR('No existe la Planificación de Recurso con ID_Planificacion = %d', 16, 1, @ID_Planificacion)
             RETURN
         END
 
@@ -3655,13 +3655,13 @@ BEGIN
     BEGIN TRY
         IF NOT EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento)
         BEGIN
-            PRINT 'No existe el Procedimiento con ID_Procedimiento = ' + CAST(@ID_Procedimiento AS VARCHAR)
+            RAISERROR('No existe el Procedimiento con ID_Procedimiento = %d', 16, 1, @ID_Procedimiento)
             RETURN
         END
 
         IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico IN (SELECT ID_Historial_Medico FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento))
         BEGIN
-            PRINT 'No se puede eliminar el Procedimiento, tiene historial médico asociado.'
+            RAISERROR('No se puede eliminar el Procedimiento, tiene historial médico asociado.', 16, 1)
             RETURN
         END
 
