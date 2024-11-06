@@ -1392,7 +1392,7 @@ GO
 GRANT SELECT, UPDATE ON dbo.Tipo_Procedimiento TO Médico;
 GO
 
-GRANT SELECT ON DATABASE::SaludPlus TO Médico;
+GRANT SELECT,EXECUTE ON DATABASE::SaludPlus TO Médico;
 GO
 
 --- Se le da acceso a todo lo que puede realizar un secretario 
@@ -1408,7 +1408,7 @@ GO
 GRANT SELECT, INSERT,UPDATE ON dbo.Recurso_Medico TO Recepcionista;
 GO
 
-GRANT SELECT ON DATABASE::SaludPlus TO Recepcionista;
+GRANT SELECT,EXECUTE ON DATABASE::SaludPlus TO Recepcionista;
 GO
 
 
