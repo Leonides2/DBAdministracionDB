@@ -1669,6 +1669,88 @@ Nombre_Procedimiento
 From Tipo_Procedimiento 
 GO
 
+CREATE OR ALTER VIEW vw_Recurso_Medico AS 
+SELECT 
+Recurso_Medico.ID_Recurso_Medico,
+Recurso_Medico.Nombre_Recurso,
+Recurso_Medico.Lote,
+Recurso_Medico.Cantidad_Stock_Total,
+Recurso_Medico.Ubicacion_Recurso,
+Tipo_Recurso.Titulo_Recurso,
+Estado_Recurso_Medico.Estado_Recurso
+From Recurso_Medico inner join Tipo_Recurso on Recurso_Medico.ID_Tipo_Recurso = Tipo_Recurso.ID_Tipo_Recurso
+inner join Estado_Recurso_Medico on Recurso_Medico.ID_Estado_Recurso_Medico = Estado_Recurso_Medico.ID_Estado_Recurso_Medico
+GO
+
+CREATE OR ALTER VIEW vw_Tipo_Recurso AS 
+SELECT 
+ID_Tipo_Recurso,
+Titulo_Recurso
+From Tipo_Recurso 
+GO
+
+CREATE OR ALTER VIEW vw_Sala AS 
+SELECT 
+Sala.ID_Sala,
+Sala.Nombre_Sala,
+Sala.Capacidad_Sala,
+Tipo_Sala.Descripcion_Tipo_Sala,
+Estado_Sala.Nombre AS 'Estado_Sala'
+From Sala inner join Tipo_Sala on Sala.ID_Tipo_Sala = Tipo_Sala.ID_Tipo_Sala
+inner join Estado_Sala on Sala.ID_Estado_Sala = Estado_Sala.ID_Estado_Sala
+GO
+
+CREATE OR ALTER VIEW vw_Tipo_Sala AS 
+SELECT 
+ID_Tipo_Sala,
+Descripcion_Tipo_Sala
+From Tipo_Sala 
+GO
+
+
+CREATE OR ALTER VIEW vw_Recurso_Medico_Sala AS 
+SELECT 
+Recurso_Medico_Sala.ID_Recurso_Medico_Sala,
+CONVERT(varchar, Recurso_Medico_Sala.Fecha, 103) AS Fecha,
+Recurso_Medico_Sala.Cantidad_Recurso,
+Recurso_Medico.Lote,
+Sala.Nombre_Sala
+From Recurso_Medico_Sala inner join Recurso_Medico on Recurso_Medico_Sala.ID_Recurso_Medico = Recurso_Medico.ID_Recurso_Medico
+inner join Sala ON Recurso_Medico_Sala.ID_Sala = Sala.ID_Sala
+GO
+
+CREATE OR ALTER VIEW vw_Planificacion_Recurso AS 
+SELECT 
+ID_Planificacion,
+Descripcion_Planificacion,
+CONVERT(varchar, Fecha_Planificacion, 103) AS Fecha_Planificacion,
+Sala.Nombre_Sala,
+Horario_Trabajo.Nombre_Horario
+From Planificacion_Recurso inner join Sala on Planificacion_Recurso.ID_Sala = Sala.ID_Sala
+inner join Horario_Trabajo on Planificacion_Recurso.ID_Horario_Trabajo = Horario_Trabajo.ID_Horario_Trabajo
+GO
+
+
+CREATE OR ALTER VIEW vw_Satisfaccion_Paciente AS 
+SELECT 
+ID_Satisfaccion,
+Calificacion_Satisfaccion,
+CONVERT(varchar, Fecha_Evaluacion, 103) AS Fecha_Evaluacion,
+ID_Cita
+From Satisfaccion_Paciente
+GO
+
+
+CREATE OR ALTER VIEW vw_Medico_Planificacion_Recurso AS 
+SELECT 
+ID_Medico_Planificacion_Recurso,
+CONVERT(varchar, Fecha_Planificacion_Personal, 103) AS Fecha_Planificacion_Personal,
+Planificacion_Recurso.Descripcion_Planificacion,
+ID_Medico
+From Medico_Planificacion_Recurso inner join Planificacion_Recurso on Medico_Planificacion_Recurso.ID_Planificacion
+= Planificacion_Recurso.ID_Planificacion
+GO
+
 --------------------------------------------------Procedimientos almacenados INSERT------------------------------
  ---------------------Registrar Paciente
 USE SaludPlus
