@@ -1361,30 +1361,124 @@ GO
 
 use SaludPlus
 go
-CREATE SCHEMA Administrador
+
+CREATE ROLE Administrativo;
+GO
+CREATE ROLE Médico
+Go
+CREATE ROLE Recepcionista
+GO
+
+---- Se le da acceso completo a la base de datos
+GRANT SELECT, INSERT,UPDATE, DELETE ON DATABASE::SaludPlus TO Administrativo;
+GO
+
+--- Se le da acceso exclusivamente a lo que puede realizar un medico
+GRANT SELECT, INSERT,UPDATE ON dbo.Satisfaccion_Paciente TO Médico;
+GO
+
+GRANT SELECT, INSERT,UPDATE, DELETE ON dbo.Procedimiento TO Médico;
+GO
+
+GRANT SELECT ON dbo.Cita TO Médico;
+GO
+
+GRANT SELECT ON dbo.Paciente TO Médico;
+GO
+
+GRANT SELECT ON dbo.Historial_Medico TO Médico;
+GO
+
+GRANT SELECT, UPDATE ON dbo.Tipo_Procedimiento TO Médico;
+GO
+
+--- Se le da acceso a todo lo que puede realizar un secretario 
+GRANT SELECT, INSERT,UPDATE ON dbo.Cita TO Recepcionista;
+GO
+
+GRANT SELECT, INSERT,UPDATE ON dbo.Paciente TO Recepcionista;
+GO
+
+GRANT SELECT, INSERT,UPDATE ON dbo.Factura TO Recepcionista;
+GO
+
+GRANT SELECT, INSERT,UPDATE ON dbo.Recurso_Medico TO Recepcionista;
+GO
+
+GRANT SELECT ON dbo.Procedimiento TO Recepcionista;
+GO
+
+
+
+
+CREATE OR ALTER PROCEDURE RegistrarUsuarioSistema
+    @NombreUsuario NVARCHAR(50),
+    @Contrasena NVARCHAR(50),
+    @Rol NVARCHAR(50)
+AS
+BEGIN
+    BEGIN TRY
+        -- Verifica si el inicio de sesión ya existe en la instancia de SQL Server
+        IF NOT EXISTS (SELECT * FROM sys.server_principals WHERE name = @NombreUsuario)
+        BEGIN
+            -- Crea el inicio de sesión en la instancia de SQL Server
+            EXEC sp_addlogin @NombreUsuario, @Contrasena;
+        END
+
+        -- Usa la base de datos deseada (asegúrate de ejecutarlo en la base de datos correcta)
+        -- Verifica si el usuario ya existe en la base de datos
+        IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = @NombreUsuario)
+        BEGIN
+            -- Crea el usuario en la base de datos, ejecutado dinámicamente
+            DECLARE @sql NVARCHAR(MAX) = 'CREATE USER [' + @NombreUsuario + '] FOR LOGIN [' + @NombreUsuario + ']';
+            EXEC sp_executesql @sql;
+        END
+
+        -- Asigna el rol correspondiente al usuario de forma dinámica
+        IF @Rol = 'Médico'
+        BEGIN
+            SET @sql = 'ALTER ROLE Médico ADD MEMBER [' + @NombreUsuario + ']';
+            EXEC sp_executesql @sql;
+        END
+        ELSE IF @Rol = 'Administrativo'
+        BEGIN
+            SET @sql = 'ALTER ROLE Administrativo ADD MEMBER [' + @NombreUsuario + ']';
+            EXEC sp_executesql @sql;
+        END
+        ELSE IF @Rol = 'Recepcionista'
+        BEGIN
+            SET @sql = 'ALTER ROLE Recepcionista ADD MEMBER [' + @NombreUsuario + ']';
+            EXEC sp_executesql @sql;
+        END
+        ELSE
+        BEGIN
+            RAISERROR ('El rol especificado no es válido.', 16, 1);
+        END
+
+    END TRY
+    BEGIN CATCH
+        -- Manejo de errores
+        DECLARE @ERROR NVARCHAR(1000) = ERROR_MESSAGE();
+        RAISERROR ('Error en el procedimiento: %s', 16, 1, @ERROR);
+    END CATCH
+END;
+GO
+
+/*
+EXEC RegistrarUsuarioSistema 'Laura', '123456', 'Recepcionista'
 go
-CREATE SCHEMA Médico
-go
-CREATE SCHEMA Recepcionista
-go
-
-
-
-
-
---- INSERCIONES EN EL SCRIPT DE INSERCIONES
-
+*/
 --------------------------------------------------Vistas---------------------------------------------------------
 
 
-CREATE VIEW vw_Paciente AS
+CREATE OR ALTER VIEW vw_Paciente AS
 SELECT 
 ID_Paciente,
 Nombre_Paciente ,
 Apellido1_Paciente, 
 Apellido2_Paciente, 
 Telefono_Paciente, 
-Fecha_Nacimiento, 
+ CONVERT(VARCHAR, Fecha_Nacimiento, 103) AS Fecha_Nacimiento, 
 Direccion_Paciente, 
 Cedula
 FROM Paciente;
@@ -1395,7 +1489,7 @@ Select * from vw_Paciente
 go
 */
 
-CREATE VIEW vw_Medico AS
+CREATE OR ALTER VIEW vw_Medico AS
 SELECT 
 Medico.Nombre1_Medico, 
 Medico.Nombre2_Medico, 
@@ -1411,10 +1505,10 @@ Select * from vw_Medico
 go
 */
 
-CREATE VIEW vw_Cita AS
+CREATE OR ALTER VIEW vw_Cita AS
 SELECT 
-Cita.Fecha_Cita,
-Cita.Hora_Cita,
+Convert(VARCHAR,Cita.Fecha_Cita,103) AS Fecha_Cita,
+Convert(VARCHAR, Cita.Hora_Cita, 108) AS Hora_Cita,
 Cita.ID_Medico, 
 Estado_Cita.Estado, 
 Paciente.Cedula
@@ -1426,9 +1520,9 @@ GO
 Select * from vw_Cita
 go
 */
-CREATE VIEW vw_Factura AS
+CREATE OR ALTER VIEW vw_Factura AS
 SELECT 
-Factura.Fecha_Factura,
+Convert(VARCHAR,Factura.Fecha_Factura,103) AS Fecha_Factura,
 Factura.Monto_Total,
 Paciente.Cedula, 
 Tipo_Pago.Descripcion_Tipo_Pago
@@ -1441,9 +1535,9 @@ GO
 	go
 */
 
-CREATE VIEW vw_Recurso_Medico_Sala AS
+CREATE OR ALTER VIEW vw_Recurso_Medico_Sala AS
 SELECT 
-Recurso_Medico_Sala.Fecha,
+Convert(VARCHAR,Recurso_Medico_Sala.Fecha,103) AS Fecha,
 Recurso_Medico_Sala.Cantidad_Recurso,
 Recurso_Medico.Lote, 
 Sala.Nombre_Sala
@@ -1452,6 +1546,65 @@ left join Sala on Sala.ID_Sala = Recurso_Medico_Sala.ID_Sala;
 GO
 /*
 	Select * from vw_Recurso_Medico_Sala
+	go
+*/
+
+CREATE OR ALTER VIEW vw_Auditoria AS 
+SELECT 
+ID_Auditoria,
+Nombre_Tabla,
+ID_Registro,
+Accion,
+CONVERT(varchar, FechaAuditoria, 100) as FechaAuditoria,
+Usuario
+From Auditoria
+
+/*
+	Select * from vw_Auditoria
+	go
+*/
+
+CREATE OR ALTER VIEW vw_Estado_Cita AS 
+SELECT 
+ID_Estado_Cita,
+Estado
+From Estado_Cita
+
+/*
+	Select * from vw_Estado_Cita
+	go
+*/
+
+CREATE OR ALTER VIEW vw_Estado_Recurso_Medico AS 
+SELECT 
+ID_Estado_Recurso_Medico,
+Estado_Recurso
+From Estado_Recurso_Medico
+
+/*
+	Select * from vw_Estado_Recurso_Medico
+	go
+*/
+CREATE OR ALTER VIEW vw_Estado_Sala AS 
+SELECT 
+ID_Estado_Sala,
+Nombre
+From Estado_Sala
+
+/*
+	Select * from vw_Estado_Sala
+	go
+*/
+
+CREATE OR ALTER VIEW vw_Historial_Medico AS 
+SELECT 
+Historial_Medico.ID_Historial_Medico,
+CONVERT(varchar, Historial_Medico.Fecha_Registro, 103) AS Fecha_Registro,
+Paciente.Cedula
+From Historial_Medico inner join Paciente on Paciente.ID_Paciente = Historial_Medico.ID_Paciente
+
+/*
+	Select * from vw_Historial_Medico
 	go
 */
 
