@@ -10,11 +10,10 @@ const Facturas = () => {
             entityTableName="Factura"
             addEntityFields={[
                 ["Fecha_Factura", "date"], 
-                ["Monto_Total", "number"], // TODO: MONEY 
-                ["ID_Paciente", "number"],  
-                ["ID_Paciente", "number"],  
+                ["Monto_Total", "number"], 
+                ["Cedula", "text"],  
                 ["ID_Cita", "number"],  
-                ["ID_Tipo_Pago", "number"],  
+                ["Descripcion_Tipo_Pago", "text"],  
             ]}
         />
     )

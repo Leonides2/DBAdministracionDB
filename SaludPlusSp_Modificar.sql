@@ -274,6 +274,7 @@ BEGIN
                     WHERE ID_Paciente = @ID_Paciente 
                     AND Fecha_Cita = @Fecha_Cita 
                     AND Hora_Cita = @Hora_Cita
+                    AND ID_Cita != @ID_Cita
             ) 
             BEGIN
                 RAISERROR('El paciente ya tiene una cita programada a la misma fecha y hora.', 16, 3);
@@ -354,14 +355,14 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_Modificar_Factura
+CREATE OR ALTER PROCEDURE Sp_ModificarFactura
 (
     @ID_Factura INT,
     @Fecha_Factura DATE = NULL,
     @Monto_Total MONEY = NULL,
-    @ID_Paciente INT = NULL,
+    @Cedula varchar(12) = NULL,
     @ID_Cita INT = NULL,
-    @ID_Tipo_Pago INT = NULL
+    @Descripcion_Tipo_Pago varchar(50) = NULL
 )
 AS
 BEGIN
@@ -376,9 +377,9 @@ BEGIN
         END
 
         -- Verificar si el paciente existe
-        IF @ID_Paciente IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+        IF @Cedula IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Paciente WHERE Cedula = @Cedula)
         BEGIN
-            RAISERROR('El paciente con ID %d no existe.', 16, 1, @ID_Paciente);
+            RAISERROR('El paciente con cédula %s no existe.', 16, 1, @Cedula);
             RETURN;
         END
 
@@ -390,13 +391,19 @@ BEGIN
         END
 
         -- Verificar si el tipo de pago existe
-        IF @ID_Tipo_Pago IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE ID_Tipo_Pago = @ID_Tipo_Pago)
+        IF @Descripcion_Tipo_Pago IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE Descripcion_Tipo_Pago = @Descripcion_Tipo_Pago)
         BEGIN
-            RAISERROR('El tipo de pago con ID %d no existe.', 16, 1, @ID_Tipo_Pago);
+            RAISERROR('El tipo de pago "%s" no existe.', 16, 1, @Descripcion_Tipo_Pago);
             RETURN;
         END
 
         -- Actualizar la factura solo si el ID es válido
+        DECLARE @ID_Tipo_Pago INT;
+        DECLARE @ID_Paciente INT;
+
+        SET @ID_Tipo_Pago = (SELECT ID_Tipo_Pago FROM Tipo_Pago WHERE Descripcion_Tipo_Pago = @Descripcion_Tipo_Pago);
+        SET @ID_Paciente = (SELECT ID_Paciente FROM Paciente WHERE Cedula = @Cedula);
+
         UPDATE Factura
         SET 
             Fecha_Factura = COALESCE(@Fecha_Factura, Fecha_Factura),
@@ -425,7 +432,7 @@ CREATE OR ALTER PROCEDURE Sp_ModificarHistorial_Medico
 (
     @ID_Historial_Medico INT,
     @Fecha_Registro DATE = NULL,
-    @ID_Paciente INT = NULL
+    @Cedula varchar(12) = NULL
 )
 AS
 BEGIN
@@ -440,13 +447,16 @@ BEGIN
         END
 
         -- Verificar si el paciente existe
-        IF @ID_Paciente IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+        IF @Cedula IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Paciente WHERE Cedula = @Cedula)
         BEGIN
-            RAISERROR('El paciente con ID %d no existe.', 16, 1, @ID_Paciente);
+            RAISERROR('El paciente con cédula %s no existe.', 16, 1, @Cedula);
             RETURN;
         END
 
         -- Actualizar el historial médico solo si se proporciona un valor válido para Fecha_Registro
+        DECLARE @ID_Paciente INT;
+        SET @ID_Paciente = (SELECT ID_Paciente FROM Paciente WHERE Cedula = @Cedula);
+
         UPDATE Historial_Medico
         SET 
             Fecha_Registro = COALESCE(@Fecha_Registro, Fecha_Registro),
@@ -562,8 +572,8 @@ CREATE OR ALTER PROCEDURE Sp_ModificarSala
     @ID_Sala INT,
     @Nombre_Sala VARCHAR(50) = NULL, 
     @Capacidad_Sala INT = NULL,       
-    @ID_Tipo_Sala INT = NULL,         
-    @ID_Estado_Sala INT = NULL        
+    @Descripcion_Tipo_Sala varchar(50) = NULL,         
+    @Estado_Sala varchar(50) = NULL        
 )
 AS
 BEGIN
@@ -578,16 +588,16 @@ BEGIN
         END
 
         -- Verificar que el ID_Tipo_Sala existe si es proporcionado
-        IF @ID_Tipo_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE ID_Tipo_Sala = @ID_Tipo_Sala)
+        IF @Descripcion_Tipo_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Sala WHERE Descripcion_Tipo_Sala = @Descripcion_Tipo_Sala)
         BEGIN
-            RAISERROR('El ID de tipo de sala con valor %d no existe.', 16, 2, @ID_Tipo_Sala);
+            RAISERROR('El de tipo de sala "%s" no existe.', 16, 2, @Descripcion_Tipo_Sala);
             RETURN;
         END
 
         -- Verificar que el ID_Estado_Sala existe si es proporcionado
-        IF @ID_Estado_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE ID_Estado_Sala = @ID_Estado_Sala)
+        IF @Estado_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Sala WHERE Nombre = @Estado_Sala)
         BEGIN
-            RAISERROR('El ID de estado de sala con valor %d no existe.', 16, 3, @ID_Estado_Sala);
+            RAISERROR('El estado de sala "%s" no existe.', 16, 3, @Estado_Sala);
             RETURN;
         END
 
@@ -599,6 +609,12 @@ BEGIN
         END
 
         -- Realizar la actualización solo si es necesario (si los valores son nuevos)
+        DECLARE @ID_Estado_Sala INT;
+        DECLARE @ID_Tipo_Sala INT;
+
+        SET @ID_Tipo_Sala = (SELECT ID_Tipo_Sala FROM Tipo_Sala WHERE Descripcion_Tipo_Sala = @Descripcion_Tipo_Sala);
+        SET @ID_Estado_Sala = (SELECT ID_Estado_Sala FROM Estado_Sala WHERE Nombre = @Estado_Sala);
+
         UPDATE Sala
         SET 
             Nombre_Sala = COALESCE(@Nombre_Sala, Nombre_Sala), 
@@ -624,7 +640,7 @@ GO
 CREATE OR ALTER PROCEDURE Sp_ModificarTipo_Procedimiento
 (
     @ID_Tipo_Procedimiento INT,
-    @Nuevo_Nombre_Procedimiento VARCHAR(50)
+    @Nombre_Procedimiento VARCHAR(50)
 )
 AS
 BEGIN
@@ -639,15 +655,15 @@ BEGIN
         END
 
         -- Verificar si el nombre del procedimiento ya existe en otro registro
-        IF EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE Nombre_Procedimiento = @Nuevo_Nombre_Procedimiento AND ID_Tipo_Procedimiento <> @ID_Tipo_Procedimiento)
+        IF EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE Nombre_Procedimiento = @Nombre_Procedimiento AND ID_Tipo_Procedimiento <> @ID_Tipo_Procedimiento)
         BEGIN
-            RAISERROR('El nombre del tipo de procedimiento "%s" ya existe en otro registro.', 16, 2, @Nuevo_Nombre_Procedimiento);
+            RAISERROR('El nombre del tipo de procedimiento "%s" ya existe en otro registro.', 16, 2, @Nombre_Procedimiento);
             RETURN;
         END
 
         -- Realizar la actualización
         UPDATE Tipo_Procedimiento
-        SET Nombre_Procedimiento = @Nuevo_Nombre_Procedimiento
+        SET Nombre_Procedimiento = @Nombre_Procedimiento
         WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento;
 
         PRINT 'El tipo de procedimiento se ha modificado correctamente.';

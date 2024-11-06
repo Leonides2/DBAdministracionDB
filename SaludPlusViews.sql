@@ -58,6 +58,7 @@ Factura.ID_Factura,
 Convert(VARCHAR,Factura.Fecha_Factura,103) AS Fecha_Factura,
 Factura.Monto_Total,
 Paciente.Cedula, 
+Factura.ID_Cita,
 Tipo_Pago.Descripcion_Tipo_Pago
 FROM Factura inner join Paciente on Factura.ID_Paciente = Paciente.ID_Paciente
 left join Tipo_Pago on Tipo_Pago.ID_Tipo_Pago = Factura.ID_Tipo_Pago;
