@@ -1647,16 +1647,26 @@ GO
 
 CREATE OR ALTER VIEW vw_Procedimiento AS 
 SELECT 
-ID_Procedimiento,
-Descripcion_Procedimiento,
-CONVERT(varchar, Fecha_Procedimiento, 103) AS Fecha_Procedimiento,
-CONVERT(varchar, Hora_Procedimiento, 108) AS Hora_Procedimiento,
-Monto_Procedimiento,
-Receta,
+Procedimiento.ID_Procedimiento,
+Procedimiento.Descripcion_Procedimiento,
+CONVERT(varchar, Procedimiento.Fecha_Procedimiento, 103) AS Fecha_Procedimiento,
+CONVERT(varchar, Procedimiento.Hora_Procedimiento, 108) AS Hora_Procedimiento,
+Procedimiento.Monto_Procedimiento,
+Procedimiento.Receta,
 Sala.Nombre_Sala,
-Historial_Medico.ID_Historial_Medico
+Historial_Medico.ID_Historial_Medico,
+ID_Cita,
+Tipo_Procedimiento.Nombre_Procedimiento
 From Procedimiento inner join Sala ON Procedimiento.ID_Sala = Sala.ID_Sala
 inner join Historial_Medico On Procedimiento.ID_Historial_Medico = Historial_Medico.ID_Historial_Medico
+inner join Tipo_Procedimiento on Procedimiento.ID_Tipo_Procedimiento = Tipo_Procedimiento.ID_Tipo_Procedimiento
+GO
+
+CREATE OR ALTER VIEW vw_Tipo_Procedimiento AS 
+SELECT 
+ID_Tipo_Procedimiento,
+Nombre_Procedimiento
+From Tipo_Procedimiento 
 GO
 
 --------------------------------------------------Procedimientos almacenados INSERT------------------------------
@@ -2064,7 +2074,14 @@ BEGIN
         PRINT 'La factura se ha registrado correctamente.'
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la factura: ' + ERROR_MESSAGE();
+
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el tipo de pago: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
@@ -2907,13 +2924,25 @@ CREATE OR ALTER PROCEDURE Sp_EliminarRol_Permiso
     @ID_Rol_Permiso INT
 AS
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso)
-    BEGIN
-        PRINT 'No existe la relación Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
-        RETURN
-    END
+	BEGIN TRY
 
-    DELETE FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso
+		IF NOT EXISTS (SELECT 1 FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso)
+		BEGIN
+			PRINT 'No existe la relación Rol-Permiso con ID_Rol_Permiso = ' + CAST(@ID_Rol_Permiso AS VARCHAR)
+			RETURN
+		END
+
+		DELETE FROM Rol_Permiso WHERE ID_Rol_Permiso = @ID_Rol_Permiso
+	END TRY
+	BEGIN CATCH
+		DECLARE @ERROR NVARCHAR(1000)
+
+		SET @ERROR = ERROR_MESSAGE()
+
+		RAISERROR(N'No se pudo eliminar el Rol_Permiso por que puede tener dependencias', 16, 1);
+		PRINT @ERROR
+
+	END CATCH
 END
 go
 -----------------------Eliminar Usuario
