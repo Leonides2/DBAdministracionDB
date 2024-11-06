@@ -21,7 +21,7 @@ BEGIN
 
 		SET @ERROR = ERROR_MESSAGE()
 
-		RAISERROR(N'No se pudo eliminar el Rol_Permiso por que puede tener dependencias', 16, 1);
+		RAISERROR(N'%s', 16, 1, @ERROR);
 		PRINT @ERROR
 
 	END CATCH
@@ -50,7 +50,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Usuario debido a posibles dependencias o un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -86,7 +86,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Rol debido a dependencias o un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -121,7 +121,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Permiso debido a dependencias o un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -155,7 +155,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar la Satisfacción del Paciente debido a dependencias o un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -184,7 +184,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar la planificación de recurso médico debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -232,7 +232,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Paciente debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -273,7 +273,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar la Cita debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -308,7 +308,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Estado de Cita debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -344,7 +344,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar la Factura debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -378,7 +378,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Tipo de Pago debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -414,7 +414,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Tipo de Procedimiento debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -448,7 +448,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Historial Médico debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -482,7 +482,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Recurso Médico debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -523,7 +523,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar la Sala debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -558,7 +558,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Estado de Recurso Médico debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -593,7 +593,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Tipo de Recurso debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -628,7 +628,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Estado de Sala debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -664,7 +664,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Tipo de Sala debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -692,7 +692,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Recurso Médico en Sala debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -727,7 +727,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Médico debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -762,7 +762,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar la Especialidad debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -796,7 +796,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Horario de Trabajo debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -824,7 +824,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar la Planificación de Recurso debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
@@ -858,7 +858,7 @@ BEGIN
 
         SET @ERROR = ERROR_MESSAGE()
 
-        RAISERROR(N'No se pudo eliminar el Procedimiento debido a un error inesperado.', 16, 1);
+        RAISERROR(N'%s', 16, 1, @ERROR);
         PRINT @ERROR
     END CATCH
 END
