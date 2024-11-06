@@ -1370,7 +1370,7 @@ CREATE ROLE Recepcionista
 GO
 
 ---- Se le da acceso completo a la base de datos
-GRANT SELECT, INSERT,UPDATE, DELETE ON DATABASE::SaludPlus TO Administrativo;
+GRANT SELECT, EXECUTE, INSERT, UPDATE, DELETE ON DATABASE::SaludPlus TO Administrativo;
 GO
 
 --- Se le da acceso exclusivamente a lo que puede realizar un medico
@@ -1392,6 +1392,9 @@ GO
 GRANT SELECT, UPDATE ON dbo.Tipo_Procedimiento TO Médico;
 GO
 
+GRANT SELECT ON DATABASE::SaludPlus TO Médico;
+GO
+
 --- Se le da acceso a todo lo que puede realizar un secretario 
 GRANT SELECT, INSERT,UPDATE ON dbo.Cita TO Recepcionista;
 GO
@@ -1405,9 +1408,8 @@ GO
 GRANT SELECT, INSERT,UPDATE ON dbo.Recurso_Medico TO Recepcionista;
 GO
 
-GRANT SELECT ON dbo.Procedimiento TO Recepcionista;
+GRANT SELECT ON DATABASE::SaludPlus TO Recepcionista;
 GO
-
 
 
 
@@ -1491,6 +1493,7 @@ go
 
 CREATE OR ALTER VIEW vw_Medico AS
 SELECT 
+Medico.ID_Medico,
 Medico.Nombre1_Medico, 
 Medico.Nombre2_Medico, 
 Medico.Apellido1_Medico, 
@@ -1506,8 +1509,8 @@ go
 */
 
 CREATE OR ALTER VIEW vw_Cita AS
-CREATE OR ALTER VIEW vw_Cita AS
 SELECT 
+Cita.ID_Cita,
 Convert(VARCHAR,Cita.Fecha_Cita,103) AS Fecha_Cita,
 Convert(VARCHAR, Cita.Hora_Cita, 108) AS Hora_Cita,
 Cita.ID_Medico, 
@@ -1523,6 +1526,7 @@ go
 */
 CREATE OR ALTER VIEW vw_Factura AS
 SELECT 
+Factura.ID_Factura,
 Convert(VARCHAR,Factura.Fecha_Factura,103) AS Fecha_Factura,
 Factura.Monto_Total,
 Paciente.Cedula, 
@@ -1559,7 +1563,7 @@ Accion,
 CONVERT(varchar, FechaAuditoria, 100) as FechaAuditoria,
 Usuario
 From Auditoria
-
+GO
 /*
 	Select * from vw_Auditoria
 	go
@@ -1570,7 +1574,7 @@ SELECT
 ID_Estado_Cita,
 Estado
 From Estado_Cita
-
+GO
 /*
 	Select * from vw_Estado_Cita
 	go
@@ -1581,7 +1585,7 @@ SELECT
 ID_Estado_Recurso_Medico,
 Estado_Recurso
 From Estado_Recurso_Medico
-
+GO
 /*
 	Select * from vw_Estado_Recurso_Medico
 	go
@@ -1591,7 +1595,7 @@ SELECT
 ID_Estado_Sala,
 Nombre
 From Estado_Sala
-
+GO
 /*
 	Select * from vw_Estado_Sala
 	go
@@ -1603,11 +1607,57 @@ Historial_Medico.ID_Historial_Medico,
 CONVERT(varchar, Historial_Medico.Fecha_Registro, 103) AS Fecha_Registro,
 Paciente.Cedula
 From Historial_Medico inner join Paciente on Paciente.ID_Paciente = Historial_Medico.ID_Paciente
-
+GO
 /*
 	Select * from vw_Historial_Medico
 	go
 */
+
+CREATE OR ALTER VIEW vw_Especialidad AS 
+SELECT 
+ID_Especialidad,
+Nombre_Especialidad
+From Especialidad 
+GO
+
+CREATE OR ALTER VIEW vw_Especialidad AS 
+SELECT 
+ID_Especialidad,
+Nombre_Especialidad
+From Especialidad 
+GO
+
+
+CREATE OR ALTER VIEW vw_Horario_Trabajo AS 
+SELECT 
+ID_Horario_Trabajo,
+Nombre_Horario,
+CONVERT(varchar, Hora_Inicio, 108) AS Hora_Inicio,
+CONVERT(varchar, Hora_Fin, 108) AS Hora_Fin
+From Horario_Trabajo 
+GO
+
+CREATE OR ALTER VIEW vw_Tipo_Pago AS 
+SELECT 
+ID_Tipo_Pago,
+Descripcion_Tipo_Pago
+From Tipo_Pago 
+GO
+
+
+CREATE OR ALTER VIEW vw_Procedimiento AS 
+SELECT 
+ID_Procedimiento,
+Descripcion_Procedimiento,
+CONVERT(varchar, Fecha_Procedimiento, 103) AS Fecha_Procedimiento,
+CONVERT(varchar, Hora_Procedimiento, 108) AS Hora_Procedimiento,
+Monto_Procedimiento,
+Receta,
+Sala.Nombre_Sala,
+Historial_Medico.ID_Historial_Medico
+From Procedimiento inner join Sala ON Procedimiento.ID_Sala = Sala.ID_Sala
+inner join Historial_Medico On Procedimiento.ID_Historial_Medico = Historial_Medico.ID_Historial_Medico
+GO
 
 --------------------------------------------------Procedimientos almacenados INSERT------------------------------
  ---------------------Registrar Paciente
