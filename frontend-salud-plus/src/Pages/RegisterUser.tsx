@@ -1,17 +1,22 @@
 import { useForm } from "react-hook-form";
 import useQueryGet from "../api/useQueryGet";
 import Navbar from "../Components/Navbar";
+import useQueryPost from "../api/useQueryPost";
 
 type FormData = {
     username: string,
     password: string,
     confirmPassword: string,
-    roleId: number
+    roleName: string
 }
 
 const RegisterUser = () => {
-    const { register, handleSubmit } = useForm<FormData>();
+    const { register, handleSubmit, reset } = useForm<FormData>();
     const { data: roles, isLoading, error } = useQueryGet("SELECT * FROM Rol");
+    const { mutate: postQueryAdd } = useQueryPost(() => {
+        alert("El usuario fue añadido exitosamente");
+        reset();
+    });
 
     const registerUser = (data: FormData) => {
         if (data.password !== data.confirmPassword) {
@@ -19,17 +24,24 @@ const RegisterUser = () => {
             return;
         }
 
-
-        
-        alert(JSON.stringify(data));
+        postQueryAdd(`EXEC Sp_RegistrarUsuarioSistema 
+            @NombreUsuario = '${data.username}',
+            @Contrasena = '${data.password}',
+            @Rol = '${data.roleName}'`
+        )
     }
 
     if (isLoading) {
-        return <></>
+        return <Navbar />
     }
 
     if (error) {
-        return <div>Algo salió mal...</div>
+        return (
+            <>
+                <Navbar/>
+                <div>Algo salió mal...</div>
+            </>
+        )
     }
     
     return (
@@ -44,9 +56,9 @@ const RegisterUser = () => {
                 <label className="ms-2">Confirmar contraseña</label>
                 <input type="password" className="form-control ms-2" {...register("confirmPassword")}></input>
                 <label className="ms-2">Rol</label>
-                <select className="form-select ms-2"{...register("roleId")}>
+                <select className="form-select ms-2"{...register("roleName")}>
                     {
-                        roles.map((rol: any) => <option value={rol.ID_Rol}>{rol.Nombre_Rol}</option>)
+                        roles.map((rol: any) => <option key={rol.ID_Rol} value={rol.Nombre_Rol}>{rol.Nombre_Rol}</option>)
                     }
                 </select>
                 <button type="submit" className="btn btn-primary ms-2 mt-2">Registrar usuario</button>
