@@ -10,7 +10,7 @@ const RecursosMedicosSalas = () => {
             entityTableName="Recurso_Medico_Sala"
             addEntityFields={[
                 ["Fecha", "date"],
-                ["Descripcion", "text"],
+                ["Cantidad_Recurso", "number"],
                 ["ID_Recurso_Medico", "number"],
                 ["ID_Sala", "number"],
             ]}

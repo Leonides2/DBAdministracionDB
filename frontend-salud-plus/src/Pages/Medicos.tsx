@@ -14,7 +14,7 @@ const Medicos = () => {
                 ["Apellido1_Medico", "text"], 
                 ["Apellido2_Medico", "text"], 
                 ["Telefono_Medico", "text"], 
-                ["ID_Especialidad", "number"]
+                ["Nombre_Especialidad", "text"]
             ]}
         />
     )
