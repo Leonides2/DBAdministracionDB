@@ -53,7 +53,7 @@ function App() {
         <Route path="/planificaciones-recursos" element={<PlanificacionesRecursos />} />
         <Route path="/medico-planificaciones-recursos" element={<MedicoPlanificacionRecursos />} />
         <Route path="/satisfaccion-pacientes" element={<SatisfaccionPacientes />} />  
-        <Route path="/registrar-usuario" element={<RegisterUser />} />
+        <Route path="/registrar-usuario" element={<RegisterUser />}/>
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </>

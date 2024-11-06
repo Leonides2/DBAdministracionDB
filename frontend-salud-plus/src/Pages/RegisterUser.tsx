@@ -19,7 +19,7 @@ const RegisterUser = () => {
             return;
         }
 
-        
+
         
         alert(JSON.stringify(data));
     }
@@ -41,7 +41,7 @@ const RegisterUser = () => {
                 <input type="text" className="form-control ms-2" {...register("username")}></input>
                 <label className="ms-2">Contraseña</label>
                 <input type="password" className="form-control ms-2" {...register("password")}></input>
-                <label className="ms-2">Confirmar Contraseña</label>
+                <label className="ms-2">Confirmar contraseña</label>
                 <input type="password" className="form-control ms-2" {...register("confirmPassword")}></input>
                 <label className="ms-2">Rol</label>
                 <select className="form-select ms-2"{...register("roleId")}>

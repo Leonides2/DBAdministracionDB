@@ -24,7 +24,7 @@ const Navbar = () => {
             <Link className="mr-2" to="/planificaciones-recursos"><button type="button" className="btn btn-sm btn-outline-secondary">Planificaciones de Recursos</button></Link>
             <Link className="mr-2" to="/medico-planificaciones-recursos"><button type="button" className="btn btn-sm btn-outline-secondary">Medico-Planificaciones</button></Link>
             <Link className="mr-2" to="/satisfaccion-pacientes"><button type="button" className="btn btn-sm btn-outline-secondary">Evaluaciones de Satisfacción</button></Link>
-            <Link className="mr-2" to="/registrar-usuario"><button type="button" className="btn btn-sm btn-outline-secondary">Registro de Usuarios</button></Link>
+            <Link className="mr-2" to="/registro-usuario"><button type="button" className="btn btn-sm btn-outline-secondary">Registro de Usuarios</button></Link>
         </nav>
     )
 }

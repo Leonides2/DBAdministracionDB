@@ -17,7 +17,7 @@ type PageProperties = {
 }
 
 const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, entityTableName, addEntityFields}: PageProperties) => {
-    const { data: entities, isLoading, error, refetch } = useQueryGet(`SELECT * FROM vw_${entityTableName}`);
+    const { data: entities, isLoading, error, isError, refetch } = useQueryGet(`SELECT * FROM vw_${entityTableName}`);
     const { setShow, Modal } = useModal();
     const logOut = useLogOut();
     
@@ -33,8 +33,17 @@ const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, en
         return <Navbar />
     }
     
-    if (error) {
-        return <div>Algo salió mal</div>
+    if (isError) {
+        const err: any = error;
+
+        return (
+            <>
+                <Navbar />
+                <h1 className="ms-2">Error:</h1>
+                <p className="ms-2">{err.message}</p>
+                <button className="btn btn-danger ms-2" onClick={logOut}>Cerrar sesión</button>
+            </>
+        )
     }
     
     return (
