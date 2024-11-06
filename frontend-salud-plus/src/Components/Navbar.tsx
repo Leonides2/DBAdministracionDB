@@ -31,7 +31,7 @@ const Navbar = () => {
         { path: "/planificaciones-recursos", label: "Planificaciones de Recursos" },
         { path: "/medico-planificaciones-recursos", label: "Medico-Planificaciones" },
         { path: "/satisfaccion-pacientes", label: "Evaluaciones de Satisfacción" },
-        { path: "/registrar-usuario", label: "Registro de Usuarios" },
+        { path: "/registro-usuario", label: "Registro de Usuarios" },
     ];
 
     const handleButtonClick = (index: number) => {

@@ -1,4 +1,14 @@
 
 nav{
-   overflow-x: scroll
+    overflow-x: auto;
+    height: auto;
+
+    justify-content: center;
 }
+
+nav button{
+    height: 10dvh;
+    width: auto;
+    text-wrap: wrap;
+
+ }

@@ -22,7 +22,6 @@ import PlanificacionesRecursos from "./Pages/PlanificacionesRecursos"
 import MedicoPlanificacionRecursos from "./Pages/MedicoPlanificacionRecursos"
 import SatisfaccionPacientes from "./Pages/SatisfaccionPacientes"
 
-import Navbar from "./Components/Navbar"
 
 import { Navigate } from "react-router-dom"
 import RegisterUser from "./Pages/RegisterUser"
