@@ -1506,6 +1506,7 @@ go
 */
 
 CREATE OR ALTER VIEW vw_Cita AS
+CREATE OR ALTER VIEW vw_Cita AS
 SELECT 
 Convert(VARCHAR,Cita.Fecha_Cita,103) AS Fecha_Cita,
 Convert(VARCHAR, Cita.Hora_Cita, 108) AS Hora_Cita,
@@ -3515,7 +3516,7 @@ GO
 
 ----------Modificar Estado Cita
 
-CREATE OR ALTER PROCEDURE Sp_ModificarEstadoCita
+CREATE OR ALTER PROCEDURE Sp_ModificarEstado_Cita
 (
     @ID_Estado_Cita INT,
     @Estado VARCHAR(50)
@@ -3556,7 +3557,7 @@ CREATE OR ALTER PROCEDURE Sp_ModificarCita
     @ID_Cita INT,
     @Fecha_Cita DATE = NULL,
     @Hora_Cita TIME = NULL,
-    @ID_Paciente INT = NULL,
+    @CEDULA INT = NULL,
     @ID_Medico INT = NULL,
     @ID_Estado_Cita INT = NULL
 )
@@ -3618,7 +3619,7 @@ END;
 
 ---------Modificar Tipo de Pago
 
-CREATE OR ALTER PROCEDURE Sp_ModificarTipoPago
+CREATE OR ALTER PROCEDURE Sp_ModificarTipo_Pago
 (
     @ID_Tipo_Pago INT,
     @Descripcion_Tipo_Pago VARCHAR(50) = NULL
@@ -3654,7 +3655,7 @@ END;
 
 -------------Modificar Factura
 
-CREATE OR ALTER PROCEDURE Sp_ModificarFactura
+CREATE OR ALTER PROCEDURE Sp_Modificar_Factura
 (
     @ID_Factura INT,
     @Fecha_Factura DATE = NULL,
@@ -3710,7 +3711,7 @@ END;
 
 -----------Modificar Historial Medico
 
-CREATE OR ALTER PROCEDURE Sp_ModificarHistorialMedico
+CREATE OR ALTER PROCEDURE Sp_ModificarHistorial_Medico
 (
     @ID_Historial_Medico INT,
     @Fecha_Registro DATE,
@@ -3747,7 +3748,7 @@ GO
 
 ---------Modificar Estado Sala
 
-CREATE OR ALTER PROCEDURE Sp_ModificarEstadoSala
+CREATE OR ALTER PROCEDURE Sp_ModificarEstado_Sala
 (
     @ID_Estado_Sala INT,
     @Nombre VARCHAR(50)
@@ -3782,7 +3783,7 @@ END;
 
 ---------------Modificar Tipo de Sala
 
-CREATE OR ALTER PROCEDURE Sp_ModificarTipoSala
+CREATE OR ALTER PROCEDURE Sp_ModificarTipo_Sala
 (
     @ID_Tipo_Sala INT,
     @Descripcion_Tipo_Sala VARCHAR(50)
