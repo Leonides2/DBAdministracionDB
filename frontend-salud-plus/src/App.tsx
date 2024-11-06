@@ -25,6 +25,7 @@ import SatisfaccionPacientes from "./Pages/SatisfaccionPacientes"
 import Navbar from "./Components/Navbar"
 
 import { Navigate } from "react-router-dom"
+import RegisterUser from "./Pages/RegisterUser"
 
 function App() {
   return (
@@ -52,6 +53,7 @@ function App() {
         <Route path="/planificaciones-recursos" element={<PlanificacionesRecursos />} />
         <Route path="/medico-planificaciones-recursos" element={<MedicoPlanificacionRecursos />} />
         <Route path="/satisfaccion-pacientes" element={<SatisfaccionPacientes />} />  
+        <Route path="/registrar-usuario" element={<RegisterUser />} />
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </>

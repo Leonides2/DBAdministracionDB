@@ -59,7 +59,7 @@ const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, en
                     </thead>
                     <tbody>
                         {
-                            entities.map(entity => (
+                            entities.map((entity: any) => (
                                 <EntityPageRow key={entity[idFieldName]} 
                                     entity={entity} 
                                     idFieldName={idFieldName}
