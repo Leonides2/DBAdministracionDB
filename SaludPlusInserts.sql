@@ -345,3 +345,116 @@ go
 EXEC Sp_RegistrarFactura  @Fecha_Factura = '2024-09-01',@Monto_Total = 4500.00,@Cedula = '321654987',@ID_Cita = 4,@Tipo_Pago = 'Efectivo';
 go
 
+ -- Insertar historial médico para el paciente con ID 6
+EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 6;
+go
+-- Insertar historial médico para el paciente con ID 7
+EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 7;
+go
+-- Insertar historial médico para el paciente con ID 8
+EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 8;
+go
+-- Insertar historial médico para el paciente con ID 9
+EXEC Sp_RegistrarHistorial_Medico @ID_Paciente = 9;
+go
+
+-- Insertar estado de sala 1
+EXEC Sp_RegistrarEstado_Sala  @Nombre = 'Inactiva';
+go
+-- Insertar estado de sala 2
+EXEC Sp_RegistrarEstado_Sala  @Nombre = 'En mantenimiento';
+go
+-- Insertar estado de sala 3
+EXEC Sp_RegistrarEstado_Sala  @Nombre = 'Cerrada';
+go
+
+
+-- Insertar tipo de sala 1
+EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Ginecología';
+go
+-- Insertar tipo de sala 2
+EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Traumatología';
+go
+-- Insertar tipo de sala 3
+EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Cardiología';
+go
+-- Insertar tipo de sala 5
+EXEC Sp_RegistrarTipo_Sala  @Descripcion_Tipo_Sala = 'Oncología';
+go
+
+
+/*
+
+-- Insertar sala 1
+EXEC Sp_RegistrarSala  @Nombre_Sala = 'Sala de Ginecología',@Capacidad_Sala = 4,@ID_Tipo_Sala = 2,@ID_Estado_Sala = 3;
+go
+-- Insertar sala 2
+EXEC Sp_RegistrarSala  @Nombre_Sala = 'Sala de Traumatología',@Capacidad_Sala = 5,@ID_Tipo_Sala = 3,@ID_Estado_Sala = 2;
+go
+-- Insertar sala 3
+EXEC Sp_RegistrarSala  @Nombre_Sala = 'Sala de Cardiología',@Capacidad_Sala = 3,@ID_Tipo_Sala = 4,@ID_Estado_Sala = 1;
+go
+
+*/
+
+-- Insertar tipo de procedimiento 1
+EXEC Sp_RegistrarTipo_Procedimiento  @Nombre_Procedimiento = 'Cita de Ginecología';
+go
+-- Insertar tipo de procedimiento 2
+EXEC Sp_RegistrarTipo_Procedimiento   @Nombre_Procedimiento = 'Cita de Traumatología';
+go
+-- Insertar tipo de procedimiento 3
+EXEC Sp_RegistrarTipo_Procedimiento  @Nombre_Procedimiento = 'Cita de Cardiología';
+go
+
+/*
+EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Consulta de medicina interna',@Fecha_Procedimiento = '2024-08-01', 
+    @Hora_Procedimiento = '11:00',@Monto_Procedimiento = 5000,@Receta = 'Reposo y seguimiento',@ID_Sala = 1,@ID_Historial_Medico = 6,@ID_Cita = 6,@ID_Tipo_Procedimiento = 1;
+	go
+EXEC Sp_RegistrarProcedimiento @Descripcion_Procedimiento = 'Examen de laboratorio',@Fecha_Procedimiento = '2024-08-15',
+    @Hora_Procedimiento = '09:30',@Monto_Procedimiento = 1500,@Receta = 'Ninguna',@ID_Sala = 2,@ID_Historial_Medico = 7,@ID_Cita = 7,@ID_Tipo_Procedimiento = 2;
+	go
+EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Radiografía de abdomen',@Fecha_Procedimiento = '2024-08-20',
+    @Hora_Procedimiento = '13:00',@Monto_Procedimiento = 2000,@Receta = 'Ninguna',@ID_Sala = 3,@ID_Historial_Medico = 8,@ID_Cita = 8,@ID_Tipo_Procedimiento = 2;
+	go
+EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Consulta pediátrica',@Fecha_Procedimiento = '2024-09-01',@Hora_Procedimiento = '10:00',
+     @Monto_Procedimiento = 6000,@Receta = 'Paracetamol si es necesario',@ID_Sala = 4,@ID_Historial_Medico = 5,@ID_Cita = 2,@ID_Tipo_Procedimiento = 3;
+	 go
+EXEC Sp_RegistrarProcedimiento  @Descripcion_Procedimiento = 'Consulta de ortopedia',@Fecha_Procedimiento = '2024-09-10', 
+    @Hora_Procedimiento = '14:30',@Monto_Procedimiento = 7000,@Receta = 'Hielo y descanso',@ID_Sala = 5,@ID_Historial_Medico =1,@ID_Cita = 10,@ID_Tipo_Procedimiento = 7;
+	go
+*/
+
+EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'En mantenimiento';
+go
+EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Reparación necesaria';
+go
+EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Fuera de servicio';
+go
+EXEC Sp_RegistrarEstado_Recurso_Medico  @Estado_Recurso = 'Reservado';
+go
+
+
+
+EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Recurso de Diagnóstico';
+go
+EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Equipos de Protección Personal';
+go
+EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Suministros de Emergencia';
+go
+EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Material de Curación';
+go
+
+/*
+EXEC Sp_RegistrarRecurso_Medico   @Nombre_Recurso = 'Recurso 6',@Lote = 'Lote 6',@Cantidad_Stock_Total = 150,@Ubicacion_Recurso = 'Almacen 6', 
+    @ID_Tipo_Recurso = 1,@ID_Estado_Recurso_Medico = 4;
+	go
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 7',@Lote = 'Lote 7',@Cantidad_Stock_Total = 250,@Ubicacion_Recurso = 'Almacen 7', 
+    @ID_Tipo_Recurso = 2,@ID_Estado_Recurso_Medico = 6;
+	go
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 8',@Lote = 'Lote 8',@Cantidad_Stock_Total = 350,@Ubicacion_Recurso = 'Almacen 8', 
+    @ID_Tipo_Recurso = 3,@ID_Estado_Recurso_Medico = 5;
+	go
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 9',@Lote = 'Lote 9',@Cantidad_Stock_Total = 450,@Ubicacion_Recurso = 'Almacen 9', 
+    @ID_Tipo_Recurso = 6,@ID_Estado_Recurso_Medico = 2;
+*/
