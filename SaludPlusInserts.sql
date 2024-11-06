@@ -444,3 +444,17 @@ EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Suministros de Emergencia';
 go
 EXEC Sp_RegistrarTipo_Recurso  @Titulo_Recurso = 'Material de Curación';
 go
+
+/*
+EXEC Sp_RegistrarRecurso_Medico   @Nombre_Recurso = 'Recurso 6',@Lote = 'Lote 6',@Cantidad_Stock_Total = 150,@Ubicacion_Recurso = 'Almacen 6', 
+    @ID_Tipo_Recurso = 1,@ID_Estado_Recurso_Medico = 4;
+	go
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 7',@Lote = 'Lote 7',@Cantidad_Stock_Total = 250,@Ubicacion_Recurso = 'Almacen 7', 
+    @ID_Tipo_Recurso = 2,@ID_Estado_Recurso_Medico = 6;
+	go
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 8',@Lote = 'Lote 8',@Cantidad_Stock_Total = 350,@Ubicacion_Recurso = 'Almacen 8', 
+    @ID_Tipo_Recurso = 3,@ID_Estado_Recurso_Medico = 5;
+	go
+EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 9',@Lote = 'Lote 9',@Cantidad_Stock_Total = 450,@Ubicacion_Recurso = 'Almacen 9', 
+    @ID_Tipo_Recurso = 6,@ID_Estado_Recurso_Medico = 2;
+*/

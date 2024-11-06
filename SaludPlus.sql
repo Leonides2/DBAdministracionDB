@@ -2535,50 +2535,51 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarRecurso_Medico
     @Lote VARCHAR(50),
     @Cantidad_Stock_Total INT,
     @Ubicacion_Recurso VARCHAR(150),
-    @ID_Tipo_Recurso INT,
-    @ID_Estado_Recurso_Medico INT
+    @Titulo_Recurso VARCHAR(50),
+    @Estado_Recurso VARCHAR(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
-
+	BEGIN TRY
     -- Verificar si el tipo de recurso y el estado existen
-    IF NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
+    IF NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE Titulo_Recurso LIKE @Titulo_Recurso)
     BEGIN
-        RAISERROR('El ID de tipo de recurso no existe.', 16, 1);
+        RAISERROR('El tipo de recurso no existe.', 16, 1);
         RETURN;
     END
 
-    IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
+    IF NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE Estado_Recurso like @Estado_Recurso)
     BEGIN
-        RAISERROR('El ID de estado de recurso médico no existe.', 16, 1);
+        RAISERROR('El estado de recurso médico no existe.', 16, 1);
         RETURN;
     END
 
-    BEGIN TRY
+		DECLARE @ID_Tipo_Recurso int = (Select top 1 ID_Tipo_Recurso from Tipo_Recurso where Titulo_Recurso like @Titulo_Recurso)
+		DECLARE @ID_Estado_Recurso_Medico int = (Select top 1 ID_Estado_Recurso_Medico from Estado_Recurso_Medico where Estado_Recurso like @Estado_Recurso)
+
         INSERT INTO Recurso_Medico (  Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso, ID_Estado_Recurso_Medico)
         VALUES (  @Nombre_Recurso, @Lote, @Cantidad_Stock_Total, @Ubicacion_Recurso, @ID_Tipo_Recurso, @ID_Estado_Recurso_Medico);
 
         PRINT 'El recurso médico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el recurso médico: ' + ERROR_MESSAGE();
+
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el recurso médico: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
 
-EXEC Sp_RegistrarRecurso_Medico   @Nombre_Recurso = 'Recurso 6',@Lote = 'Lote 6',@Cantidad_Stock_Total = 150,@Ubicacion_Recurso = 'Almacen 6', 
-    @ID_Tipo_Recurso = 1,@ID_Estado_Recurso_Medico = 4;
-	go
-EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 7',@Lote = 'Lote 7',@Cantidad_Stock_Total = 250,@Ubicacion_Recurso = 'Almacen 7', 
-    @ID_Tipo_Recurso = 2,@ID_Estado_Recurso_Medico = 6;
-	go
-EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 8',@Lote = 'Lote 8',@Cantidad_Stock_Total = 350,@Ubicacion_Recurso = 'Almacen 8', 
-    @ID_Tipo_Recurso = 3,@ID_Estado_Recurso_Medico = 5;
-	go
-EXEC Sp_RegistrarRecurso_Medico  @Nombre_Recurso = 'Recurso 9',@Lote = 'Lote 9',@Cantidad_Stock_Total = 450,@Ubicacion_Recurso = 'Almacen 9', 
-    @ID_Tipo_Recurso = 6,@ID_Estado_Recurso_Medico = 2;
+/*
+Sigo mañana
 
+*/
 
 ------------Insertar Recurso_Medico Sala
 
