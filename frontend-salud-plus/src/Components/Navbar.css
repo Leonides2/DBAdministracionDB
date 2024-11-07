@@ -7,8 +7,7 @@ nav{
 }
 
 nav button{
-    height: 10dvh;
+    height: 90px;
     width: auto;
     text-wrap: wrap;
-
- }
+}
