@@ -10,7 +10,7 @@ const MedicoPlanificacionRecursos = () => {
             entityTableName="Medico_Planificacion_Recurso"
             addEntityFields={[
                 ["Fecha_Planificacion_Personal", "date"],
-                ["ID_Planificacion", "number"],
+                ["Descripcion_Planificacion", "text"],
                 ["ID_Medico", "number"],
             ]}
         />

@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import useQueryGet from "../api/useQueryGet";
-import Navbar from "../Components/Navbar";
 import useQueryPost from "../api/useQueryPost";
 
 type FormData = {
@@ -38,8 +37,7 @@ const RegisterUser = () => {
     if (error) {
         return (
             <>
-                <Navbar/>
-                <div>Algo salió mal...</div>
+                <div>Algo salió mal... O seguro no tienes permisos para acceder a esta area</div>
             </>
         )
     }
