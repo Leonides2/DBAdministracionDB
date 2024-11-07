@@ -1,10 +1,10 @@
-import { useState } from "react";
-import {useNavigate } from "react-router-dom";
+
+import {useLocation, useNavigate } from "react-router-dom";
 
 import './Navbar.css'
 
 const Navbar = () => {
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const location = useLocation(); // Obtenemos la ubicación actual
 
     const navigate = useNavigate();
 
@@ -34,23 +34,19 @@ const Navbar = () => {
         { path: "/registro-usuario", label: "Registro de Usuarios" },
     ];
 
-    const handleButtonClick = (index: number) => {
-        setSelectedIndex(index);
-    };
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light p-3" >
             {
-            links.map((link, index) => (
+            links.map((link) => (
                 
                 
                     //<Link key={link.path} className="mr-2" to={link.path}>
                 
                     <button
                         type="button"
-                        className={`btn btn-sm ${selectedIndex === index ? "btn-primary" : "btn-outline-secondary"}`}
+                        className={`btn btn-sm ${location.pathname === link.path? "btn-primary" : "btn-outline-secondary"}`}
                         onClick={() => {
-                            handleButtonClick(index)
                             navigate(link.path)
                         }}
                     >

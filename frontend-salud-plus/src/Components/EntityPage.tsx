@@ -30,7 +30,8 @@ const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, en
     }, [])
 
     if (isLoading) {
-        return <Navbar />
+        return <>
+        </>
     }
     
     if (isError) {
@@ -48,7 +49,7 @@ const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, en
     
     return (
         <>
-            <Navbar />
+            
             <h1 className="ms-2">{title}</h1>
             <button type="button" className="btn btn-primary mb-3 ms-2" onClick={() => setShow(true)}>{addEntityMessage}</button>
             {

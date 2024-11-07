@@ -32,7 +32,7 @@ const RegisterUser = () => {
     }
 
     if (isLoading) {
-        return <Navbar />
+        return <></>
     }
 
     if (error) {
@@ -46,7 +46,6 @@ const RegisterUser = () => {
     
     return (
         <>
-            <Navbar />
             <h1 className="ms-2">Registrar usuarios</h1>
             <form onSubmit={handleSubmit(registerUser)} style={{width: "35%"}}>
                 <label className="ms-2">Nombre de usuario</label>
