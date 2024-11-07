@@ -231,13 +231,13 @@ AS
 BEGIN
     INSERT INTO DimFecha (ID_Fecha, Dia, Mes, Anio, Trimestre, Nombre_Dia, Nombre_Mes)
     SELECT DISTINCT 
-        CAST(Fecha AS DATE) AS ID_Fecha,
-        DAY(Fecha) AS Dia,
-        MONTH(Fecha) AS Mes,
-        YEAR(Fecha) AS Anio,
-        DATEPART(QUARTER, Fecha) AS Trimestre,
-        DATENAME(WEEKDAY, Fecha) AS Nombre_Dia,
-        DATENAME(MONTH, Fecha) AS Nombre_Mes
+        CAST(Fecha_Cita AS DATE) AS ID_Fecha,
+        DAY(Fecha_Cita) AS Dia,
+        MONTH(Fecha_Cita) AS Mes,
+        YEAR(Fecha_Cita) AS Anio,
+        DATEPART(QUARTER, Fecha_Cita) AS Trimestre,
+        DATENAME(WEEKDAY, Fecha_Cita) AS Nombre_Dia,
+        DATENAME(MONTH, Fecha_Cita) AS Nombre_Mes
     FROM SaludPlus.dbo.Cita;
 END;
 GO
@@ -280,16 +280,16 @@ GO
 
 
 -- 1. Hecho_Cita
-ALTER PROCEDURE SP_CargarHechoCita
+CREATE PROCEDURE SP_CargarHechoCita
 AS
 BEGIN
     INSERT INTO Hecho_Cita (
-        ID_Cita, Fecha, Hora, ID_Paciente, ID_Medico, ID_Especialidad, ID_Sala, 
+        ID_Cita, Hora, ID_Paciente, ID_Medico, ID_Especialidad, ID_Sala, 
         ID_Estado_Cita, Tiempo_Espera, Duracion_Consulta
     )
     SELECT 
         C.ID_Cita,
-        C.Fecha_Cita AS Fecha,
+        --C.Fecha_Cita AS Fecha,
         C.Hora_Cita AS Hora,
         C.ID_Paciente,
         C.ID_Medico,
@@ -309,10 +309,10 @@ GO
 CREATE PROCEDURE SP_CargarHechoSatisfaccionPaciente
 AS
 BEGIN
-    INSERT INTO Hecho_Satisfaccion_Paciente (ID_Satisfaccion, Fecha, ID_Cita, Calificacion)
+    INSERT INTO Hecho_Satisfaccion_Paciente (ID_Satisfaccion, ID_Cita, Calificacion)
     SELECT 
         ID_Satisfaccion,
-        Fecha_Evaluacion AS Fecha,
+        --Fecha_Evaluacion AS Fecha,
         ID_Cita,
         Calificacion_Satisfaccion AS Calificacion
     FROM SaludPlus.dbo.Satisfaccion_Paciente;
@@ -323,10 +323,10 @@ GO
 CREATE PROCEDURE SP_CargarHechoFactura
 AS
 BEGIN
-    INSERT INTO Hecho_Factura (ID_Factura, Fecha, Monto_Total, ID_Paciente, ID_Cita, ID_Tipo_Pago)
+    INSERT INTO Hecho_Factura (ID_Factura, Monto_Total, ID_Paciente, ID_Cita, ID_Tipo_Pago)
     SELECT 
         F.ID_Factura,
-        F.Fecha_Factura AS Fecha,
+        --F.Fecha_Factura AS Fecha,
         F.Monto_Total,
         F.ID_Paciente,
         F.ID_Cita,
@@ -339,10 +339,10 @@ GO
 CREATE PROCEDURE SP_CargarHechoProcedimiento
 AS
 BEGIN
-    INSERT INTO Hecho_Procedimiento (ID_Procedimiento, Fecha, Hora, Monto, ID_Sala, ID_Tipo_Procedimiento, ID_Cita)
+    INSERT INTO Hecho_Procedimiento (ID_Procedimiento,  Hora, Monto, ID_Sala, ID_Tipo_Procedimiento, ID_Cita)
     SELECT 
         P.ID_Procedimiento,
-        P.Fecha_Procedimiento AS Fecha,
+        --P.Fecha_Procedimiento AS Fecha,
         P.Hora_Procedimiento AS Hora,
         P.Monto_Procedimiento AS Monto,
         P.ID_Sala,
@@ -356,10 +356,9 @@ GO
 CREATE PROCEDURE SP_CargarHechoCapacidadClinica
 AS
 BEGIN
-    INSERT INTO Hecho_Capacidad_Clinica (ID_Capacidad, Fecha, ID_Sala, Capacidad_Disponible)
+    INSERT INTO Hecho_Capacidad_Clinica ( ID_Sala, Capacidad_Disponible)
     SELECT 
-        ROW_NUMBER() OVER (ORDER BY Fecha) AS ID_Capacidad,
-        Fecha AS Fecha,
+        --ROW_NUMBER() OVER (ORDER BY Fecha) AS ID_Capacidad,
         S.ID_Sala,
         Capacidad_Sala AS Capacidad_Disponible
     FROM SaludPlus.dbo.Planificacion_Recurso PR
@@ -537,16 +536,17 @@ GO
 
 
 ----Calcula la satisfacción promedio por cita
-CREATE FUNCTION FN_SatisfaccionPromedioPorCita(@ID_Cita INT)
+CREATE FUNCTION FN_SatisfaccionPromedioPorCita (@ID_Cita INT)
 RETURNS DECIMAL(5,2)
 AS
 BEGIN
-    DECLARE @promedio DECIMAL(5,2);
-    SELECT @promedio = AVG(Calificacion)
-    FROM Hecho_Satisfaccion_Paciente
-    WHERE ID_Cita = @ID_Cita;
-    RETURN @promedio;
+    RETURN (
+        SELECT AVG(CAST(Calificacion AS DECIMAL(5,2)))
+        FROM Hecho_Satisfaccion_Paciente
+        WHERE ID_Cita = @ID_Cita
+    );
 END;
+Go
 
 ----Calcula el tiempo promedio de espera por especialidad
 CREATE FUNCTION FN_TiempoEsperaPromedioPorEspecialidad(@ID_Especialidad INT)
@@ -559,7 +559,8 @@ BEGIN
     WHERE ID_Especialidad = @ID_Especialidad;
     RETURN @promedio;
 END;
-
+GO
+/*
 ----Calcula citas por periodo
 CREATE PROCEDURE SP_CantidadCitasPorPeriodo (@Periodo VARCHAR(10))
 AS
@@ -571,7 +572,7 @@ BEGIN
     ELSE IF @Periodo = 'MES'
         SELECT DATEPART(MONTH, Fecha) AS Mes, COUNT(*) AS Cantidad_Citas FROM Hecho_Cita GROUP BY DATEPART(MONTH, Fecha);
 END;
-
+*/
 CREATE PROCEDURE SP_UtilizacionRecursoPorSala
 AS
 BEGIN
@@ -581,7 +582,8 @@ BEGIN
     JOIN DimRecursoMedico RM ON RM.ID_Recurso_Medico = P.ID_Procedimiento
     GROUP BY S.Nombre_Sala, RM.Nombre_Recurso;
 END;
-
+GO
+/*
 CREATE PROCEDURE SP_FacturacionPorMesYAno
 AS
 BEGIN
@@ -590,7 +592,7 @@ BEGIN
     GROUP BY DATEPART(YEAR, Fecha), DATEPART(MONTH, Fecha)
     ORDER BY Año, Mes;
 END;
-
+*/
 CREATE FUNCTION FN_StockActualRecursoMedico(@ID_Recurso_Medico INT)
 RETURNS INT
 AS
@@ -601,7 +603,7 @@ BEGIN
     WHERE ID_Recurso_Medico = @ID_Recurso_Medico;
     RETURN ISNULL(@stock, 0);
 END;
-
+GO
 
 -----indices para mejorar el redimiento de las consultas
 -- Hecho_Cita
@@ -627,9 +629,11 @@ CREATE INDEX IX_Hecho_Satisfaccion_Fecha ON Hecho_Satisfaccion_Paciente (ID_Fech
 GO
 
 
+EXEC SP_CargarDWCompleto
+Go
 
 
-
+/*
 
 
 
@@ -703,3 +707,4 @@ GO
 
 
 
+*/

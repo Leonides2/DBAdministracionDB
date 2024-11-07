@@ -31,6 +31,19 @@ GO
 
 ---Permisos de modificacion
 
+GRANT EXECUTE ON dbo.Sp_ModificarProcedimiento
+TO Médico;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarSatisfaccion_Paciente 
+TO Médico;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarTipo_Procedimiento 
+TO Médico;
+GO
+
+
 ---Vistas
 GRANT SELECT ON dbo.vw_Cita TO Médico;
 GO
@@ -97,6 +110,46 @@ TO Recepcionista;
 GO
 
 --- Permisos de modificacion
+
+GRANT EXECUTE ON dbo.Sp_ModificarCita
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarFactura
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarHistorial_Medico
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarPlanificacion_Recurso
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarRecurso_Medico
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarPaciente
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarRecurso_Medico_Sala
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarProcedimiento
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarSatisfaccion_Paciente 
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarTipo_Procedimiento 
+TO Recepcionista;
+GO
 
 
 --- Vistas (Todas)
