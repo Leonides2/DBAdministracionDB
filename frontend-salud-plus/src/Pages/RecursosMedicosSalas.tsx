@@ -11,8 +11,8 @@ const RecursosMedicosSalas = () => {
             addEntityFields={[
                 ["Fecha", "date"],
                 ["Cantidad_Recurso", "number"],
-                ["ID_Recurso_Medico", "number"],
-                ["ID_Sala", "number"],
+                ["Lote", "text"],
+                ["Nombre_Sala", "text"],
             ]}
         />
     )
