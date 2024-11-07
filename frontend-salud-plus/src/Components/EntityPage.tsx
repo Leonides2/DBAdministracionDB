@@ -1,7 +1,6 @@
 import useQueryGet from "../api/useQueryGet";
 import AddEntityForm from "./AddEntityForm";
 import EntityPageRow from "./EntityPageRow";
-import Navbar from "./Navbar";
 import useModal from "./useModal";
 import { useLogOut } from "../api/services";
 import { useEffect } from "react";
@@ -39,7 +38,6 @@ const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, en
 
         return (
             <>
-                <Navbar />
                 <h1 className="ms-2">Error:</h1>
                 <p className="ms-2">{err.message}</p>
                 <button className="btn btn-danger ms-2" onClick={logOut}>Cerrar sesión</button>

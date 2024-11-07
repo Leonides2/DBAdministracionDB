@@ -3,7 +3,7 @@
 use SaludPlus
 go
 
-CREATE ROLE Administrativo;
+CREATE ROLE Administrador;
 GO
 CREATE ROLE Médico
 Go
@@ -85,7 +85,7 @@ BEGIN
         END
         ELSE IF @Rol = 'Administrador'
         BEGIN
-            SET @sql = 'ALTER ROLE Administrativo ADD MEMBER [' + @NombreUsuario + ']';
+            SET @sql = 'ALTER ROLE Administrador ADD MEMBER [' + @NombreUsuario + ']';
             EXEC sp_executesql @sql;
         END
         ELSE IF @Rol = 'Recepcionista'
