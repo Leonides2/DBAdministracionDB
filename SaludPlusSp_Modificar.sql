@@ -692,10 +692,10 @@ CREATE OR ALTER PROCEDURE Sp_ModificarProcedimiento
     @Hora_Procedimiento TIME = NULL,
     @Monto_Procedimiento MONEY = NULL,
     @Receta VARCHAR(150) = NULL,
-    @ID_Sala INT = NULL,
+    @Nombre_Sala VARCHAR(50) = NULL,  --Antes ID_Tipo_Sala
     @ID_Historial_Medico INT = NULL,
     @ID_Cita INT = NULL,
-    @ID_Tipo_Procedimiento INT = NULL
+    @Nombre_Procedimiento VARCHAR(50) = NULL   --Antes ID_Tipo_Procedimiento
 )
 AS
 BEGIN
@@ -710,9 +710,9 @@ BEGIN
         END
 
         -- Verificar si el ID de sala existe
-        IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+        IF @Nombre_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala)
         BEGIN
-            RAISERROR('El ID de sala con valor %d no existe.', 16, 1, @ID_Sala);
+            RAISERROR('La sala con nombre %s no existe.', 16, 1, @Nombre_Sala);
             RETURN;
         END
 
@@ -731,13 +731,19 @@ BEGIN
         END
 
         -- Verificar si el ID de tipo de procedimiento existe
-        IF @ID_Tipo_Procedimiento IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE ID_Tipo_Procedimiento = @ID_Tipo_Procedimiento)
+        IF @Nombre_Procedimiento IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Procedimiento WHERE Nombre_Procedimiento = @Nombre_Procedimiento)
         BEGIN
-            RAISERROR('El ID de tipo de procedimiento con valor %d no existe.', 16, 1, @ID_Tipo_Procedimiento);
+            RAISERROR('El procedimiento con nombre %s no existe.', 16, 1, @Nombre_Procedimiento);
             RETURN;
         END
 
         -- Realizar la actualización
+        DECLARE @ID_Sala INT;
+		DECLARE @ID_Tipo_Procedimiento INT;
+
+		SET @ID_Sala = (SELECT ID_Sala FROM Sala WHERE Nombre_Sala = @Nombre_Sala);
+        SET @ID_Tipo_Procedimiento = (SELECT ID_Tipo_Procedimiento FROM Tipo_Procedimiento WHERE Nombre_Procedimiento = @Nombre_Procedimiento);
+		
         UPDATE Procedimiento
         SET 
             Descripcion_Procedimiento = COALESCE(@Descripcion_Procedimiento, Descripcion_Procedimiento),
@@ -765,7 +771,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE Sp_ModificarEstado_Recurso_Medico
+CREATE OR ALTER PROCEDURE Sp_ModificarEstado_Recurso_Medico  --???
 (
     @ID_Estado_Recurso_Medico INT,
     @Estado_Recurso VARCHAR(50) = NULL
@@ -862,8 +868,8 @@ CREATE OR ALTER PROCEDURE Sp_ModificarRecurso_Medico
     @Lote VARCHAR(50) = NULL,
     @Cantidad_Stock_Total INT = NULL,
     @Ubicacion_Recurso VARCHAR(150) = NULL,
-    @ID_Tipo_Recurso INT = NULL,
-    @ID_Estado_Recurso_Medico INT = NULL
+    @Titulo_Recurso VARCHAR(50) = NULL,   --ID_Tipo_Recurso
+    @Estado_Recurso VARCHAR(50) = NULL  --ID_Estado_Recurso_Medico
 )
 AS
 BEGIN
@@ -878,20 +884,26 @@ BEGIN
         END
 
         -- Verificar si el ID de tipo de recurso existe
-        IF @ID_Tipo_Recurso IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE ID_Tipo_Recurso = @ID_Tipo_Recurso)
+        IF @Titulo_Recurso IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Tipo_Recurso WHERE Titulo_Recurso = @Titulo_Recurso)
         BEGIN
-            RAISERROR('El ID de tipo de recurso con valor %d no existe.', 16, 1, @ID_Tipo_Recurso);
+            RAISERROR('El Recurso con nombre %s no existe.', 16, 1, @Titulo_Recurso);
             RETURN;
         END
 
         -- Verificar si el ID de estado de recurso médico existe
-        IF @ID_Estado_Recurso_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE ID_Estado_Recurso_Medico = @ID_Estado_Recurso_Medico)
+        IF @Estado_Recurso IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Estado_Recurso_Medico WHERE Estado_Recurso = @Estado_Recurso)
         BEGIN
-            RAISERROR('El ID de estado de recurso médico con valor %d no existe.', 16, 1, @ID_Estado_Recurso_Medico);
+            RAISERROR('El Estado del recurso de nombre %s no existe.', 16, 1, @Estado_Recurso);
             RETURN;
         END
 
         -- Actualizar los datos del recurso médico
+		DECLARE @ID_Tipo_Recurso INT;
+		DECLARE @ID_Estado_Recurso_Medico INT;
+
+		SET @ID_Tipo_Recurso = (SELECT ID_Tipo_Recurso FROM Tipo_Recurso WHERE Titulo_Recurso = @Titulo_Recurso);
+		SET @ID_Estado_Recurso_Medico = (SELECT ID_Estado_Recurso_Medico FROM Estado_Recurso_Medico WHERE Estado_Recurso = @Estado_Recurso);
+		
         UPDATE Recurso_Medico
         SET 
             Nombre_Recurso = COALESCE(@Nombre_Recurso, Nombre_Recurso),
@@ -921,8 +933,8 @@ CREATE OR ALTER PROCEDURE Sp_ModificarRecurso_Medico_Sala
     @ID_Recurso_Medico_Sala INT,
     @Fecha DATE = NULL,
     @Cantidad_Recurso INT = NULL,
-    @ID_Recurso_Medico INT = NULL,
-    @ID_Sala INT = NULL
+    @Lote VARCHAR(30) = NULL, --ID_Recurso_Medico
+    @Nombre_Sala VARCHAR(30) = NULL --ID_Sala
 )
 AS
 BEGIN
@@ -937,20 +949,26 @@ BEGIN
         END
 
         -- Verificar si el ID de recurso médico existe
-        IF @ID_Recurso_Medico IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
+        IF @Lote IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE Lote = @Lote)
         BEGIN
-            RAISERROR('El ID de recurso médico con valor %d no existe.', 16, 1, @ID_Recurso_Medico);
+            RAISERROR('El valor %s no existe.', 16, 1, @Lote);
             RETURN;
         END
 
         -- Verificar si el ID de sala existe
-        IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+		IF @Nombre_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala)
         BEGIN
-            RAISERROR('El ID de sala con valor %d no existe.', 16, 1, @ID_Sala);
+            RAISERROR('La sala con nombre %s no existe.', 16, 1, @Nombre_Sala);
             RETURN;
         END
 
-        -- Actualizar la relación de recurso médico en sala
+		-- Actualizar la relación de recurso médico en sala
+		DECLARE @ID_Recurso_Medico INT;
+		DECLARE @ID_Sala INT;
+
+		SET @ID_Sala = (SELECT ID_Sala FROM Sala WHERE Nombre_Sala = @Nombre_Sala);
+		SET @ID_Recurso_Medico = (SELECT ID_Recurso_Medico FROM Recurso_Medico WHERE Lote = @Lote);
+
         UPDATE Recurso_Medico_Sala
         SET 
             Fecha = COALESCE(@Fecha, Fecha),
@@ -1020,8 +1038,8 @@ CREATE OR ALTER PROCEDURE Sp_ModificarPlanificacion_Recurso
     @ID_Planificacion INT,
     @Descripcion_Planificacion VARCHAR(150) = NULL,
     @Fecha_Planificacion DATE = NULL,
-    @ID_Sala INT = NULL,
-    @ID_Horario_Trabajo INT = NULL
+    @Nombre_Sala VARCHAR (30) = NULL, --ID_Sala
+    @Nombre_Horario VARCHAR(30) = NULL --ID_Horario_Trabajo
 )
 AS
 BEGIN
@@ -1036,20 +1054,26 @@ BEGIN
         END
 
         -- Validar si el ID de sala existe si se proporciona un valor
-        IF @ID_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+        IF @Nombre_Sala IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala)
         BEGIN
-            RAISERROR('El ID de sala con valor %d no existe.', 16, 1, @ID_Sala);
+            RAISERROR('La sala con nombre %s no existe.', 16, 1, @Nombre_Sala);
             RETURN;
         END
 
         -- Validar si el ID de horario de trabajo existe si se proporciona un valor
-        IF @ID_Horario_Trabajo IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
+        IF @Nombre_Horario IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE Nombre_Horario = @Nombre_Horario)
         BEGIN
-            RAISERROR('El ID de horario de trabajo con valor %d no existe.', 16, 1, @ID_Horario_Trabajo);
+            RAISERROR('El horario %s no existe.', 16, 1, @Nombre_Horario);
             RETURN;
         END
 
         -- Actualizar la planificación del recurso
+		DECLARE @ID_Sala INT;
+		DECLARE @ID_Horario_Trabajo INT;
+
+		SET @ID_Sala = (SELECT ID_Sala FROM Sala WHERE Nombre_Sala = @Nombre_Sala);
+		SET @ID_Horario_Trabajo = (SELECT ID_Horario_Trabajo FROM Horario_Trabajo WHERE Nombre_Horario = @Nombre_Horario);
+
         UPDATE Planificacion_Recurso
         SET 
             Descripcion_Planificacion = COALESCE(@Descripcion_Planificacion, Descripcion_Planificacion),
@@ -1077,7 +1101,7 @@ CREATE OR ALTER PROCEDURE Sp_ModificarMedico_Planificacion_Recurso
 (
     @ID_Medico_Planificacion_Recurso INT,
     @Fecha_Planificacion_Personal DATE = NULL,
-    @ID_Planificacion INT = NULL,
+    @Descripcion_Planificacion VARCHAR(50) = NULL, --ID_Planificacion
     @ID_Medico INT = NULL
 )
 AS
@@ -1100,13 +1124,17 @@ BEGIN
         END
 
         -- Verificar si el ID de planificación existe si se proporciona
-        IF @ID_Planificacion IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
+        IF @Descripcion_Planificacion IS NOT NULL AND NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE Descripcion_Planificacion = @Descripcion_Planificacion)
         BEGIN
-            RAISERROR('El ID de planificación con valor %d no existe.', 16, 1, @ID_Planificacion);
+            RAISERROR('La planificación con nombre %s no existe.', 16, 1, @Descripcion_Planificacion);
             RETURN;
         END
 
         -- Actualizar la planificación del médico
+		DECLARE @ID_Planificacion INT;
+
+		SET @ID_Planificacion = (SELECT ID_Planificacion FROM Planificacion_Recurso WHERE Descripcion_Planificacion = @Descripcion_Planificacion);
+
         UPDATE Medico_Planificacion_Recurso
         SET 
             Fecha_Planificacion_Personal = COALESCE(@Fecha_Planificacion_Personal, Fecha_Planificacion_Personal),
