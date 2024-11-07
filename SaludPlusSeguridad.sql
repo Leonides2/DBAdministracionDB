@@ -31,6 +31,11 @@ GO
 
 ---Permisos de modificacion
 
+
+
+
+
+
 ---Vistas
 GRANT SELECT ON dbo.vw_Cita TO Médico;
 GO
