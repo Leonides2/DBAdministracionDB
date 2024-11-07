@@ -7,7 +7,7 @@ on Primary
 name = 'SaludPlus_Data',
 Filename ='C:\SQL\Data\SaludPlus_Data.mdf',
  SIZE = 5000MB,   
- MAXSIZE = 100000MB, 
+ MAXSIZE = 10000MB, 
  FILEGROWTH = 500MB 
 )
 log on 
