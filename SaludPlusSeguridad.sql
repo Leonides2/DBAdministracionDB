@@ -83,7 +83,7 @@ BEGIN
             SET @sql = 'ALTER ROLE Médico ADD MEMBER [' + @NombreUsuario + ']';
             EXEC sp_executesql @sql;
         END
-        ELSE IF @Rol = 'Administrativo'
+        ELSE IF @Rol = 'Administrador'
         BEGIN
             SET @sql = 'ALTER ROLE Administrativo ADD MEMBER [' + @NombreUsuario + ']';
             EXEC sp_executesql @sql;

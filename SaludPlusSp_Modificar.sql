@@ -676,6 +676,10 @@ BEGIN
     END CATCH
 END;
 GO
+
+/*
+	Karla
+*/
 -----------------------Modificar Procedimiento
 USE SaludPlus
 GO
