@@ -10,14 +10,6 @@ const AddEntityForm = ({tableName, addEntityFields, refetchFn}: {tableName: stri
     });
     
     const addEntity = (data: any) => {
-        /*postQueryAdd([
-            `INSERT INTO ${tableName} (`,
-            addEntityFields.map(([fieldName, _]) => fieldName).join(', '),
-            `) VALUES (`,
-            addEntityFields.map(([fieldName, fieldType]) => fieldType === "number" ? data[fieldName] : `'${data[fieldName]}'`).join(', '),
-            ')'
-        ].join(''));*/
-
         postQueryAdd([`EXEC Sp_Registrar${tableName} `,
             addEntityFields.map(([fieldName, fieldType]) => fieldType === "number" ? `@${fieldName} = ${data[fieldName]}` : `@${fieldName} = '${data[fieldName]}'`).join(', '),
         ].join(' '));

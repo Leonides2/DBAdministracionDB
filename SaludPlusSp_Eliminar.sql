@@ -130,7 +130,7 @@ GO
 USE SaludPlus
 GO
 
-CREATE OR ALTER PROCEDURE EliminarSatisfaccion_Paciente
+CREATE OR ALTER PROCEDURE Sp_EliminarSatisfaccion_Paciente
     @ID_Satisfaccion INT
 AS
 BEGIN
@@ -327,12 +327,6 @@ BEGIN
         IF NOT EXISTS (SELECT 1 FROM Factura WHERE ID_Factura = @ID_Factura)
         BEGIN
             RAISERROR('No existe la Factura con ID_Factura = %d', 16, 1, @ID_Factura)
-            RETURN
-        END
-
-        IF EXISTS (SELECT 1 FROM Cita WHERE ID_Cita IN (SELECT ID_Cita FROM Factura WHERE ID_Factura = @ID_Factura))
-        BEGIN
-            RAISERROR('No se puede eliminar la Factura, tiene citas asociadas.', 16, 1)
             RETURN
         END
 
@@ -816,6 +810,13 @@ BEGIN
             RETURN
         END
 
+		IF EXISTS (SELECT 1 FROM Medico_Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
+		BEGIN
+            RAISERROR('Error al eliminar la planificación: está relacionada a una planificación de recurso de un médico', 16, 1)
+			RETURN
+
+		END
+
         DELETE FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion
     END TRY
 
@@ -844,11 +845,11 @@ BEGIN
             RETURN
         END
 
-        IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico IN (SELECT ID_Historial_Medico FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento))
-        BEGIN
-            RAISERROR('No se puede eliminar el Procedimiento, tiene historial médico asociado.', 16, 1)
-            RETURN
-        END
+        --IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Historial_Medico IN (SELECT ID_Historial_Medico FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento))
+        --BEGIN
+        --    RAISERROR('No se puede eliminar el Procedimiento, tiene historial médico asociado.', 16, 1)
+        --    RETURN
+        --END
 
         DELETE FROM Procedimiento WHERE ID_Procedimiento = @ID_Procedimiento
     END TRY

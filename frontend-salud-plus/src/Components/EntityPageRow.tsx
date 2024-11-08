@@ -16,10 +16,6 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn, entityFields}
     });
 
     const UpdateValues = (data: any) => {
-        /*postUpdateQuery([`UPDATE ${tableName} SET `, Object.entries(entity).filter(([key, _]) => key !== idFieldName).map(([key, value]) => 
-            `${key} = ${typeof(value) !== "string" ? data[key] : `'${data[key]}'` }`
-        ).join(', '), `WHERE ${idFieldName} = ${entity[idFieldName]}`].join(' '));*/
-
         postUpdateQuery([`EXEC Sp_Modificar${tableName}`,
             `@${idFieldName} = ${entity[idFieldName]},`,
             entityFields.map(([fieldName, fieldType]) => fieldType === "number" ? `@${fieldName} = ${data[fieldName]}` : `@${fieldName} = '${data[fieldName]}'`).join(', '),
@@ -62,17 +58,20 @@ const EntityPageRow = ({entity, idFieldName, tableName, refetchFn, entityFields}
     return (
         <tr>
             {
-                Object.entries(entity).map(([key, value]: [string, any]) => key !== idFieldName ? (
-                    <td key={key}>
-                        <input type={entityFields.find(([fieldName, _]) => fieldName === key)?.[1]} className="form-control" defaultValue={value} {...register(key, {
-                            required: true
-                        })} />
-                    </td>
-                ) : 
+                Object.entries(entity).map(([key, value]: [string, any]) => {
+                    const entityFieldPair = entityFields.find(([fieldName, _]) => fieldName === key);
+                    
+                    return key !== idFieldName && entityFieldPair !== undefined ? (
+                        <td key={key}>
+                            <input type={entityFieldPair[1]} className="form-control" defaultValue={value} {...register(key, {
+                                required: true
+                            })} />
+                        </td>
+                    ) : 
                     <td key={key}>
                         {value}
                     </td>
-                )
+                })
             }
             <td>
                 <button className="btn btn-danger" type="button" onClick={DeleteEntity}>Eliminar</button>

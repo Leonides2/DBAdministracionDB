@@ -150,7 +150,7 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarMedico
     @Apellido1_Medico VARCHAR(50),
     @Apellido2_Medico VARCHAR(50),
     @Telefono_Medico VARCHAR(50),
-    @Especialidad VARCHAR(50)
+    @Nombre_Especialidad VARCHAR(50)
 )
 AS
 BEGIN
@@ -158,7 +158,7 @@ BEGIN
 
 	BEGIN TRY
     -- Verificar si la especialidad existe
-    IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Especialidad)
+    IF NOT EXISTS (SELECT 1 FROM Especialidad WHERE Nombre_Especialidad = @Nombre_Especialidad)
     BEGIN
 		--Sugerir opciones en el error
 
@@ -166,7 +166,7 @@ BEGIN
 		DECLARE @SugeInSitu varchar(50)
 
 		DECLARE SugerenciasMedico Cursor 
-		For Select top 5 Nombre_Especialidad from Especialidad where Lower(Nombre_Especialidad) like '%'+Lower(@Especialidad)+'%'
+		For Select top 5 Nombre_Especialidad from Especialidad where Lower(Nombre_Especialidad) like '%'+Lower(@Nombre_Especialidad)+'%'
 
 		OPEN SugerenciasMedico 
 		fetch SugerenciasMedico into @SugeInSitu
@@ -182,7 +182,7 @@ BEGIN
         RETURN;
     END
 
-	IF EXISTS (SELECT 1 FROM Medico Where Lower(@Nombre1_Medico+@Nombre2_Medico+@Apellido1_Medico+@Apellido2_Medico) 
+	IF EXISTS (SELECT 1 FROM Medico Where Lower(Nombre1_Medico+Nombre2_Medico+Apellido1_Medico+Apellido2_Medico) 
 	= LOWER(TRIM(@Nombre1_Medico)+ TRIM(@Nombre2_Medico)+ TRIM(@Apellido1_Medico)+ TRIM(@Apellido2_Medico)))
 		BEGIN	
 			
@@ -190,7 +190,7 @@ BEGIN
 			RETURN;
 		END
 
-		Declare @ID_Especialidad int = (Select top 1 ID_Especialidad from Especialidad where Nombre_Especialidad like @Especialidad)
+		Declare @ID_Especialidad int = (Select top 1 ID_Especialidad from Especialidad where Nombre_Especialidad like @Nombre_Especialidad)
         INSERT INTO Medico (Nombre1_Medico, Nombre2_Medico, Apellido1_Medico, Apellido2_Medico, Telefono_Medico, ID_Especialidad)
         VALUES (
 		TRIM(@Nombre1_Medico), 
@@ -420,18 +420,22 @@ USE SaludPlus
 GO
 CREATE OR ALTER PROCEDURE Sp_RegistrarHistorial_Medico
 (
-    @ID_Paciente INT
+    @Cedula varchar(12)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
 
     -- Verificar si el paciente existe
-    IF NOT EXISTS (SELECT 1 FROM Paciente WHERE ID_Paciente = @ID_Paciente)
+    IF NOT EXISTS (SELECT 1 FROM Paciente WHERE Cedula = @Cedula)
     BEGIN
-        RAISERROR('El ID de paciente no existe.', 16, 1);
+        RAISERROR('El paciente no existe.', 16, 1);
         RETURN;
     END
+
+	DECLARE @ID_Paciente INT;
+	SET @ID_Paciente = (SELECT ID_Paciente FROM Paciente WHERE Cedula = @Cedula);
+
 	IF EXISTS (SELECT 1 FROM Historial_Medico WHERE ID_Paciente = @ID_Paciente)
     BEGIN
         RAISERROR('El paciente ya tiene un historial medico registrado.', 16, 2);

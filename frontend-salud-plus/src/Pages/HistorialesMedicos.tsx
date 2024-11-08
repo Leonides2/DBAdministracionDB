@@ -9,7 +9,6 @@ const HistorialesMedicos = () => {
             idFieldName="ID_Historial_Medico"
             entityTableName="Historial_Medico"
             addEntityFields={[
-                ["Fecha_Registro", "date"], 
                 ["Cedula", "text"]
             ]}
         />
