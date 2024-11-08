@@ -369,7 +369,7 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarFactura
     @Monto_Total MONEY,
     @Cedula VARCHAR(12),
     @ID_Cita INT,
-	@Tipo_Pago VARCHAR(50)
+	@Descripcion_Tipo_Pago VARCHAR(50)
 )
 AS
 BEGIN
@@ -388,14 +388,14 @@ BEGIN
             RETURN;
         END
 
-	IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE Lower(Descripcion_Tipo_Pago) = Trim(Lower(@Tipo_Pago)))
+	IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE Lower(Descripcion_Tipo_Pago) = Trim(Lower(@Descripcion_Tipo_Pago)))
     BEGIN
         RAISERROR('El tipo de pago no existe.', 16, 1);
         RETURN;
     END
 
 	DECLARE @ID_Paciente int = (Select top 1 ID_Paciente from Paciente where Cedula like @Cedula)
-	DECLARE @ID_Tipo_Pago int = (Select top 1 ID_Tipo_Pago from Tipo_Pago where Lower(Descripcion_Tipo_Pago) like Trim(Lower(@Tipo_Pago)))
+	DECLARE @ID_Tipo_Pago int = (Select top 1 ID_Tipo_Pago from Tipo_Pago where Lower(Descripcion_Tipo_Pago) like Trim(Lower(@Descripcion_Tipo_Pago)))
 		
         INSERT INTO Factura ( Fecha_Factura, Monto_Total, ID_Paciente, ID_Cita,ID_Tipo_Pago)
         VALUES ( @Fecha_Factura, @Monto_Total, @ID_Paciente, @ID_Cita,@ID_Tipo_Pago);
