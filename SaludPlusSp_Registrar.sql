@@ -182,7 +182,7 @@ BEGIN
         RETURN;
     END
 
-	IF EXISTS (SELECT 1 FROM Medico Where Lower(Nombre1_Medico+Nombre2_Medico+Apellido1_Medico+Apellido2_Medico) 
+	IF EXISTS (SELECT 1 FROM Medico Where Lower(Nombre1_Medico+Nombre2_Medico+@Apellido1_Medico+Apellido2_Medico) 
 	= LOWER(TRIM(@Nombre1_Medico)+ TRIM(@Nombre2_Medico)+ TRIM(@Apellido1_Medico)+ TRIM(@Apellido2_Medico)))
 		BEGIN	
 			
