@@ -1,13 +1,11 @@
-
-nav{
+nav {
     overflow-x: auto;
     height: auto;
 
     justify-content: center;
 }
 
-nav button{
+nav button {
     height: 90px;
-    width: auto;
     text-wrap: wrap;
 }

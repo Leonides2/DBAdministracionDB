@@ -37,14 +37,14 @@ const Navbar = () => {
         <nav className="navbar navbar-expand-lg navbar-light bg-light p-3" >
             {
                 links.map((link, i) => (
-                        <button
-                            type="button"
-                            className={`btn btn-sm me-2 ${matchPath(pathname, link.path) ? "btn-primary" : "btn-outline-secondary"}`}
-                            onClick={() => {navigate(link.path)}}
-                            key={i}
-                        >
-                            {link.label}
-                        </button>
+                    <button
+                        type="button"
+                        className={`btn btn-sm me-2 ${matchPath(pathname, link.path) ? "btn-primary" : "btn-outline-secondary"}`}
+                        onClick={() => {navigate(link.path)}}
+                        key={i}
+                    >
+                        {link.label}
+                    </button>
                 ))
             }
         </nav>
