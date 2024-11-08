@@ -1,11 +1,11 @@
-USE master;
+ USE master;
 GO
 
 CREATE DATABASE DW_SaludPlus 
 ON PRIMARY
 (
     NAME = 'DW_SaludPlus_Data',
-    FILENAME = 'C:\SQL\Data\DW_SaludPlus_Data.mdf',
+    FILENAME = 'C:\SQLData\DW_SaludPlus_Data.mdf',
     SIZE = 2000MB,
     MAXSIZE = 5000MB,
     FILEGROWTH = 500MB
@@ -13,7 +13,7 @@ ON PRIMARY
 LOG ON
 (
     NAME = 'DW_SaludPlus_Log',
-    FILENAME = 'C:\SQL\Log\DW_SaludPlus_Log.ldf',
+    FILENAME = 'C:\SQLLog\DW_SaludPlus_Log.ldf',
     SIZE = 1000MB,
     MAXSIZE = 2000MB,
     FILEGROWTH = 200MB
@@ -67,7 +67,7 @@ CREATE TABLE DimFecha (
     Fecha DATE,
     Dia INT,
     Mes INT,
-    Anio INT,
+    AÃ±o INT,
     Trimestre INT,
     Nombre_Dia VARCHAR(20),
     Nombre_Mes VARCHAR(20)
@@ -103,7 +103,7 @@ CREATE TABLE DimProcedimiento (
     ID_Tipo_Procedimiento INT
 );
 GO
-------- TABLAS DE HECHOS, ESTAS ALMACENAN EVENTOS O MÉTRICAS CUANTIFICABLES
+------- TABLAS DE HECHOS, ESTAS ALMACENAN EVENTOS O Mï¿½TRICAS CUANTIFICABLES
 CREATE TABLE Hecho_Cita (
     ID_Cita INT PRIMARY KEY,
     ID_Fecha DATE,
@@ -130,7 +130,7 @@ CREATE TABLE Hecho_Satisfaccion_Paciente (
     ID_Fecha DATE,
     ID_Cita INT,
     Calificacion INT CHECK (Calificacion BETWEEN 1 AND 5),
-    FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
+   CONSTRAINT FK_Hecho_Paciente_Hecho_Cita FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
 	FOREIGN KEY (ID_Fecha) REFERENCES DimFecha(ID_Fecha)
 );
 GO
@@ -142,7 +142,7 @@ CREATE TABLE Hecho_Factura (
     ID_Cita INT,
     ID_Tipo_Pago INT,
     FOREIGN KEY (ID_Paciente) REFERENCES DimPaciente(ID_Paciente),
-    FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
+    CONSTRAINT FK_Hecho_Factura_Hecho_Cita FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
     FOREIGN KEY (ID_Tipo_Pago) REFERENCES DimTipoPago(ID_Tipo_Pago),
     FOREIGN KEY (ID_Fecha) REFERENCES DimFecha(ID_Fecha)
 );
@@ -158,14 +158,14 @@ CREATE TABLE Hecho_Procedimiento (
     ID_Cita INT,
     FOREIGN KEY (ID_Sala) REFERENCES DimSala(ID_Sala),
     FOREIGN KEY (ID_Tipo_Procedimiento) REFERENCES DimProcedimiento(ID_Procedimiento),
-    FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
+    CONSTRAINT FK_Hecho_Procedimiento_Hecho_Cita FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
     FOREIGN KEY (ID_Fecha) REFERENCES DimFecha(ID_Fecha),
     FOREIGN KEY (ID_Recurso_Medico) REFERENCES DimRecursoMedico(ID_Recurso_Medico)
 );
 GO
 
 CREATE TABLE Hecho_Capacidad_Clinica (
-    ID_Capacidad INT PRIMARY KEY,
+    ID_Capacidad INT IDENTITY(1,1) PRIMARY KEY,
     ID_Fecha DATE,
     ID_Sala INT,
     Capacidad_Disponible INT,
@@ -229,12 +229,12 @@ GO
 CREATE PROCEDURE SP_CargarDimFecha
 AS
 BEGIN
-    INSERT INTO DimFecha (ID_Fecha, Dia, Mes, Anio, Trimestre, Nombre_Dia, Nombre_Mes)
+    INSERT INTO DimFecha (ID_Fecha, Dia, Mes, AÃ±o, Trimestre, Nombre_Dia, Nombre_Mes)
     SELECT DISTINCT 
         CAST(Fecha_Cita AS DATE) AS ID_Fecha,
         DAY(Fecha_Cita) AS Dia,
         MONTH(Fecha_Cita) AS Mes,
-        YEAR(Fecha_Cita) AS Anio,
+        YEAR(Fecha_Cita) AS AÃ±o,
         DATEPART(QUARTER, Fecha_Cita) AS Trimestre,
         DATENAME(WEEKDAY, Fecha_Cita) AS Nombre_Dia,
         DATENAME(MONTH, Fecha_Cita) AS Nombre_Mes
@@ -304,6 +304,8 @@ BEGIN
 END;
 GO
 
+ 
+  
 
 -- 2. Hecho_Satisfaccion_Paciente
 CREATE PROCEDURE SP_CargarHechoSatisfaccionPaciente
@@ -318,6 +320,9 @@ BEGIN
     FROM SaludPlus.dbo.Satisfaccion_Paciente;
 END;
 GO
+
+ 
+
 
 -- 3. Hecho_Factura
 CREATE PROCEDURE SP_CargarHechoFactura
@@ -368,6 +373,7 @@ GO
 
 
 
+
 ------PROCEDIMIENTO PARA VALIDAR LA CALIDAD DE LOS DATOS
 USE DW_SaludPlus;
 GO
@@ -377,8 +383,8 @@ AS
 BEGIN
     DECLARE @ErrorMsg NVARCHAR(1000);
 
-    -- 1. Validación de NULLs en campos clave de cada tabla de hechos
-    -- Validación en Hecho_Cita
+    -- 1. Validaciï¿½n de NULLs en campos clave de cada tabla de hechos
+    -- Validaciï¿½n en Hecho_Cita
     IF EXISTS (SELECT 1 FROM Hecho_Cita WHERE ID_Paciente IS NULL OR ID_Medico IS NULL OR ID_Especialidad IS NULL OR ID_Sala IS NULL OR ID_Estado_Cita IS NULL)
     BEGIN
         SET @ErrorMsg = 'Error: Campos clave nulos en Hecho_Cita.';
@@ -501,7 +507,7 @@ BEGIN
     END
 
     
-    PRINT 'Validación de calidad de datos completada exitosamente. Todos los datos son consistentes.';
+    PRINT 'Validaciï¿½n de calidad de datos completada exitosamente. Todos los datos son consistentes.';
 END;
 GO
 
@@ -535,7 +541,7 @@ GO
 
 
 
-----Calcula la satisfacción promedio por cita
+----Calcula la satisfacciï¿½n promedio por cita
 CREATE FUNCTION FN_SatisfaccionPromedioPorCita (@ID_Cita INT)
 RETURNS DECIMAL(5,2)
 AS
@@ -587,10 +593,10 @@ GO
 CREATE PROCEDURE SP_FacturacionPorMesYAno
 AS
 BEGIN
-    SELECT DATEPART(YEAR, Fecha) AS Año, DATEPART(MONTH, Fecha) AS Mes, SUM(Monto_Total) AS Monto_Mensual
+    SELECT DATEPART(YEAR, Fecha) AS Aï¿½o, DATEPART(MONTH, Fecha) AS Mes, SUM(Monto_Total) AS Monto_Mensual
     FROM Hecho_Factura
     GROUP BY DATEPART(YEAR, Fecha), DATEPART(MONTH, Fecha)
-    ORDER BY Año, Mes;
+    ORDER BY Aï¿½o, Mes;
 END;
 */
 CREATE FUNCTION FN_StockActualRecursoMedico(@ID_Recurso_Medico INT)
@@ -632,8 +638,10 @@ GO
 EXEC SP_CargarDWCompleto
 Go
 
+ 
 
-/*
+
+ 
 
 
 
@@ -647,6 +655,7 @@ SELECT ID_Paciente, Nombre_Paciente, Apellido1_Paciente
 FROM SaludPlus.dbo.Paciente;
 GO
  ---select *from  vw_Paciente
+ 
 
 -- Vista para Medico
 CREATE VIEW vw_Medico AS
@@ -669,7 +678,7 @@ SELECT DISTINCT
     CAST(Fecha_Cita AS DATE) AS Fecha_Cita,
     DAY(Fecha_Cita) AS Dia,
     MONTH(Fecha_Cita) AS Mes,
-    YEAR(Fecha_Cita) AS Año
+    YEAR(Fecha_Cita) AS AÃ±o
 FROM SaludPlus.dbo.Cita; 
 GO
 ---select *from  vw_Fecha
@@ -704,7 +713,3 @@ FROM
     SaludPlus.dbo.Medico_Planificacion_Recurso; 
 GO
 ------------select *from  vw_CargaMedico
-
-
-
-*/
