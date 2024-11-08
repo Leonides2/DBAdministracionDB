@@ -29,8 +29,7 @@ const EntityPage = ({title, noEntitiesMessage, addEntityMessage, idFieldName, en
     }, [])
 
     if (isLoading) {
-        return <>
-        </>
+        return <></>
     }
     
     if (isError) {

@@ -19,10 +19,8 @@ export class DatabaseService {
           trustServerCertificate: true,
         },
       });
-      console.log(`Connected as ${user}`);
       return this.pool;
     } catch (error) {
-      console.error('Database connection failed:', error);
       return null;
     }
   }
