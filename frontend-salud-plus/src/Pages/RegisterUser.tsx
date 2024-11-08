@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import useQueryGet from "../api/useQueryGet";
-import Navbar from "../Components/Navbar";
 import useQueryPost from "../api/useQueryPost";
 
 type FormData = {
@@ -32,21 +31,19 @@ const RegisterUser = () => {
     }
 
     if (isLoading) {
-        return <Navbar />
+        return <></>
     }
 
     if (error) {
         return (
             <>
-                <Navbar/>
-                <div>Algo salió mal...</div>
+                <div>Algo salió mal... O seguro no tienes permisos para acceder a esta area</div>
             </>
         )
     }
     
     return (
         <>
-            <Navbar />
             <h1 className="ms-2">Registrar usuarios</h1>
             <form onSubmit={handleSubmit(registerUser)} style={{width: "35%"}}>
                 <label className="ms-2">Nombre de usuario</label>

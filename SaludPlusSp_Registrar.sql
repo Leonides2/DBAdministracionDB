@@ -369,7 +369,7 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarFactura
     @Monto_Total MONEY,
     @Cedula VARCHAR(12),
     @ID_Cita INT,
-	@Tipo_Pago VARCHAR(50)
+	@Descripcion_Tipo_Pago VARCHAR(50)
 )
 AS
 BEGIN
@@ -388,14 +388,14 @@ BEGIN
             RETURN;
         END
 
-	IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE Lower(Descripcion_Tipo_Pago) = Trim(Lower(@Tipo_Pago)))
+	IF NOT EXISTS (SELECT 1 FROM Tipo_Pago WHERE Lower(Descripcion_Tipo_Pago) = Trim(Lower(@Descripcion_Tipo_Pago)))
     BEGIN
         RAISERROR('El tipo de pago no existe.', 16, 1);
         RETURN;
     END
 
 	DECLARE @ID_Paciente int = (Select top 1 ID_Paciente from Paciente where Cedula like @Cedula)
-	DECLARE @ID_Tipo_Pago int = (Select top 1 ID_Tipo_Pago from Tipo_Pago where Lower(Descripcion_Tipo_Pago) like Trim(Lower(@Tipo_Pago)))
+	DECLARE @ID_Tipo_Pago int = (Select top 1 ID_Tipo_Pago from Tipo_Pago where Lower(Descripcion_Tipo_Pago) like Trim(Lower(@Descripcion_Tipo_Pago)))
 		
         INSERT INTO Factura ( Fecha_Factura, Monto_Total, ID_Paciente, ID_Cita,ID_Tipo_Pago)
         VALUES ( @Fecha_Factura, @Monto_Total, @ID_Paciente, @ID_Cita,@ID_Tipo_Pago);
@@ -823,10 +823,6 @@ BEGIN
 END;
 GO
 
-/*
-Sigo mañana
-
-*/
 
 ------------Insertar Recurso_Medico Sala
 
@@ -836,35 +832,44 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarRecurso_Medico_Sala
 (
     @Fecha DATE,
     @Cantidad_Recurso INT,
-    @ID_Recurso_Medico INT,
-    @ID_Sala INT
+    @Lote varchar(50),
+    @Nombre_Sala varchar(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
-
+	BEGIN TRY
     -- Verificar si el recurso m�dico existe
-    IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE ID_Recurso_Medico = @ID_Recurso_Medico)
+    IF NOT EXISTS (SELECT 1 FROM Recurso_Medico WHERE Lote like @Lote)
     BEGIN
-        RAISERROR('El ID de recurso médico no existe.', 16, 1);
+        RAISERROR('El recurso médico no existe.', 16, 1);
         RETURN;
     END
 
     -- Verificar si la sala existe
-    IF NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    IF NOT EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala)
     BEGIN
-        RAISERROR('El ID de sala no existe.', 16, 1);
+        RAISERROR('La sala no existe.', 16, 1);
         RETURN;
     END
 
-    BEGIN TRY
+    Declare @ID_Recurso_Medico int = (SELECT ID_Recurso_Medico FROM Recurso_Medico WHERE Lote like @Lote)
+	Declare @ID_Sala int = (SELECT ID_Sala FROM Sala WHERE Nombre_Sala like @Nombre_Sala)
+
         INSERT INTO Recurso_Medico_Sala (  Fecha, Cantidad_Recurso, ID_Recurso_Medico, ID_Sala)
         VALUES (  @Fecha, @Cantidad_Recurso, @ID_Recurso_Medico, @ID_Sala);
 
         PRINT 'El recurso médico en sala se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el recurso médico en sala: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+    
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el recurso médico en sala: %s', 16, 1, @ErrorMessage);
+
     END CATCH
 END;
 GO
@@ -882,19 +887,25 @@ AS
 BEGIN
     SET NOCOUNT ON;
 	-- Validar que Hora_Fin no sea menor que Hora_Inicio
+	BEGIN TRY
     IF @Hora_Fin < @Hora_Inicio
     BEGIN
         RAISERROR('La hora de fin no puede ser menor que la hora de inicio.', 16, 1);
         RETURN;
     END
-    BEGIN TRY
+    
         INSERT INTO Horario_Trabajo ( Nombre_Horario, Hora_Inicio, Hora_Fin)
         VALUES (  @Nombre_Horario, @Hora_Inicio, @Hora_Fin);
 
         PRINT 'El horario de trabajo se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar el horario de trabajo: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar el horario de trabajo: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
@@ -906,34 +917,42 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarPlanificacion_Recurso
 (
     @Descripcion_Planificacion VARCHAR(150),
     @Fecha_Planificacion DATE,
-    @ID_Sala INT,
-    @ID_Horario_Trabajo INT
+    @Nombre_Sala varchar(50),
+    @Nombre_Horario varchar(50)
 )
 AS
 BEGIN
     SET NOCOUNT ON;
+	BEGIN TRY
 
-    -- Verificar si la sala y el horario existen
-    IF NOT EXISTS (SELECT 1 FROM Sala WHERE ID_Sala = @ID_Sala)
+    -- Verificar si la sala existe
+    IF NOT EXISTS (SELECT 1 FROM Sala WHERE Nombre_Sala = @Nombre_Sala)
     BEGIN
-        RAISERROR('El ID de sala no existe.', 16, 1);
+        RAISERROR('La sala no existe.', 16, 1);
         RETURN;
     END
 
-    IF NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE ID_Horario_Trabajo = @ID_Horario_Trabajo)
+    IF NOT EXISTS (SELECT 1 FROM Horario_Trabajo WHERE Nombre_Horario = @Nombre_Horario)
     BEGIN
-        RAISERROR('El ID de horario de trabajo no existe.', 16, 1);
+        RAISERROR('El horario de trabajo no existe.', 16, 1);
         RETURN;
     END
-
-    BEGIN TRY
+		
+		Declare @ID_Sala int = (SELECT ID_Sala FROM Sala WHERE Nombre_Sala like @Nombre_Sala)
+		Declare @ID_Horario_Trabajo int = (SELECT ID_Horario_Trabajo FROM Horario_Trabajo WHERE Nombre_Horario like @Nombre_Horario)
+    
         INSERT INTO Planificacion_Recurso (  Descripcion_Planificacion, Fecha_Planificacion, ID_Sala, ID_Horario_Trabajo)
         VALUES (  @Descripcion_Planificacion, @Fecha_Planificacion, @ID_Sala, @ID_Horario_Trabajo);
 
         PRINT 'La planificación de recurso se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la planificación de recurso: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar la planificación de recurso: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
@@ -945,13 +964,13 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarMedico_Planificacion_Recurso
 (
      
     @Fecha_Planificacion_Personal DATE,
-    @ID_Planificacion INT,
+    @Descripcion_Planificacion varchar(150),
     @ID_Medico INT
 )
 AS
 BEGIN
     SET NOCOUNT ON;
-
+	BEGIN TRY
     -- Verificar si el m�dico y la planificaci�n existen
     IF NOT EXISTS (SELECT 1 FROM Medico WHERE ID_Medico = @ID_Medico)
     BEGIN
@@ -959,20 +978,26 @@ BEGIN
         RETURN;
     END
 
-    IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE ID_Planificacion = @ID_Planificacion)
+    IF NOT EXISTS (SELECT 1 FROM Planificacion_Recurso WHERE Descripcion_Planificacion = @Descripcion_Planificacion)
     BEGIN
         RAISERROR('El ID de planificación no existe.', 16, 1);
         RETURN;
     END
-
-    BEGIN TRY
+		
+		Declare @ID_Planificacion int = (SELECT ID_Sala FROM Planificacion_Recurso WHERE Descripcion_Planificacion like @Descripcion_Planificacion)
+    
         INSERT INTO Medico_Planificacion_Recurso (  Fecha_Planificacion_Personal, ID_Planificacion, ID_Medico)
         VALUES (  @Fecha_Planificacion_Personal, @ID_Planificacion, @ID_Medico);
 
         PRINT 'La planificación del médico se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la planificación del médico: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar la planificación del médico: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO
@@ -990,27 +1015,32 @@ CREATE OR ALTER PROCEDURE Sp_RegistrarSatisfaccion_Paciente
 AS
 BEGIN
     SET NOCOUNT ON;
-
-    -- Verificar si la cita existe
-    IF NOT EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Cita = @ID_Cita)
-    BEGIN
-        RAISERROR('El ID de cita no existe.', 16, 1);
-        RETURN;
-    END
-	-- Verificar que la calificaci�n est� entre 1 y 5
-    IF @Calificacion_Satisfaccion < 1 OR @Calificacion_Satisfaccion > 5
-    BEGIN
-        RAISERROR('La calificación de satisfacción debe estar entre 1 y 5.', 16, 1);
-        RETURN;
-    END
-    BEGIN TRY
+	BEGIN TRY
+		-- Verificar si la cita existe
+		IF NOT EXISTS (SELECT 1 FROM Procedimiento WHERE ID_Cita = @ID_Cita)
+		BEGIN
+			RAISERROR('El ID de cita no existe.', 16, 1);
+			RETURN;
+		END
+		-- Verificar que la calificaci�n est� entre 1 y 5
+		IF @Calificacion_Satisfaccion < 1 OR @Calificacion_Satisfaccion > 5
+		BEGIN
+			RAISERROR('La calificación de satisfacción debe estar entre 1 y 5.', 16, 1);
+			RETURN;
+		END
+    
         INSERT INTO Satisfaccion_Paciente (  Fecha_Evaluacion, Calificacion_Satisfaccion, ID_Cita)
         VALUES (  @Fecha_Evaluacion, @Calificacion_Satisfaccion, @ID_Cita);
-
+		
         PRINT 'La satisfacción del paciente se ha registrado correctamente.';
     END TRY
     BEGIN CATCH
-        PRINT 'Error al registrar la satisfacción del paciente: ' + ERROR_MESSAGE();
+		DECLARE @ErrorMessage NVARCHAR(4000);
+		-- Capturar el mensaje de error del sistema
+		SET @ErrorMessage = ERROR_MESSAGE();
+    
+		-- Lanzar un error
+		RAISERROR (N'Error al registrar la satisfacción del paciente: %s', 16, 1, @ErrorMessage);
     END CATCH
 END;
 GO

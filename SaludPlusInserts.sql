@@ -5,7 +5,7 @@ GO
 -- Inserciones para la tabla Paciente
 INSERT INTO Paciente (Nombre_Paciente, Apellido1_Paciente, Apellido2_Paciente, Telefono_Paciente, Fecha_Nacimiento, Direccion_Paciente, Cedula)
 VALUES 
-('Juan', 'Perez', 'Gomez', '1234567890', '1980-01-01', 'Calle 1, Ciudad A', '12345698'),
+('Juan', 'Perez', 'Gomez', '1234567890', '1980-01-01', 'Calle 1, Ciudad A', '123456987'),
 ('Maria', 'Lopez', 'Martinez', '2345678901', '1990-02-02', 'Calle 2, Ciudad B', '123454322'),
 ('Carlos', 'Garcia', 'Rodriguez', '3456789012', '1985-03-03', 'Calle 3, Ciudad C', '867905532'),
 ('Ana', 'Hernandez', 'Sanchez', '4567890123', '1995-04-04', 'Calle 4, Ciudad D', '508975568'),
@@ -24,7 +24,7 @@ GO
 -- Inserciones para la tabla Estado Sala
 INSERT INTO Estado_Sala (Nombre)
 VALUES 
-('activa');
+('Activa');
 GO
 
 -- Inserciones para la tabla Sala

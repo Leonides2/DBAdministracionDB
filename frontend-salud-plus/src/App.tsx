@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom"
+import { Route, Routes, useLocation } from "react-router-dom"
 import Login from "./Pages/Login"
 import Citas from "./Pages/Citas"
 import Pacientes from "./Pages/Pacientes"
@@ -25,10 +25,25 @@ import SatisfaccionPacientes from "./Pages/SatisfaccionPacientes"
 
 import { Navigate } from "react-router-dom"
 import RegisterUser from "./Pages/RegisterUser"
+import Navbar from "./Components/Navbar"
+import { useEffect } from "react"
 
-function App() {
+
+
+export const App = () => {
+
+  const location = useLocation()
+    useEffect(()=>{
+      console.log(location.pathname)
+    })
   return (
     <>
+      {
+        location.pathname === '/login' ? 
+        <></>: <Navbar />
+
+      }
+      
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/citas" element={<Citas />} />

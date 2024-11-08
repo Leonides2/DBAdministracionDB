@@ -13,8 +13,8 @@ const RecursosMedicos = () => {
                 ["Lote", "text"],
                 ["Cantidad_Stock_Total", "number"],
                 ["Ubicacion_Recurso", "string"],
-                ["ID_Tipo_Recurso", "number"],
-                ["ID_Estado_Recurso_Medico", "number"],
+                ["Titulo_Recurso", "text"],
+                ["Estado_Recurso", "text"],
             ]}
         />
     )

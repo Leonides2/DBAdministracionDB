@@ -3,7 +3,7 @@
 use SaludPlus
 go
 
-CREATE ROLE Administrativo;
+CREATE ROLE Administrador;
 GO
 CREATE ROLE Médico
 Go
@@ -11,48 +11,152 @@ CREATE ROLE Recepcionista
 GO
 
 ---- Se le da acceso completo a la base de datos
-GRANT SELECT, EXECUTE, INSERT, UPDATE, DELETE ON DATABASE::SaludPlus TO Administrativo;
+GRANT SELECT, EXECUTE, INSERT, UPDATE, DELETE ON DATABASE::SaludPlus TO Administrador;
 GO
 
 --- Se le da acceso exclusivamente a lo que puede realizar un medico
-GRANT SELECT, INSERT,UPDATE ON dbo.Satisfaccion_Paciente TO Médico;
+
+--- Permisos de insercion
+GRANT EXECUTE ON dbo.Sp_RegistrarProcedimiento
+TO Médico;
 GO
 
-GRANT SELECT, INSERT,UPDATE, DELETE ON dbo.Procedimiento TO Médico;
+GRANT EXECUTE ON dbo.Sp_RegistrarSatisfaccion_Paciente 
+TO Médico;
 GO
 
-GRANT SELECT ON dbo.Cita TO Médico;
+GRANT EXECUTE ON dbo.Sp_RegistrarTipo_Procedimiento 
+TO Médico;
 GO
 
-GRANT SELECT ON dbo.Paciente TO Médico;
+---Permisos de modificacion
+
+GRANT EXECUTE ON dbo.Sp_ModificarProcedimiento
+TO Médico;
 GO
 
-GRANT SELECT ON dbo.Historial_Medico TO Médico;
+GRANT EXECUTE ON dbo.Sp_ModificarSatisfaccion_Paciente 
+TO Médico;
 GO
 
-GRANT SELECT, UPDATE ON dbo.Tipo_Procedimiento TO Médico;
+GRANT EXECUTE ON dbo.Sp_ModificarTipo_Procedimiento 
+TO Médico;
 GO
 
-GRANT SELECT,EXECUTE ON DATABASE::SaludPlus TO Médico;
+
+---Vistas
+GRANT SELECT ON dbo.vw_Cita TO Médico;
+GO
+
+GRANT SELECT ON dbo.vw_Especialidad TO Médico;
+GO
+
+GRANT SELECT ON dbo.vw_Sala TO Médico;
+GO
+
+GRANT SELECT ON dbo.vw_Satisfaccion_Paciente TO Médico;
+GO
+
+GRANT SELECT ON dbo.vw_Tipo_Procedimiento TO Médico;
+GO
+
+GRANT SELECT ON dbo.vw_Paciente TO Médico;
+GO
+
+GRANT SELECT ON dbo.vw_Procedimiento TO Médico;
 GO
 
 --- Se le da acceso a todo lo que puede realizar un secretario 
-GRANT SELECT, INSERT,UPDATE ON dbo.Cita TO Recepcionista;
+
+--- Permisos de insercion
+GRANT EXECUTE ON dbo.Sp_RegistrarCita
+TO Recepcionista;
 GO
 
-GRANT SELECT, INSERT,UPDATE ON dbo.Paciente TO Recepcionista;
+GRANT EXECUTE ON dbo.Sp_RegistrarFactura
+TO Recepcionista;
 GO
 
-GRANT SELECT, INSERT,UPDATE ON dbo.Factura TO Recepcionista;
+GRANT EXECUTE ON dbo.Sp_RegistrarHistorial_Medico
+TO Recepcionista;
 GO
 
-GRANT SELECT, INSERT,UPDATE ON dbo.Recurso_Medico TO Recepcionista;
+GRANT EXECUTE ON dbo.Sp_RegistrarPlanificacion_Recurso
+TO Recepcionista;
 GO
 
-GRANT SELECT,EXECUTE ON DATABASE::SaludPlus TO Recepcionista;
+GRANT EXECUTE ON dbo.Sp_RegistrarRecurso_Medico
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_RegistrarPaciente
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_RegistrarRecurso_Medico_Sala
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_RegistrarProcedimiento
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_RegistrarSatisfaccion_Paciente 
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_RegistrarTipo_Procedimiento 
+TO Recepcionista;
+GO
+
+--- Permisos de modificacion
+
+GRANT EXECUTE ON dbo.Sp_ModificarCita
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarFactura
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarHistorial_Medico
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarPlanificacion_Recurso
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarRecurso_Medico
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarPaciente
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarRecurso_Medico_Sala
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarProcedimiento
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarSatisfaccion_Paciente 
+TO Recepcionista;
+GO
+
+GRANT EXECUTE ON dbo.Sp_ModificarTipo_Procedimiento 
+TO Recepcionista;
 GO
 
 
+--- Vistas (Todas)
+GRANT SELECT ON DATABASE::SaludPlus TO Recepcionista;
+GO
+
+---- La secretaria ni el medico pueden eliminar nada
 
 CREATE OR ALTER PROCEDURE Sp_RegistrarUsuarioSistema
     @NombreUsuario NVARCHAR(50),
@@ -85,7 +189,7 @@ BEGIN
         END
         ELSE IF @Rol = 'Administrador'
         BEGIN
-            SET @sql = 'ALTER ROLE Administrativo ADD MEMBER [' + @NombreUsuario + ']';
+            SET @sql = 'ALTER ROLE Administrador ADD MEMBER [' + @NombreUsuario + ']';
             EXEC sp_executesql @sql;
         END
         ELSE IF @Rol = 'Recepcionista'

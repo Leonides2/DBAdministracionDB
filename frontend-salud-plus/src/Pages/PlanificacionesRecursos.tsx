@@ -11,8 +11,8 @@ const PlanificacionesRecursos = () => {
             addEntityFields={[
                 ["Descripcion_Planificacion", "text"],
                 ["Fecha_Planificacion", "date"],
-                ["ID_Sala", "number"],
-                ["ID_Horario_Trabajo", "number"],
+                ["Nombre_Sala", "text"],
+                ["Nombre_Horario", "text"],
             ]}
         />
     )
