@@ -9,4 +9,4 @@ Para correr el aplicativo es necesario:
 - Correr el comando `npm run start` en `backend-salud-plus` y `npm run dev` en `frontend-salud-plus`
 - Correr los scripts de sql de SaludPlus
 - Abrir el frontend en la dirección de localhost que especifíca este
-- Para hacer login en la aplicación es necesario crear un usuario usando Sp_RegistrarUsuario_Sistema
+- Para hacer login en la aplicación es necesario crear un usuario usando `Sp_RegistrarUsuarioSistema`
