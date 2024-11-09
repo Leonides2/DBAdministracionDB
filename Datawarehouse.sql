@@ -894,18 +894,13 @@ BEGIN
 END;
 GO
 
---SELECT dbo.FN_StockActualRecursoMedico(1) AS StockActual;
-
+SELECT dbo.FN_StockActualRecursoMedico(1) AS StockActual;
+Go
 
 /*
 EXEC SP_CargarDWCompleto
 Go
 */
-
-
-
- 
-
 
 
 ------------------------------------vistas
@@ -916,7 +911,7 @@ USE DW_SaludPlus;
 GO
 CREATE VIEW vw_Paciente AS
 SELECT ID_Paciente, Nombre_Paciente, Apellido1_Paciente
-FROM SaludPlus.dbo.Paciente;
+FROM DimPaciente;
 GO
  ---select *from  vw_Paciente
  
@@ -926,30 +921,20 @@ USE DW_SaludPlus;
 GO
 CREATE VIEW vw_Medico AS
 SELECT ID_Medico, Nombre1_Medico, ID_Especialidad
-FROM SaludPlus.dbo.Medico;
+FROM DimMedico;
 GO
 ---select *from  vw_Medico
-
--- Vista para Cita
-USE DW_SaludPlus;
-GO
-CREATE VIEW vw_Cita AS
-SELECT ID_Cita, Fecha_Cita, CONVERT(VARCHAR(5), Hora_Cita, 108) AS Hora_Cita, ID_Estado_Cita
-FROM SaludPlus.dbo.Cita;
-GO
-  
----select *from  vw_Cita
 
 -- Vista para Fecha
 USE DW_SaludPlus;
 GO
 CREATE VIEW vw_Fecha AS
 SELECT DISTINCT
-    CAST(Fecha_Cita AS DATE) AS Fecha_Cita,
-    DAY(Fecha_Cita) AS Dia,
-    MONTH(Fecha_Cita) AS Mes,
-    YEAR(Fecha_Cita) AS Año
-FROM SaludPlus.dbo.Cita; 
+    CAST(Fecha AS DATE) AS Fecha_Cita,
+    DAY(Fecha) AS Dia,
+    MONTH(Fecha) AS Mes,
+    YEAR(Fecha) AS Año
+FROM DimFecha; 
 GO
 ---select *from  vw_Fecha
 
@@ -982,3 +967,4 @@ FROM
     SaludPlus.dbo.Medico_Planificacion_Recurso; 
 GO
 ------------select *from  vw_CargaMedico
+

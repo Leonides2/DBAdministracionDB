@@ -7,7 +7,7 @@ on Primary
 name = 'SaludPlus_Data',
 Filename ='C:\SQL\Data\SaludPlus_Data.mdf',
  SIZE = 5000MB,   
- MAXSIZE = 5000MB ,--10000MB, 
+ MAXSIZE = 10000MB, 
  FILEGROWTH = 500MB 
 )
 log on 
@@ -21,6 +21,7 @@ FILEGROWTH = 200MB
 
 exec sp_helpdb SaludPlus
 GO
+
 /*  borrar la base de datos
 USE master;
 GO

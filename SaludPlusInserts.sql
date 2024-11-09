@@ -120,8 +120,8 @@ INSERT INTO Procedimiento (Descripcion_Procedimiento, Fecha_Procedimiento, Hora_
 VALUES 
 ('Cirugía de corazon', '2024-01-01', '14:00', 10000, 'Ibuprofeno cada seis horas por tres días', 1, 1, 1, 1), 
 ('Entrada de emergencia por pierna lesionada', '2024-02-01', '12:30', 200000, 'Ibuprofeno cada seis horas por 5 días', 2, 2, 2, 4),
-('Enfermedad de piel', '2024-03-01', '09:00', 30000, 'Paracetamol cada ocho horas por cinco días', 3, 3, 3, 3),
-('Por dolores fuertes de cabeza', '2024-04-01', '10:00', 400000, 'Paracetamol cada ocho horas por siete días', 4, 4, 4, 3),
+('Enfermedad de piel', '2024-03-01', '11:00', 30000, 'Paracetamol cada ocho horas por cinco días', 3, 3, 3, 3),
+('Por dolores fuertes de cabeza', '2024-04-01', '12:00', 400000, 'Paracetamol cada ocho horas por siete días', 4, 4, 4, 3),
 ('Laboratorio de cardiología', '2024-05-01', '15:00', 5000000, 'Ibuprofeno cada seis horas por seis días', 5, 5, 5, 2);
 GO
 
