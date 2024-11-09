@@ -1,4 +1,4 @@
- USE master;
+  USE master;
 GO
 
 CREATE DATABASE DW_SaludPlus 
@@ -29,13 +29,15 @@ CREATE TABLE DimPaciente (
     Nombre_Paciente VARCHAR(50),
 	Apellido1_Paciente VARCHAR(50),
 	Apellido2_Paciente VARCHAR(50),
-	Telefono_Paciente VARCHAR(50),
+	Telefono_Paciente VARCHAR(12),
     Fecha_Nacimiento DATE,
     Direccion_Paciente VARCHAR(150),
     Cedula VARCHAR(12)
 );
 GO
 
+USE DW_SaludPlus;
+GO
 CREATE TABLE DimMedico (
     ID_Medico INT PRIMARY KEY,
     Nombre1_Medico VARCHAR(50),
@@ -48,22 +50,30 @@ CREATE TABLE DimMedico (
 );
 GO
 
+USE DW_SaludPlus;
+GO
 CREATE TABLE DimEspecialidad (
     ID_Especialidad INT PRIMARY KEY,
     Nombre_Especialidad VARCHAR(50)
 );
 GO
 
+USE DW_SaludPlus;
+GO
 CREATE TABLE DimSala (
     ID_Sala INT PRIMARY KEY,
     Nombre_Sala VARCHAR(50),
     Capacidad_Sala INT,
-    ID_Tipo_Sala INT
+    ID_Tipo_Sala INT,
+	Tipo_Sala VARCHAR(50)
 );
 GO
+ 
 
+USE DW_SaludPlus;
+GO
 CREATE TABLE DimFecha (
-    ID_Fecha DATE PRIMARY KEY,
+    ID_Fecha INT PRIMARY KEY IDENTITY(1,1),
     Fecha DATE,
     Dia INT,
     Mes INT,
@@ -72,41 +82,61 @@ CREATE TABLE DimFecha (
     Nombre_Dia VARCHAR(20),
     Nombre_Mes VARCHAR(20)
 );
-GO
+ 
 
+
+USE DW_SaludPlus;
+GO
 CREATE TABLE DimRecursoMedico (
     ID_Recurso_Medico INT PRIMARY KEY,
     Nombre_Recurso VARCHAR(50),
     Lote VARCHAR(50),
     Cantidad_Stock_Total INT,
     Ubicacion_Recurso VARCHAR(150),
-    ID_Tipo_Recurso INT,
-	ID_Estado_Recurso_Medico INT
+    Tipo_Recurso VARCHAR(50),
+	Estado_Recurso_Medico VARCHAR(50)
 );
 GO
 
+USE DW_SaludPlus;
+GO
 CREATE TABLE DimEstadoCita (
     ID_Estado_Cita INT PRIMARY KEY,
     Estado VARCHAR(50)
 );
 GO
 
+USE DW_SaludPlus;
+GO
 CREATE TABLE DimTipoPago (
     ID_Tipo_Pago INT PRIMARY KEY,
     Descripcion_Tipo_Pago VARCHAR(50)
 );
 GO
+
+USE DW_SaludPlus;
+GO
 CREATE TABLE DimProcedimiento (
     ID_Procedimiento INT PRIMARY KEY,
     Descripcion_Procedimiento VARCHAR(150),
     Monto_Procedimiento MONEY,
-    ID_Tipo_Procedimiento INT
+    ID_Tipo_Procedimiento INT,
+	Tipo_Procedimiento VARCHAR(50)
 );
 GO
-------- TABLAS DE HECHOS, ESTAS ALMACENAN EVENTOS O M�TRICAS CUANTIFICABLES
+
+ 
+
+
+------- TABLAS DE HECHOS, ESTAS ALMACENAN EVENTOS Y contienen medidas numéricas 
+
+---se puede obtener el número de citas por médico, especialidad, sala, y por día usando ID_Fecha
+----------Se puede saber la carga del medico con las catidad de citas
+USE DW_SaludPlus;
+GO
 CREATE TABLE Hecho_Cita (
     ID_Cita INT PRIMARY KEY,
-    ID_Fecha DATE,
+    ID_Fecha INT,
 	Fecha Date,
     Hora TIME,
     ID_Paciente INT,
@@ -125,31 +155,39 @@ CREATE TABLE Hecho_Cita (
 );
 GO
 
+USE DW_SaludPlus;
+GO
 CREATE TABLE Hecho_Satisfaccion_Paciente (
     ID_Satisfaccion INT PRIMARY KEY,
-    ID_Fecha DATE,
+    ID_Fecha INT,
     ID_Cita INT,
     Calificacion INT CHECK (Calificacion BETWEEN 1 AND 5),
-   CONSTRAINT FK_Hecho_Paciente_Hecho_Cita FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
+    FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
 	FOREIGN KEY (ID_Fecha) REFERENCES DimFecha(ID_Fecha)
 );
 GO
+
+USE DW_SaludPlus;
+GO
 CREATE TABLE Hecho_Factura (
     ID_Factura INT PRIMARY KEY,
-    ID_Fecha DATE,
+    ID_Fecha INT,
     Monto_Total MONEY,
     ID_Paciente INT,
     ID_Cita INT,
     ID_Tipo_Pago INT,
     FOREIGN KEY (ID_Paciente) REFERENCES DimPaciente(ID_Paciente),
-    CONSTRAINT FK_Hecho_Factura_Hecho_Cita FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
+    FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
     FOREIGN KEY (ID_Tipo_Pago) REFERENCES DimTipoPago(ID_Tipo_Pago),
     FOREIGN KEY (ID_Fecha) REFERENCES DimFecha(ID_Fecha)
 );
 GO
+
+USE DW_SaludPlus;
+GO
 CREATE TABLE Hecho_Procedimiento (
     ID_Procedimiento INT PRIMARY KEY,
-    ID_Fecha DATE,
+    ID_Fecha INT,
     Hora TIME,
     Monto MONEY,
     ID_Sala INT,
@@ -158,15 +196,17 @@ CREATE TABLE Hecho_Procedimiento (
     ID_Cita INT,
     FOREIGN KEY (ID_Sala) REFERENCES DimSala(ID_Sala),
     FOREIGN KEY (ID_Tipo_Procedimiento) REFERENCES DimProcedimiento(ID_Procedimiento),
-    CONSTRAINT FK_Hecho_Procedimiento_Hecho_Cita FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
+    FOREIGN KEY (ID_Cita) REFERENCES Hecho_Cita(ID_Cita),
     FOREIGN KEY (ID_Fecha) REFERENCES DimFecha(ID_Fecha),
     FOREIGN KEY (ID_Recurso_Medico) REFERENCES DimRecursoMedico(ID_Recurso_Medico)
 );
 GO
 
+USE DW_SaludPlus;
+GO
 CREATE TABLE Hecho_Capacidad_Clinica (
     ID_Capacidad INT IDENTITY(1,1) PRIMARY KEY,
-    ID_Fecha DATE,
+    ID_Fecha INT,
     ID_Sala INT,
     Capacidad_Disponible INT,
     FOREIGN KEY (ID_Sala) REFERENCES DimSala(ID_Sala),
@@ -181,8 +221,6 @@ GO
 ----PROCEDIMIENTOS DE CARGA EN LAS TABLAS
 USE DW_SaludPlus;
 GO
-
-
 CREATE PROCEDURE SP_CargarDimPaciente
 AS
 BEGIN
@@ -195,8 +233,11 @@ BEGIN
     FROM SaludPlus.dbo.Paciente;
 END;
 GO
+exec SP_CargarDimPaciente
+--------SELECT TOP 10 * FROM DimPaciente;
 
-
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDimMedico
 AS
 BEGIN
@@ -206,8 +247,12 @@ BEGIN
     JOIN SaludPlus.dbo.Especialidad E ON M.ID_Especialidad = E.ID_Especialidad;
 END;
 GO
+exec SP_CargarDimMedico
+go
+--------SELECT TOP 10 * FROM DimMedico;
 
-
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDimEspecialidad
 AS
 BEGIN
@@ -216,22 +261,41 @@ BEGIN
     FROM SaludPlus.dbo.Especialidad;
 END;
 GO
+exec SP_CargarDimEspecialidad
+go
+--------SELECT TOP 10 * FROM DimEspecialidad;
 
+
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDimSala
 AS
 BEGIN
-    INSERT INTO DimSala (ID_Sala, Nombre_Sala, Capacidad_Sala, ID_Tipo_Sala)
-    SELECT ID_Sala, Nombre_Sala, Capacidad_Sala, ID_Tipo_Sala
-    FROM SaludPlus.dbo.Sala;
+    INSERT INTO DimSala (ID_Sala, Nombre_Sala, Capacidad_Sala, ID_Tipo_Sala, Tipo_Sala)
+    SELECT 
+        Sala.ID_Sala, 
+        Sala.Nombre_Sala, 
+        Sala.Capacidad_Sala, 
+        Sala.ID_Tipo_Sala,
+        Tipo_Sala.Descripcion_Tipo_Sala
+    FROM SaludPlus.dbo.Sala Sala
+    INNER JOIN SaludPlus.dbo.Tipo_Sala Tipo_Sala
+     ON Sala.ID_Tipo_Sala = Tipo_Sala.ID_Tipo_Sala;
 END;
 GO
+exec SP_CargarDimSala
+go
+--------SELECT TOP 10 * FROM DimSala;
 
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDimFecha
 AS
 BEGIN
-    INSERT INTO DimFecha (ID_Fecha, Dia, Mes, Año, Trimestre, Nombre_Dia, Nombre_Mes)
+    
+    INSERT INTO DimFecha (Fecha, Dia, Mes, Año, Trimestre, Nombre_Dia, Nombre_Mes)
     SELECT DISTINCT 
-        CAST(Fecha_Cita AS DATE) AS ID_Fecha,
+	    Fecha_Cita AS Fecha,
         DAY(Fecha_Cita) AS Dia,
         MONTH(Fecha_Cita) AS Mes,
         YEAR(Fecha_Cita) AS Año,
@@ -241,16 +305,38 @@ BEGIN
     FROM SaludPlus.dbo.Cita;
 END;
 GO
+exec SP_CargarDimFecha
+go
+--------SELECT TOP 10 * FROM DimFecha;
 
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDimRecursoMedico
 AS
 BEGIN
-    INSERT INTO DimRecursoMedico (ID_Recurso_Medico, Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso)
-    SELECT ID_Recurso_Medico, Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, ID_Tipo_Recurso
-    FROM SaludPlus.dbo.Recurso_Medico;
+    INSERT INTO DimRecursoMedico (ID_Recurso_Medico, Nombre_Recurso, Lote, Cantidad_Stock_Total, Ubicacion_Recurso, Tipo_Recurso, Estado_Recurso_Medico)
+     SELECT 
+        Recurso_Medico.ID_Recurso_Medico, 
+        Recurso_Medico.Nombre_Recurso, 
+        Recurso_Medico.Lote, 
+        Recurso_Medico.Cantidad_Stock_Total,
+        Recurso_Medico.Ubicacion_Recurso,
+        Tipo_Recurso.Titulo_Recurso, 
+        Estado_Recurso_Medico.Estado_Recurso
+    FROM 
+	SaludPlus.dbo.Recurso_Medico
+    INNER JOIN 
+        SaludPlus.dbo.Tipo_Recurso ON Recurso_Medico.ID_Tipo_Recurso = Tipo_Recurso.ID_Tipo_Recurso
+    INNER JOIN 
+        SaludPlus.dbo.Estado_Recurso_Medico ON Recurso_Medico.ID_Estado_Recurso_Medico = Estado_Recurso_Medico.ID_Estado_Recurso_Medico;
 END;
 GO
+exec SP_CargarDimRecursoMedico
+go
+--------SELECT TOP 10 * FROM DimRecursoMedico;
 
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDimEstadoCita
 AS
 BEGIN
@@ -259,7 +345,12 @@ BEGIN
     FROM SaludPlus.dbo.Estado_Cita;
 END;
 GO
+exec SP_CargarDimEstadoCita
+go
+--------SELECT TOP 10 * FROM DimEstadoCita;
 
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDimTipoPago
 AS
 BEGIN
@@ -268,29 +359,48 @@ BEGIN
     FROM SaludPlus.dbo.Tipo_Pago;
 END;
 GO
+exec SP_CargarDimTipoPago
+go
+--------SELECT TOP 10 * FROM DimTipoPago;
 
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDimProcedimiento
 AS
 BEGIN
-    INSERT INTO DimProcedimiento (ID_Procedimiento, Descripcion_Procedimiento, Monto_Procedimiento, ID_Tipo_Procedimiento)
-    SELECT ID_Procedimiento, Descripcion_Procedimiento, Monto_Procedimiento, ID_Tipo_Procedimiento
-    FROM SaludPlus.dbo.Procedimiento;
+    INSERT INTO DimProcedimiento (ID_Procedimiento, Descripcion_Procedimiento, Monto_Procedimiento, ID_Tipo_Procedimiento, Tipo_Procedimiento)
+     SELECT 
+        Procedimiento.ID_Procedimiento,
+        Procedimiento.Descripcion_Procedimiento, 
+        Procedimiento.Monto_Procedimiento, 
+        Tipo_Procedimiento.ID_Tipo_Procedimiento, 
+        Tipo_Procedimiento.Nombre_Procedimiento
+    FROM 
+        SaludPlus.dbo.Procedimiento
+    INNER JOIN 
+        SaludPlus.dbo.Tipo_Procedimiento ON Procedimiento.ID_Tipo_Procedimiento = Tipo_Procedimiento.ID_Tipo_Procedimiento;
 END;
 GO
+exec SP_CargarDimProcedimiento
+go
+--------SELECT TOP 10 * FROM DimProcedimiento;
 
 
--- 1. Hecho_Cita
+-- 1. Hecho_Cita  
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarHechoCita
 AS
 BEGIN
     INSERT INTO Hecho_Cita (
-        ID_Cita, Hora, ID_Paciente, ID_Medico, ID_Especialidad, ID_Sala, 
+        ID_Cita,ID_Fecha, Fecha, Hora, ID_Paciente, ID_Medico, ID_Especialidad, ID_Sala, 
         ID_Estado_Cita, Tiempo_Espera, Duracion_Consulta
     )
     SELECT 
         C.ID_Cita,
-        --C.Fecha_Cita AS Fecha,
-        C.Hora_Cita AS Hora,
+		F.ID_Fecha,
+        C.Fecha_Cita AS Fecha,
+        C.Hora_Cita,
         C.ID_Paciente,
         C.ID_Medico,
         M.ID_Especialidad,
@@ -300,38 +410,51 @@ BEGIN
         DATEDIFF(MINUTE, P.Hora_Procedimiento, DATEADD(HOUR, 1, P.Hora_Procedimiento)) AS Duracion_Consulta
     FROM SaludPlus.dbo.Cita C
     JOIN SaludPlus.dbo.Medico M ON C.ID_Medico = M.ID_Medico
-    LEFT JOIN SaludPlus.dbo.Procedimiento P ON P.ID_Cita = C.ID_Cita;
+    LEFT JOIN SaludPlus.dbo.Procedimiento P ON P.ID_Cita = C.ID_Cita
+    JOIN DimFecha F ON C.Fecha_Cita = F.Fecha
+    WHERE C.ID_Paciente IN (SELECT ID_Paciente FROM DimPaciente)
+	AND NOT EXISTS (SELECT 1 FROM Hecho_Cita HC WHERE HC.ID_Cita = C.ID_Cita);
 END;
 GO
+exec SP_CargarHechoCita
+go
+--------SELECT TOP 10 * FROM Hecho_Cita;
+
+
+ 
 
  
   
 
 -- 2. Hecho_Satisfaccion_Paciente
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarHechoSatisfaccionPaciente
 AS
 BEGIN
     INSERT INTO Hecho_Satisfaccion_Paciente (ID_Satisfaccion, ID_Cita, Calificacion)
     SELECT 
         ID_Satisfaccion,
-        --Fecha_Evaluacion AS Fecha,
         ID_Cita,
         Calificacion_Satisfaccion AS Calificacion
     FROM SaludPlus.dbo.Satisfaccion_Paciente;
 END;
 GO
+exec SP_CargarHechoSatisfaccionPaciente
+go
+ --------SELECT TOP 10 * FROM Hecho_Satisfaccion_Paciente;
 
- 
 
 
 -- 3. Hecho_Factura
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarHechoFactura
 AS
 BEGIN
     INSERT INTO Hecho_Factura (ID_Factura, Monto_Total, ID_Paciente, ID_Cita, ID_Tipo_Pago)
     SELECT 
         F.ID_Factura,
-        --F.Fecha_Factura AS Fecha,
         F.Monto_Total,
         F.ID_Paciente,
         F.ID_Cita,
@@ -339,15 +462,20 @@ BEGIN
     FROM SaludPlus.dbo.Factura F;
 END;
 GO
+exec SP_CargarHechoFactura
+go
+--------SELECT TOP 10 * FROM Hecho_Factura;
+
 
 -- 4. Hecho_Procedimiento
-CREATE PROCEDURE SP_CargarHechoProcedimiento
+USE DW_SaludPlus;
+GO
+ CREATE PROCEDURE SP_CargarHechoProcedimiento
 AS
 BEGIN
     INSERT INTO Hecho_Procedimiento (ID_Procedimiento,  Hora, Monto, ID_Sala, ID_Tipo_Procedimiento, ID_Cita)
     SELECT 
         P.ID_Procedimiento,
-        --P.Fecha_Procedimiento AS Fecha,
         P.Hora_Procedimiento AS Hora,
         P.Monto_Procedimiento AS Monto,
         P.ID_Sala,
@@ -356,8 +484,13 @@ BEGIN
     FROM SaludPlus.dbo.Procedimiento P;
 END;
 GO
+exec SP_CargarHechoProcedimiento
+go
+--------SELECT TOP 10 * FROM Hecho_Procedimiento;
 
 -- 5. Hecho_Capacidad_Clinica
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarHechoCapacidadClinica
 AS
 BEGIN
@@ -370,6 +503,10 @@ BEGIN
     JOIN SaludPlus.dbo.Sala S ON PR.ID_Sala = S.ID_Sala;
 END;
 GO
+exec SP_CargarHechoCapacidadClinica
+go
+--------SELECT TOP 10 * FROM Hecho_Capacidad_Clinica;
+
 
 
 
@@ -512,6 +649,8 @@ END;
 GO
 
 
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CargarDWCompleto
 AS
 BEGIN
@@ -542,6 +681,8 @@ GO
 
 
 ----Calcula la satisfacci�n promedio por cita
+USE DW_SaludPlus;
+GO
 CREATE FUNCTION FN_SatisfaccionPromedioPorCita (@ID_Cita INT)
 RETURNS DECIMAL(5,2)
 AS
@@ -553,8 +694,12 @@ BEGIN
     );
 END;
 Go
+-------SELECT dbo.FN_SatisfaccionPromedioPorCita(1) AS SatisfaccionPromedio;
+
 
 ----Calcula el tiempo promedio de espera por especialidad
+USE DW_SaludPlus;
+GO
 CREATE FUNCTION FN_TiempoEsperaPromedioPorEspecialidad(@ID_Especialidad INT)
 RETURNS INT
 AS
@@ -566,8 +711,12 @@ BEGIN
     RETURN @promedio;
 END;
 GO
-/*
+-------SELECT dbo.FN_TiempoEsperaPromedioPorEspecialidad(1) AS SatisfaccionPromedio;
+
+
 ----Calcula citas por periodo
+USE DW_SaludPlus;
+GO
 CREATE PROCEDURE SP_CantidadCitasPorPeriodo (@Periodo VARCHAR(10))
 AS
 BEGIN
@@ -578,7 +727,14 @@ BEGIN
     ELSE IF @Periodo = 'MES'
         SELECT DATEPART(MONTH, Fecha) AS Mes, COUNT(*) AS Cantidad_Citas FROM Hecho_Cita GROUP BY DATEPART(MONTH, Fecha);
 END;
-*/
+go
+--EXEC SP_CantidadCitasPorPeriodo 'MES';
+
+
+
+
+use DW_SaludPlus
+go
 CREATE PROCEDURE SP_UtilizacionRecursoPorSala
 AS
 BEGIN
@@ -589,16 +745,26 @@ BEGIN
     GROUP BY S.Nombre_Sala, RM.Nombre_Recurso;
 END;
 GO
+--EXEC SP_UtilizacionRecursoPorSala;
+
+
+
 /*
-CREATE PROCEDURE SP_FacturacionPorMesYAno
+use DW_SaludPlus
+go
+CREATE PROCEDURE SP_FacturacionPorMesYAño
 AS
 BEGIN
-    SELECT DATEPART(YEAR, Fecha) AS A�o, DATEPART(MONTH, Fecha) AS Mes, SUM(Monto_Total) AS Monto_Mensual
+    SELECT DATEPART(YEAR, Fecha) AS Año, DATEPART(MONTH, Fecha) AS Mes, SUM(Monto_Total) AS Monto_Mensual
     FROM Hecho_Factura
     GROUP BY DATEPART(YEAR, Fecha), DATEPART(MONTH, Fecha)
-    ORDER BY A�o, Mes;
+    ORDER BY Año, Mes;
 END;
+go
 */
+
+use DW_SaludPlus
+go
 CREATE FUNCTION FN_StockActualRecursoMedico(@ID_Recurso_Medico INT)
 RETURNS INT
 AS
@@ -611,45 +777,60 @@ BEGIN
 END;
 GO
 
+--SELECT dbo.FN_StockActualRecursoMedico(1) AS StockActual;
+
+/*
 -----indices para mejorar el redimiento de las consultas
+use DW_SaludPlus
+go
 -- Hecho_Cita
 CREATE INDEX IX_Hecho_Cita_Paciente ON Hecho_Cita (ID_Paciente);
 CREATE INDEX IX_Hecho_Cita_Medico ON Hecho_Cita (ID_Medico);
 CREATE INDEX IX_Hecho_Cita_Especialidad ON Hecho_Cita (ID_Especialidad);
 CREATE INDEX IX_Hecho_Cita_Sala ON Hecho_Cita (ID_Sala);
 CREATE INDEX IX_Hecho_Cita_Fecha ON Hecho_Cita (ID_Fecha);
-
+go
 -- Hecho_Factura
+use DW_SaludPlus
+go
 CREATE INDEX IX_Hecho_Factura_Paciente ON Hecho_Factura (ID_Paciente);
 CREATE INDEX IX_Hecho_Factura_TipoPago ON Hecho_Factura (ID_Tipo_Pago);
 CREATE INDEX IX_Hecho_Factura_Fecha ON Hecho_Factura (ID_Fecha);
+go
 
 -- Hecho_Procedimiento
+use DW_SaludPlus
+go
 CREATE INDEX IX_Hecho_Procedimiento_Sala ON Hecho_Procedimiento (ID_Sala);
 CREATE INDEX IX_Hecho_Procedimiento_TipoProcedimiento ON Hecho_Procedimiento (ID_Tipo_Procedimiento);
 CREATE INDEX IX_Hecho_Procedimiento_Fecha ON Hecho_Procedimiento (ID_Fecha);
+go
 
 -- Hecho_Satisfaccion_Paciente
+use DW_SaludPlus
+go
 CREATE INDEX IX_Hecho_Satisfaccion_Cita ON Hecho_Satisfaccion_Paciente (ID_Cita);
 CREATE INDEX IX_Hecho_Satisfaccion_Fecha ON Hecho_Satisfaccion_Paciente (ID_Fecha);
 GO
 
 
+
 EXEC SP_CargarDWCompleto
 Go
 
- 
+ */
 
 
  
 
 
 
-----------------------vistas
-USE DW_SaludPlus;
-GO
+------------------------------------vistas
+
 
 -- Vista para Paciente
+USE DW_SaludPlus;
+GO
 CREATE VIEW vw_Paciente AS
 SELECT ID_Paciente, Nombre_Paciente, Apellido1_Paciente
 FROM SaludPlus.dbo.Paciente;
@@ -658,6 +839,8 @@ GO
  
 
 -- Vista para Medico
+USE DW_SaludPlus;
+GO
 CREATE VIEW vw_Medico AS
 SELECT ID_Medico, Nombre1_Medico, ID_Especialidad
 FROM SaludPlus.dbo.Medico;
@@ -665,6 +848,8 @@ GO
 ---select *from  vw_Medico
 
 -- Vista para Cita
+USE DW_SaludPlus;
+GO
 CREATE VIEW vw_Cita AS
 SELECT ID_Cita, Fecha_Cita, CONVERT(VARCHAR(5), Hora_Cita, 108) AS Hora_Cita, ID_Estado_Cita
 FROM SaludPlus.dbo.Cita;
@@ -673,6 +858,8 @@ GO
 ---select *from  vw_Cita
 
 -- Vista para Fecha
+USE DW_SaludPlus;
+GO
 CREATE VIEW vw_Fecha AS
 SELECT DISTINCT
     CAST(Fecha_Cita AS DATE) AS Fecha_Cita,
@@ -686,7 +873,6 @@ GO
 -- Vista para Reputacion
 USE DW_SaludPlus;
 GO
-
 CREATE VIEW vw_Reputacion AS
 SELECT 
     S.ID_Satisfaccion,

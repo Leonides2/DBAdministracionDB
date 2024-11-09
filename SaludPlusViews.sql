@@ -1,9 +1,8 @@
 
+
+--------------------------------------------------Vistas---------------------------------------------------------
 use SaludPlus
 go
---------------------------------------------------Vistas---------------------------------------------------------
-
-
 CREATE OR ALTER VIEW vw_Paciente AS
 SELECT 
 ID_Paciente,
@@ -22,6 +21,8 @@ Select * from vw_Paciente
 go
 */
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Medico AS
 SELECT 
 Medico.ID_Medico,
@@ -39,6 +40,8 @@ Select * from vw_Medico
 go
 */
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Cita AS
 SELECT 
 Cita.ID_Cita,
@@ -55,6 +58,9 @@ GO
 Select * from vw_Cita
 go
 */
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Factura AS
 SELECT 
 Factura.ID_Factura,
@@ -72,6 +78,8 @@ GO
 	go
 */
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Recurso_Medico_Sala AS
 SELECT 
 Convert(VARCHAR,Recurso_Medico_Sala.Fecha,103) AS Fecha,
@@ -86,6 +94,8 @@ GO
 	go
 */
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Auditoria AS 
 SELECT 
 ID_Auditoria,
@@ -101,6 +111,8 @@ GO
 	go
 */
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Estado_Cita AS 
 SELECT 
 ID_Estado_Cita,
@@ -112,6 +124,8 @@ GO
 	go
 */
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Estado_Recurso_Medico AS 
 SELECT 
 ID_Estado_Recurso_Medico,
@@ -122,6 +136,8 @@ GO
 	Select * from vw_Estado_Recurso_Medico
 	go
 */
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Estado_Sala AS 
 SELECT 
 ID_Estado_Sala,
@@ -133,6 +149,8 @@ GO
 	go
 */
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Historial_Medico AS 
 SELECT 
 Historial_Medico.ID_Historial_Medico,
@@ -145,6 +163,8 @@ GO
 	go
 */
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Especialidad AS 
 SELECT 
 ID_Especialidad,
@@ -152,14 +172,10 @@ Nombre_Especialidad
 From Especialidad 
 GO
 
-CREATE OR ALTER VIEW vw_Especialidad AS 
-SELECT 
-ID_Especialidad,
-Nombre_Especialidad
-From Especialidad 
-GO
+-- select *from vw_Especialidad
 
-
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Horario_Trabajo AS 
 SELECT 
 ID_Horario_Trabajo,
@@ -168,15 +184,22 @@ CONVERT(varchar, Hora_Inicio, 108) AS Hora_Inicio,
 CONVERT(varchar, Hora_Fin, 108) AS Hora_Fin
 From Horario_Trabajo 
 GO
+-- select *from vw_Horario_Trabajo
 
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Tipo_Pago AS 
 SELECT 
 ID_Tipo_Pago,
 Descripcion_Tipo_Pago
 From Tipo_Pago 
 GO
+-- select *from vw_Tipo_Pago
 
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Procedimiento AS 
 SELECT 
 Procedimiento.ID_Procedimiento,
@@ -193,14 +216,24 @@ From Procedimiento inner join Sala ON Procedimiento.ID_Sala = Sala.ID_Sala
 inner join Historial_Medico On Procedimiento.ID_Historial_Medico = Historial_Medico.ID_Historial_Medico
 inner join Tipo_Procedimiento on Procedimiento.ID_Tipo_Procedimiento = Tipo_Procedimiento.ID_Tipo_Procedimiento
 GO
+-- select *from vw_Procedimiento
 
+
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Tipo_Procedimiento AS 
 SELECT 
 ID_Tipo_Procedimiento,
 Nombre_Procedimiento
 From Tipo_Procedimiento 
 GO
+-- select *from vw_Tipo_Procedimiento
 
+
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Recurso_Medico AS 
 SELECT 
 Recurso_Medico.ID_Recurso_Medico,
@@ -213,14 +246,24 @@ Estado_Recurso_Medico.Estado_Recurso
 From Recurso_Medico inner join Tipo_Recurso on Recurso_Medico.ID_Tipo_Recurso = Tipo_Recurso.ID_Tipo_Recurso
 inner join Estado_Recurso_Medico on Recurso_Medico.ID_Estado_Recurso_Medico = Estado_Recurso_Medico.ID_Estado_Recurso_Medico
 GO
+-- select *from vw_Recurso_Medico
 
+
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Tipo_Recurso AS 
 SELECT 
 ID_Tipo_Recurso,
 Titulo_Recurso
 From Tipo_Recurso 
 GO
+-- select *from vw_Tipo_Recurso
 
+
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Sala AS 
 SELECT 
 Sala.ID_Sala,
@@ -231,15 +274,24 @@ Estado_Sala.Nombre AS 'Estado_Sala'
 From Sala inner join Tipo_Sala on Sala.ID_Tipo_Sala = Tipo_Sala.ID_Tipo_Sala
 inner join Estado_Sala on Sala.ID_Estado_Sala = Estado_Sala.ID_Estado_Sala
 GO
+-- select *from vw_Sala
 
+
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Tipo_Sala AS 
 SELECT 
 ID_Tipo_Sala,
 Descripcion_Tipo_Sala
 From Tipo_Sala 
 GO
+-- select *from vw_Tipo_Sala
 
 
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Recurso_Medico_Sala AS 
 SELECT 
 Recurso_Medico_Sala.ID_Recurso_Medico_Sala,
@@ -250,7 +302,12 @@ Sala.Nombre_Sala
 From Recurso_Medico_Sala inner join Recurso_Medico on Recurso_Medico_Sala.ID_Recurso_Medico = Recurso_Medico.ID_Recurso_Medico
 inner join Sala ON Recurso_Medico_Sala.ID_Sala = Sala.ID_Sala
 GO
+-- select *from vw_Recurso_Medico_Sala
 
+
+
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Planificacion_Recurso AS 
 SELECT 
 ID_Planificacion,
@@ -261,8 +318,11 @@ Horario_Trabajo.Nombre_Horario
 From Planificacion_Recurso inner join Sala on Planificacion_Recurso.ID_Sala = Sala.ID_Sala
 inner join Horario_Trabajo on Planificacion_Recurso.ID_Horario_Trabajo = Horario_Trabajo.ID_Horario_Trabajo
 GO
+-- select *from vw_Planificacion_Recurso
 
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Satisfaccion_Paciente AS 
 SELECT 
 ID_Satisfaccion,
@@ -271,8 +331,11 @@ CONVERT(varchar, Fecha_Evaluacion, 103) AS Fecha_Evaluacion,
 ID_Cita
 From Satisfaccion_Paciente
 GO
+-- select *from vw_Satisfaccion_Paciente
 
 
+use SaludPlus
+go
 CREATE OR ALTER VIEW vw_Medico_Planificacion_Recurso AS 
 SELECT 
 ID_Medico_Planificacion_Recurso,
@@ -282,3 +345,4 @@ ID_Medico
 From Medico_Planificacion_Recurso inner join Planificacion_Recurso on Medico_Planificacion_Recurso.ID_Planificacion
 = Planificacion_Recurso.ID_Planificacion
 GO
+-- select *from vw_Medico_Planificacion_Recurso
