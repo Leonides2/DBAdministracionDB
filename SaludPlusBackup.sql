@@ -16,3 +16,8 @@ WITH FORMAT, COMPRESSION, INIT,
      STATS = 10;  -- Muestra el progreso cada 10%
 
 PRINT 'Backup completo creado en ' + @BackupFileName
+
+
+
+
+--- Generar Incrementales

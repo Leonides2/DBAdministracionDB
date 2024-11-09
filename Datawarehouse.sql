@@ -1,11 +1,11 @@
-  USE master;
+USE master;
 GO
 
 CREATE DATABASE DW_SaludPlus 
 ON PRIMARY
 (
     NAME = 'DW_SaludPlus_Data',
-    FILENAME = 'C:\SQLData\DW_SaludPlus_Data.mdf',
+    FILENAME = 'C:\SQL\Data\DW_SaludPlus_Data.mdf',
     SIZE = 2000MB,
     MAXSIZE = 5000MB,
     FILEGROWTH = 500MB
@@ -13,7 +13,7 @@ ON PRIMARY
 LOG ON
 (
     NAME = 'DW_SaludPlus_Log',
-    FILENAME = 'C:\SQLLog\DW_SaludPlus_Log.ldf',
+    FILENAME = 'C:\SQL\Log\DW_SaludPlus_Log.ldf',
     SIZE = 1000MB,
     MAXSIZE = 2000MB,
     FILEGROWTH = 200MB
@@ -25,7 +25,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimPaciente (
-    ID_Paciente INT PRIMARY KEY,
+    ID_Paciente INT PRIMARY KEY Clustered,
     Nombre_Paciente VARCHAR(50),
 	Apellido1_Paciente VARCHAR(50),
 	Apellido2_Paciente VARCHAR(50),
@@ -39,7 +39,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimMedico (
-    ID_Medico INT PRIMARY KEY,
+    ID_Medico INT PRIMARY KEY Clustered,
     Nombre1_Medico VARCHAR(50),
     Nombre2_Medico VARCHAR(50),
     Apellido1_Medico VARCHAR(50),
@@ -53,7 +53,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimEspecialidad (
-    ID_Especialidad INT PRIMARY KEY,
+    ID_Especialidad INT PRIMARY KEY Clustered,
     Nombre_Especialidad VARCHAR(50)
 );
 GO
@@ -61,7 +61,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimSala (
-    ID_Sala INT PRIMARY KEY,
+    ID_Sala INT PRIMARY KEY Clustered,
     Nombre_Sala VARCHAR(50),
     Capacidad_Sala INT,
     ID_Tipo_Sala INT,
@@ -73,7 +73,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimFecha (
-    ID_Fecha INT PRIMARY KEY IDENTITY(1,1),
+    ID_Fecha INT PRIMARY KEY Clustered IDENTITY(1,1) ,
     Fecha DATE,
     Dia INT,
     Mes INT,
@@ -88,7 +88,7 @@ CREATE TABLE DimFecha (
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimRecursoMedico (
-    ID_Recurso_Medico INT PRIMARY KEY,
+    ID_Recurso_Medico INT PRIMARY KEY Clustered,
     Nombre_Recurso VARCHAR(50),
     Lote VARCHAR(50),
     Cantidad_Stock_Total INT,
@@ -101,7 +101,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimEstadoCita (
-    ID_Estado_Cita INT PRIMARY KEY,
+    ID_Estado_Cita INT PRIMARY KEY Clustered,
     Estado VARCHAR(50)
 );
 GO
@@ -109,7 +109,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimTipoPago (
-    ID_Tipo_Pago INT PRIMARY KEY,
+    ID_Tipo_Pago INT PRIMARY KEY Clustered,
     Descripcion_Tipo_Pago VARCHAR(50)
 );
 GO
@@ -117,7 +117,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE DimProcedimiento (
-    ID_Procedimiento INT PRIMARY KEY,
+    ID_Procedimiento INT PRIMARY KEY Clustered,
     Descripcion_Procedimiento VARCHAR(150),
     Monto_Procedimiento MONEY,
     ID_Tipo_Procedimiento INT,
@@ -135,7 +135,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE Hecho_Cita (
-    ID_Cita INT PRIMARY KEY,
+    ID_Cita INT PRIMARY KEY Clustered,
     ID_Fecha INT,
 	Fecha Date,
     Hora TIME,
@@ -158,7 +158,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE Hecho_Satisfaccion_Paciente (
-    ID_Satisfaccion INT PRIMARY KEY,
+    ID_Satisfaccion INT PRIMARY KEY Clustered,
     ID_Fecha INT,
     ID_Cita INT,
     Calificacion INT CHECK (Calificacion BETWEEN 1 AND 5),
@@ -170,7 +170,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE Hecho_Factura (
-    ID_Factura INT PRIMARY KEY,
+    ID_Factura INT PRIMARY KEY Clustered,
     ID_Fecha INT,
     Monto_Total MONEY,
     ID_Paciente INT,
@@ -186,7 +186,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE Hecho_Procedimiento (
-    ID_Procedimiento INT PRIMARY KEY,
+    ID_Procedimiento INT PRIMARY KEY Clustered,
     ID_Fecha INT,
     Hora TIME,
     Monto MONEY,
@@ -205,7 +205,7 @@ GO
 USE DW_SaludPlus;
 GO
 CREATE TABLE Hecho_Capacidad_Clinica (
-    ID_Capacidad INT IDENTITY(1,1) PRIMARY KEY,
+    ID_Capacidad INT IDENTITY(1,1) PRIMARY KEY Clustered,
     ID_Fecha INT,
     ID_Sala INT,
     Capacidad_Disponible INT,
@@ -214,6 +214,17 @@ CREATE TABLE Hecho_Capacidad_Clinica (
 );
 GO
 
+USE DW_SaludPlus;
+GO
+CREATE TABLE Hecho_Carga_Medico (
+    ID_Capacidad INT IDENTITY(1,1) PRIMARY KEY Clustered,
+    ID_Fecha INT,
+    ID_Medico INT,
+    Carga INT,
+    FOREIGN KEY (ID_Medico) REFERENCES DimMedico(ID_Medico),
+    FOREIGN KEY (ID_Fecha) REFERENCES DimFecha(ID_Fecha)
+);
+GO
 
 ----------ETL PROCEDIMIENTOS Y FUNCIONES
 
@@ -293,16 +304,86 @@ CREATE PROCEDURE SP_CargarDimFecha
 AS
 BEGIN
     
-    INSERT INTO DimFecha (Fecha, Dia, Mes, Año, Trimestre, Nombre_Dia, Nombre_Mes)
-    SELECT DISTINCT 
-	    Fecha_Cita AS Fecha,
-        DAY(Fecha_Cita) AS Dia,
-        MONTH(Fecha_Cita) AS Mes,
-        YEAR(Fecha_Cita) AS Año,
-        DATEPART(QUARTER, Fecha_Cita) AS Trimestre,
-        DATENAME(WEEKDAY, Fecha_Cita) AS Nombre_Dia,
-        DATENAME(MONTH, Fecha_Cita) AS Nombre_Mes
-    FROM SaludPlus.dbo.Cita;
+	Declare @Fecha Date;
+
+	Declare DimFechaCursor Cursor for
+	Select Fecha_Cita from SaludPlus.dbo.Cita;
+
+	Open DimFechaCursor
+
+	fetch DimFechaCursor into @Fecha
+
+	while(@@FETCH_STATUS = 0)
+	Begin
+		IF not exists (Select Fecha from DimFecha where Fecha = @Fecha)
+		begin
+			INSERT INTO DimFecha (Fecha, Dia, Mes, Año, Trimestre, Nombre_Dia, Nombre_Mes)
+			SELECT DISTINCT 
+				Fecha_Cita AS Fecha,
+				DAY(Fecha_Cita) AS Dia,
+				MONTH(Fecha_Cita) AS Mes,
+				YEAR(Fecha_Cita) AS Año,
+				DATEPART(QUARTER, Fecha_Cita) AS Trimestre,
+				DATENAME(WEEKDAY, Fecha_Cita) AS Nombre_Dia,
+				DATENAME(MONTH, Fecha_Cita) AS Nombre_Mes
+			FROM SaludPlus.dbo.Cita
+		end
+		fetch DimFechaCursor into @Fecha
+	End
+
+	Close DimFechaCursor
+	Deallocate DimFechaCursor
+
+	Declare DimFechaCursor1 Cursor for
+	Select Fecha_Evaluacion from SaludPlus.dbo.Satisfaccion_Paciente;
+
+
+	Open DimFechaCursor1
+	fetch DimFechaCursor1 into @Fecha
+
+	While (@@FETCH_STATUS = 0)
+	Begin
+		IF not exists (Select Fecha from DimFecha where Fecha = @Fecha)
+			INSERT INTO DimFecha (Fecha, Dia, Mes, Año, Trimestre, Nombre_Dia, Nombre_Mes)
+			SELECT DISTINCT 
+				Fecha_Evaluacion AS Fecha,
+				DAY(Fecha_Evaluacion) AS Dia,
+				MONTH(Fecha_Evaluacion) AS Mes,
+				YEAR(Fecha_Evaluacion) AS Año,
+				DATEPART(QUARTER, Fecha_Evaluacion) AS Trimestre,
+				DATENAME(WEEKDAY, Fecha_Evaluacion) AS Nombre_Dia,
+				DATENAME(MONTH, Fecha_Evaluacion) AS Nombre_Mes
+			FROM SaludPlus.dbo.Satisfaccion_Paciente ;
+		fetch DimFechaCursor1 into @Fecha
+	End
+
+	Close DimFechaCursor1
+	Deallocate DimFechaCursor1
+
+	Declare DimFechaCursor2 Cursor for
+	Select Fecha_Factura from SaludPlus.dbo.Factura;
+
+	Open DimFechaCursor2
+	fetch DimFechaCursor2 into @Fecha
+
+	While (@@FETCH_STATUS = 0)
+	Begin
+		IF not exists (Select Fecha from DimFecha where Fecha = @Fecha)
+			INSERT INTO DimFecha (Fecha, Dia, Mes, Año, Trimestre, Nombre_Dia, Nombre_Mes)
+			SELECT DISTINCT 
+				Fecha_Factura AS Fecha,
+				DAY(Fecha_Factura) AS Dia,
+				MONTH(Fecha_Factura) AS Mes,
+				YEAR(Fecha_Factura) AS Año,
+				DATEPART(QUARTER, Fecha_Factura) AS Trimestre,
+				DATENAME(WEEKDAY, Fecha_Factura) AS Nombre_Dia,
+				DATENAME(MONTH, Fecha_Factura) AS Nombre_Mes
+			FROM SaludPlus.dbo.Factura ;
+		fetch DimFechaCursor2 into @Fecha
+	End
+
+	Close DimFechaCursor2
+	Deallocate DimFechaCursor2
 END;
 GO
 exec SP_CargarDimFecha
@@ -407,6 +488,7 @@ BEGIN
         P.ID_Sala,
         C.ID_Estado_Cita,
         DATEDIFF(MINUTE, C.Hora_Cita, P.Hora_Procedimiento) AS Tiempo_Espera, 
+		---Como no existe hora de finalizacion asume que son 60 siempre
         DATEDIFF(MINUTE, P.Hora_Procedimiento, DATEADD(HOUR, 1, P.Hora_Procedimiento)) AS Duracion_Consulta
     FROM SaludPlus.dbo.Cita C
     JOIN SaludPlus.dbo.Medico M ON C.ID_Medico = M.ID_Medico
@@ -432,12 +514,13 @@ GO
 CREATE PROCEDURE SP_CargarHechoSatisfaccionPaciente
 AS
 BEGIN
-    INSERT INTO Hecho_Satisfaccion_Paciente (ID_Satisfaccion, ID_Cita, Calificacion)
+    INSERT INTO Hecho_Satisfaccion_Paciente (ID_Satisfaccion, ID_Fecha ,ID_Cita, Calificacion)
     SELECT 
-        ID_Satisfaccion,
-        ID_Cita,
-        Calificacion_Satisfaccion AS Calificacion
-    FROM SaludPlus.dbo.Satisfaccion_Paciente;
+        S.ID_Satisfaccion,
+		F.ID_Fecha,
+        S.ID_Cita,
+        S.Calificacion_Satisfaccion AS Calificacion
+    FROM SaludPlus.dbo.Satisfaccion_Paciente S JOIN DimFecha F ON F.Fecha = S.Fecha_Evaluacion;
 END;
 GO
 exec SP_CargarHechoSatisfaccionPaciente
@@ -452,14 +535,15 @@ GO
 CREATE PROCEDURE SP_CargarHechoFactura
 AS
 BEGIN
-    INSERT INTO Hecho_Factura (ID_Factura, Monto_Total, ID_Paciente, ID_Cita, ID_Tipo_Pago)
+    INSERT INTO Hecho_Factura (ID_Factura, ID_Fecha, Monto_Total, ID_Paciente, ID_Cita, ID_Tipo_Pago)
     SELECT 
         F.ID_Factura,
+		H.ID_Fecha,
         F.Monto_Total,
         F.ID_Paciente,
         F.ID_Cita,
         F.ID_Tipo_Pago
-    FROM SaludPlus.dbo.Factura F;
+    FROM SaludPlus.dbo.Factura F JOIN DimFecha H ON F.Fecha_Factura = H.Fecha;
 END;
 GO
 exec SP_CargarHechoFactura
@@ -481,7 +565,7 @@ BEGIN
         P.ID_Sala,
         P.ID_Tipo_Procedimiento,
         P.ID_Cita
-    FROM SaludPlus.dbo.Procedimiento P;
+    FROM SaludPlus.dbo.Procedimiento P  JOIN DimFecha H ON P.Fecha_Procedimiento = H.Fecha;
 END;
 GO
 exec SP_CargarHechoProcedimiento
@@ -494,16 +578,44 @@ GO
 CREATE PROCEDURE SP_CargarHechoCapacidadClinica
 AS
 BEGIN
-    INSERT INTO Hecho_Capacidad_Clinica ( ID_Sala, Capacidad_Disponible)
+    INSERT INTO Hecho_Capacidad_Clinica ( ID_Sala, ID_Fecha, Capacidad_Disponible)
     SELECT 
         --ROW_NUMBER() OVER (ORDER BY Fecha) AS ID_Capacidad,
         S.ID_Sala,
+		H.ID_Fecha,
         Capacidad_Sala AS Capacidad_Disponible
     FROM SaludPlus.dbo.Planificacion_Recurso PR
-    JOIN SaludPlus.dbo.Sala S ON PR.ID_Sala = S.ID_Sala;
+    JOIN SaludPlus.dbo.Sala S ON PR.ID_Sala = S.ID_Sala JOIN DimFecha H ON PR.Fecha_Planificacion = H.Fecha;;
 END;
 GO
 exec SP_CargarHechoCapacidadClinica
+go
+
+
+USE DW_SaludPlus;
+GO
+CREATE PROCEDURE SP_CargarCargaMedico
+AS
+BEGIN
+    -- Inserta en Hecho_Carga_Medico si no existe un registro para esa combinación de ID_Fecha y ID_Medico
+    INSERT INTO Hecho_Carga_Medico (ID_Fecha, ID_Medico, Carga)
+    SELECT 
+        H.ID_Fecha,
+        PR.ID_Medico,
+        COUNT(*) AS Carga -- Cuenta las citas o planificaciones para cada médico en cada fecha
+    FROM SaludPlus.dbo.Medico PR
+    JOIN SaludPlus.dbo.Medico_Planificacion_Recurso S ON PR.ID_Medico = S.ID_Medico
+    JOIN SaludPlus.dbo.Cita C ON C.ID_Medico = PR.ID_Medico
+    JOIN DimFecha H ON S.Fecha_Planificacion_Personal = H.Fecha OR C.Fecha_Cita = H.Fecha
+    GROUP BY H.ID_Fecha, PR.ID_Medico
+    HAVING NOT EXISTS (
+        SELECT 1 
+        FROM Hecho_Carga_Medico HCM
+        WHERE HCM.ID_Fecha = H.ID_Fecha AND HCM.ID_Medico = PR.ID_Medico
+    );
+END;
+GO
+exec SP_CargarCargaMedico
 go
 --------SELECT TOP 10 * FROM Hecho_Capacidad_Clinica;
 
@@ -648,6 +760,8 @@ BEGIN
 END;
 GO
 
+EXEC SP_ValidarCalidadDatos
+Go
 
 USE DW_SaludPlus;
 GO
@@ -749,19 +863,22 @@ GO
 
 
 
-/*
+
 use DW_SaludPlus
 go
 CREATE PROCEDURE SP_FacturacionPorMesYAño
 AS
 BEGIN
     SELECT DATEPART(YEAR, Fecha) AS Año, DATEPART(MONTH, Fecha) AS Mes, SUM(Monto_Total) AS Monto_Mensual
-    FROM Hecho_Factura
+    FROM Hecho_Factura Join DimFecha on Hecho_Factura.ID_Factura = DimFecha.ID_Fecha
     GROUP BY DATEPART(YEAR, Fecha), DATEPART(MONTH, Fecha)
     ORDER BY Año, Mes;
 END;
 go
-*/
+
+Exec SP_FacturacionPorMesYAño
+Go
+
 
 use DW_SaludPlus
 go
@@ -779,46 +896,12 @@ GO
 
 --SELECT dbo.FN_StockActualRecursoMedico(1) AS StockActual;
 
+
 /*
------indices para mejorar el redimiento de las consultas
-use DW_SaludPlus
-go
--- Hecho_Cita
-CREATE INDEX IX_Hecho_Cita_Paciente ON Hecho_Cita (ID_Paciente);
-CREATE INDEX IX_Hecho_Cita_Medico ON Hecho_Cita (ID_Medico);
-CREATE INDEX IX_Hecho_Cita_Especialidad ON Hecho_Cita (ID_Especialidad);
-CREATE INDEX IX_Hecho_Cita_Sala ON Hecho_Cita (ID_Sala);
-CREATE INDEX IX_Hecho_Cita_Fecha ON Hecho_Cita (ID_Fecha);
-go
--- Hecho_Factura
-use DW_SaludPlus
-go
-CREATE INDEX IX_Hecho_Factura_Paciente ON Hecho_Factura (ID_Paciente);
-CREATE INDEX IX_Hecho_Factura_TipoPago ON Hecho_Factura (ID_Tipo_Pago);
-CREATE INDEX IX_Hecho_Factura_Fecha ON Hecho_Factura (ID_Fecha);
-go
-
--- Hecho_Procedimiento
-use DW_SaludPlus
-go
-CREATE INDEX IX_Hecho_Procedimiento_Sala ON Hecho_Procedimiento (ID_Sala);
-CREATE INDEX IX_Hecho_Procedimiento_TipoProcedimiento ON Hecho_Procedimiento (ID_Tipo_Procedimiento);
-CREATE INDEX IX_Hecho_Procedimiento_Fecha ON Hecho_Procedimiento (ID_Fecha);
-go
-
--- Hecho_Satisfaccion_Paciente
-use DW_SaludPlus
-go
-CREATE INDEX IX_Hecho_Satisfaccion_Cita ON Hecho_Satisfaccion_Paciente (ID_Cita);
-CREATE INDEX IX_Hecho_Satisfaccion_Fecha ON Hecho_Satisfaccion_Paciente (ID_Fecha);
-GO
-
-
-
 EXEC SP_CargarDWCompleto
 Go
+*/
 
- */
 
 
  
